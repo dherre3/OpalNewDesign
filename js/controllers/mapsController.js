@@ -1,12 +1,70 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('MapsController',['$timeout', '$scope',function($timeout,$scope){
+myApp.controller('MapsController',['$timeout', '$scope','FirebaseService','RequestToServer', function($timeout,$scope,FirebaseService,RequestToServer){
+  var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
   $scope.showMap=function(str){
-    var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+    
     if(app){
        var ref = cordova.InAppBrowser.open(str, '_blank', 'EnableViewPortScale=yes');
     }else{
        window.open(str);
     }
+  }
+  function goToScanMyLocation(result)
+  {
+    console.log('Im in there!');
+    generalNavigator.pushPage('./views/general/maps/hospital-location-scan.html',{param:result});
+
+   /* RequestToServer.sendRequest('MapLocation',{'QRCode':result});
+    var ref=new Firebase(FirebaseService.getFirebaseUserFieldsUrl()+'/MapLocation');
+    ref.on('value',function(snapshot)
+    {
+      var value=snapshot.val();
+      if(typeof value!=='undefined')
+      {
+        console.log(value);
+        ref.set(null);
+        ref.off();
+      }
+
+    });*/
+  }
+  $scope.scanLocation=function()
+  {
+    if(app)
+    {
+      cordova.plugins.barcodeScanner.scan(
+        function (result) {
+          console.log(result);
+            if(!result.cancelled)
+            {
+              console.log('boom');
+                if(result.format == "QR_CODE")
+                {
+                  console.log(result.format);
+
+                    goToScanMyLocation(result.text);
+                    /*navigator.notification.prompt("Please enter name of data",  function(input){
+                        var name = input.input1;
+                        var value = result.text;
+
+                        var data = localStorage.getItem("LocalData");
+                        console.log(data);
+                        data = JSON.parse(data);
+                        data[data.length] = [name, value];
+
+                        localStorage.setItem("LocalData", JSON.stringify(data));
+
+                        alert("Done");
+                    });*/
+                }
+            }
+        },
+        function (error) {
+          console.log(error)
+        }
+      );
+    }
+    
   }
 }]);
 

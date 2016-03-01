@@ -8,24 +8,24 @@
       <ons-list-item class="item">
         <div style="line-height:1" align="left">
           <header>
-              <span class="item-title">{{app.AppointmentType_EN}}</span>
+              <span class="item-title" ng-class="fontSizeTitle">{{app.AppointmentType_EN}}</span>
 
           </header>
-          <p class="item-desc">{{app.ScheduledStartTime|formatDateAppointmentTask}}</p>
-          <p class="item-desc">{{app.ResourceName}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">{{app.ScheduledStartTime|formatDateAppointmentTask}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">{{app.ResourceName}}</p>
         </div>
       </ons-list-item>
     </ons-list>
     <ons-list class="settings-list" >
       <ons-list-item modifier="tappable" ng-click="tabbar.setActiveTab(2)">
-        <div class="text-center" style="color:grey">
+        <div class="text-center" style="color:grey" ng-class="fontSizeDesc">
             <i class="ion-location iconHomeView"></i>  Location &raquo;
         </div>
        </ons-list-item>
     </ons-list>
     <ons-list class="settings-list" ng-if="showTab">
        <ons-list-item >
-         <div class="text-center">
+         <div class="text-center" ng-class="fontSizeDesc">
            <a href ng-click="tabbar.setActiveTab(1)">Go to my chart &raquo;</a>
          </div>
         </ons-list-item>

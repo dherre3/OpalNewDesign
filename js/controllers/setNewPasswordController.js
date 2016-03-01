@@ -1,9 +1,9 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword','RequestToServer','EncryptionService',function($scope,$timeout,ResetPassword,RequestToServer,EncryptionService){
+myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword','RequestToServer','EncryptionService','FirebaseService',function($scope,$timeout,ResetPassword,RequestToServer,EncryptionService,FirebaseService){
   //Enter code here!!
   $scope.alert={};
   console.log('Inside set new password');
-  var ref=new Firebase('https://brilliant-inferno-7679.firebaseio.com/');
+  var ref=new Firebase(FirebaseService.getFirebaseUrl());
   $scope.submitSSN=function(ssn){
     if(ssn==''||typeof ssn=='undefined')
     {
@@ -14,7 +14,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
       $scope.alert.content='Enter a valid SSN number';
     }else{
       var objectToSend={};
-      ResetPassword.sendRequestReset(ssn);
+      ResetPassword.sendRequest('VerifySSN',ssn);
       $scope.loading=true;
       var path='Users/'+ResetPassword.getUsername()+'/'+RequestToServer.getIdentifier()+'/ResetPassword';
       console.log(path);
@@ -38,7 +38,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
             console.log(ssn);
             var decryptObject=EncryptionService.decryptWithKey(response,ssn);
             console.log(decryptObject);
-            navigatorForms.pushPage('./templates/forms/security-question.html',{param:{Question:decryptObject.Question,Answer:decryptObject.Answer}},{ animation : 'slide' } );
+            navigatorForms.pushPage('./views/login/security-question.html',{param:{Question:decryptObject.Question,Answer:decryptObject.Answer}},{ animation : 'slide' } );
             $timeout(function(){
               $scope.loading=false;
             });
@@ -75,7 +75,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
         ResetPassword.setAnswer(params.Answer);
         if(hash==params.Answer)
         {
-          navigatorForms.pushPage('./templates/forms/new-password.html',{ animation : 'slide' } );
+          navigatorForms.pushPage('./views/login/new-password.html',{ animation : 'slide' } );
         }else{
           $scope.alert.type='danger';
           $scope.alert.content='Answer does not match our records';
@@ -91,14 +91,14 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
       }
     }
     }]);
-    myApp.controller('NewPasswordController',['$scope','$timeout','Patient','ResetPassword',function($scope,$timeout,Patient,ResetPassword){
+    myApp.controller('NewPasswordController',['$scope','$timeout','Patient','ResetPassword','FirebaseService',function($scope,$timeout,Patient,ResetPassword,FirebaseService){
       $scope.reloadPage=function()
       {
         console.log('boom');
         location.reload();
       }
       $scope.alert={};
-      var ref=new Firebase('https://brilliant-inferno-7679.firebaseio.com/');
+      var ref=new Firebase(FirebaseService.getFirebaseUrl());
       $scope.submitNewPassword=function(newValue)
       {
         if(newValue==''||typeof newValue=='undefined')
@@ -118,7 +118,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
                   $scope.alert.content='Server Problem, contact hospital';
                 });
             } else {
-              ResetPassword.sendNewPasswordToServer(newValue);
+              ResetPassword.sendRequest('SetNewPassword', newValue);
               $timeout(function(){
                 $scope.alert.type='success';
                 $scope.alert.content='Password has been successfully changed, redirecting to login';

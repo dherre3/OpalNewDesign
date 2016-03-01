@@ -80,9 +80,9 @@
                             </ons-col>
                             <ons-col width="6px" class="plan-center" ng-style="{ 'background-color': getStyle($index) }"></ons-col>
                             <ons-col class="plan-right">
-                                <div class="plan-name"> <span style="text-align:left"><strong>{{$index+1}}</strong></span> {{app.Name}}</div>
-                                <div class="plan-info">
-                                    <div ng-show="app.Type=='Appointment'">
+                                <div class="plan-name" ng-class="fontSizeTitle"> <span style="text-align:left"><strong>{{$index+1}}</strong></span> {{app.Name}}</div>
+                                <div class="plan-info" ng-class="fontSizeDesc">
+                                    <div ng-show="app.Type=='Appointment'" >
                                         <strong>Completed: </strong>{{app.Date|formatDateAppointmentTask}}
                                     </div>
                                     <div ng-show="app.Type=='Task'&&app.Status=='Past'">

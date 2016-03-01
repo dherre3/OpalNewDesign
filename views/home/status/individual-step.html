@@ -9,31 +9,31 @@
       <ons-list-item class="item">
         <div style="line-height:1" align="left">
           <header>
-              <span class="item-title">{{stage.Name}}</span>
+              <span class="item-title" ng-class="fontSizeTitle">{{stage.Name}}</span>
               <div class="plan-info">
-                  <div ng-show="stage.Type=='Appointment'">
-                      <ons-icon icon="fa-calendar " style="color:#2B6197;font-size:13px"></ons-icon>&nbsp;{{stage.Date|formatDateAppointmentTask}}
+                  <div ng-show="stage.Type=='Appointment'" ng-class="fontSizeDesc">
+                      <ons-icon icon="fa-calendar " style="color:#2B6197;" ng-class="fontSizeDesc"></ons-icon>&nbsp;{{stage.Date|formatDateAppointmentTask}}
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Past'">
-                  <strong><i class="ion-compose iconHomeView" style="font-size:13px" ></i>&nbsp;Stage completed: </strong>{{stage.Date|formatDateAppointmentTask}}
+                  <strong><i class="ion-compose iconHomeView" ng-class="fontSizeDesc" ></i>&nbsp;Stage completed: </strong>{{stage.Date|formatDateAppointmentTask}}
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Future'">
                   <strong>Pending </strong>
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Next'">
-                  <strong><i class="ion-loop iconHomeView" style="font-size:13px"></i>&nbsp;In progress...</strong>
+                  <strong><i class="ion-loop iconHomeView" ng-class="fontSizeDesc"></i>&nbsp;In progress...</strong>
                   </div>
               </div>
           </header>
 
-          <p class="item-desc">{{stage.Description}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">{{stage.Description}}</p>
         </div>
       </ons-list-item>
     </ons-list>
   <ons-list class="settings-list" ng-if="showTab">
      <ons-list-item >
        <div class="text-center">
-         <a href ng-click="tabbar.setActiveTab(1)">Go to my chart &raquo;</a>
+         <a href ng-click="tabbar.setActiveTab(1)" ng-class="fontSizeDesc">Go to my chart &raquo;</a>
        </div>
       </ons-list-item>
   </ons-list>

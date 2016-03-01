@@ -13,10 +13,17 @@ var myApp = angular.module('MUHCApp');
 *Controller manages the logic in the schedule appointment main view, it as as "child" controllers,
 */
 
-
+function david()
+  {
+    console.log('boom');
+  }
 //Logic for the calendar controller view
 
 myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$location','$anchorScroll',function (Appointments, $scope,$timeout,$location,$anchorScroll) {
+  function david()
+  {
+    console.log('boom');
+  }
   var divTreatment=document.getElementById('scrollerAppointments');
   var heightTreatment=document.documentElement.clientHeight-350;
   divTreatment.style.height=heightTreatment+'px';

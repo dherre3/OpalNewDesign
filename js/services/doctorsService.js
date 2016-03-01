@@ -198,7 +198,7 @@ myApp.service('Doctors',function($q,$filter,FileManagerService,$cordovaDevice){
             for (var i = 0; i < Doctors.length; i++) {
                 if(Doctors[i].DoctorSerNum===userSerNum)
                 {
-                    console.log(Doctors[i]);
+                    console.log(i);
                     return i;
                 }
             };

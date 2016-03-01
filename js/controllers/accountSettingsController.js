@@ -22,7 +22,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
                             $scope.TelNum = Patient.getTelNum();
                             $scope.smsPreference=UserPreferences.getEnableSMS();
                             $scope.Language=UserPreferences.getLanguage();
-                            $scope.passwordLength=(window.localStorage.getItem('pass')).length;
+                            $scope.passwordLength=7;
                             $scope.ProfilePicture=Patient.getProfileImage();
                 });
         };
@@ -56,12 +56,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
       $scope.TelNum = Patient.getTelNum();
       $scope.Language=UserPreferences.getLanguage();
       $scope.ProfilePicture=Patient.getProfileImage();
-
-      if((window.localStorage.getItem('pass')).length>7){
-          $scope.passwordLength=7;
-      }else{
-          $scope.passwordLength=window.localStorage.getItem('pass').length;
-      }
+      $scope.passwordLength=7;
     }
 
     $scope.saveSettings=function(option){
@@ -124,7 +119,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
 
 
 
-myApp.controller('ChangingSettingController',function(tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
+myApp.controller('ChangingSettingController',function($rootScope,FirebaseService, tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
   console.log(UserAuthorizationInfo);
 
     accountChangeSetUp();
@@ -164,11 +159,21 @@ myApp.controller('ChangingSettingController',function(tmhDynamicLocale, $transla
         $scope.instructionOld='Enter your old password:'
     }else if(parameters==='Language'){
         var value=UserPreferences.getLanguage();
-        $scope.instruction==='Select language:'
+        $scope.instruction='Select language';
         $scope.personal=false;
-        $scope.pickOption=value;
+        $scope.fontUpdated=false;
+        $scope.pickLanguage=value;
         $scope.firstOption='EN';
         $scope.secondOption='FR';
+    }else if(parameters==='Font-size')
+    {
+        var value=UserPreferences.getFontSize();
+         $scope.firstOption='medium';
+        $scope.secondOption='large';
+        $scope.instruction='Select font size';
+        $scope.personal=false;
+        $scope.fontUpdated=true;
+        $scope.pickFont=value;
     }
 }
 
@@ -197,6 +202,10 @@ myApp.controller('ChangingSettingController',function(tmhDynamicLocale, $transla
             },2000);
         }
     };
+    $scope.changeFont=function(newVal)
+    {
+      UserPreferences.setFontSize(newVal);
+    }
     $scope.changeLanguage=function(val){
         console.log(val);
         var objectToSend={};
@@ -217,7 +226,7 @@ myApp.controller('ChangingSettingController',function(tmhDynamicLocale, $transla
 
 
     function changePassword() {
-        var ref = new Firebase("https://brilliant-inferno-7679.firebaseio.com/");
+        var ref = new Firebase(FirebaseService.getFirebaseUrl());
             ref.changePassword({
                 email: Patient.getEmail(),
                 oldPassword: $scope.oldValue,
@@ -259,7 +268,7 @@ myApp.controller('ChangingSettingController',function(tmhDynamicLocale, $transla
             };
 
     function changeEmail() {
-        var ref = new Firebase("https://brilliant-inferno-7679.firebaseio.com/");
+        var ref = new Firebase(FirebaseService.getFirebaseUrl());
 
         ref.changeEmail({
             oldEmail: Patient.getEmail(),

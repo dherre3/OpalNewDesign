@@ -33,24 +33,34 @@
     </div>
     </div>
   <div ng-hide="personal">
-  <div class="lucent" style="margin-left:2vw;margin-top:2vh">
-        <p class="note">{{instruction}}</p>
-  </div>
     <ul class="list" style="margin-top:10vh">
-<li class="list__header">Select Language</li>
-<li class="list__item list__item--tappable" >
+<li class="list__header">{{instruction}}</li>
+<li ng-hide="fontUpdated" class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
-    <input ng-change="changeLanguage('EN')" ng-model="pickOption" type="radio" value="{{firstOption}}" name="b" >
-    <div class="radio-button__checkmark radio-button--list-item__checkmark"></div>
-    {{firstOption}}
+    <input ng-change="changeLanguage('EN')" ng-model="pickLanguage" type="radio" value="{{firstOption}}" name="b" >
+    <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescMedium"></div>
+      EN
   </label>
 </li>
-
-<li class="list__item list__item--tappable" >
+<li ng-hide="fontUpdated" class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
-    <input ng-change="changeLanguage('FR')" ng-model="pickOption" type="radio" value="{{secondOption}}" name="b">
-    <div class="radio-button__checkmark radio-button--list-item__checkmark"></div>
-    {{secondOption}}
+    <input ng-change="changeLanguage('FR')" ng-model="pickLanguage" type="radio" value="{{secondOption}}" name="b">
+    <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescLarge"></div>
+      FR
+  </label>
+</li>
+<li ng-show="fontUpdated" class="list__item list__item--tappable" >
+  <label  class="radio-button radio-button--list-item">
+    <input ng-change="changeFont('medium')" ng-model="pickFont" type="radio" value="{{firstOption}}" name="b" >
+    <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescMedium"></div>
+      <span class="fontDescMedium">Font Size</span>
+  </label>
+</li>
+<li ng-show="fontUpdated" class="list__item list__item--tappable" >
+  <label  class="radio-button radio-button--list-item">
+    <input ng-change="changeFont('large')" ng-model="pickFont" type="radio" value="{{secondOption}}" name="b">
+    <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescLarge"></div>
+      <span class="fontDescLarge">Font Size</span >
   </label>
 </li>
 </ul>

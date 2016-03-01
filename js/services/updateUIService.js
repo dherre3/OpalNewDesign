@@ -1,14 +1,7 @@
 var myApp=angular.module('MUHCApp');
 
 
-myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','Appointments','Messages','Documents','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults',function (EncryptionService,$http, Patient,Doctors, Appointments,Messages, Documents, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults) {
-    function updateTestResultsService(){
-      var testResultFirebaseLink = new Firebase('https://blinding-fire-4647.firebaseio.com/m/requests');
-      testResultFirebaseLink.once('value', function (snapshot) {
-          var data = snapshot.val();
-          LabResults.setTestResults(data);
-      });
-    }
+myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','Appointments','Messages','Documents','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults','FirebaseService',function (EncryptionService,$http, Patient,Doctors, Appointments,Messages, Documents, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults,FirebaseService) {
 
     function updateAllServices(dataUserObject,mode){
         console.log(mode);
@@ -55,6 +48,7 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
             console.log(plan);
             UserPlanWorkflow.setUserPlanWorkflow(plan);
             UserPreferences.setUserPreferences(dataUserObject.Patient.Language,dataUserObject.Patient.EnableSMS);
+            UserPreferences.getFontSize();
             Appointments.setUserAppointments(dataUserObject.Appointments);
             Notes.setNotes(dataUserObject.Notes);
             console.log(dataUserObject);
@@ -68,7 +62,7 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
 
     function updateUIOnline(){
         var r = $q.defer();
-        var firebaseLink = new Firebase('https://brilliant-inferno-7679.firebaseio.com/users/' + UserAuthorizationInfo.getUserName()+ '\/'+RequestToServer.getIdentifier());
+        var firebaseLink = new Firebase(FirebaseService.getFirebaseUrl()+'users/' + UserAuthorizationInfo.getUserName()+ '\/'+RequestToServer.getIdentifier());
         obtainDataLoop();
        function obtainDataLoop(){
         firebaseLink.once('value', function (snapshot) {
@@ -161,9 +155,10 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
     function UpdateSectionOnline(section)
     {
         var r=$q.defer();
-        var ref= new Firebase('https://brilliant-inferno-7679.firebaseio.com/Users/');
+        var ref= new Firebase(FirebaseService.getFirebaseUrl()+'Users/');
         var pathToSection=''
         var username=UserAuthorizationInfo.getUserName();
+        var key=CryptoJS.SHA256(UserAuthorizationInfo.Token).toString();
         var deviceId=RequestToServer.getIdentifier();
         console.log(deviceId);
         if(section!=='UserPreferences'){
@@ -178,7 +173,8 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
         console.log(pathToSection);
         ref.child(pathToSection).on('value',function(snapshot){
             var data=snapshot.val();
-            if(data!=undefined){
+            console.log(typeof data);
+            if(data&&typeof data!=='undefined'){
                 console.log(data);
                 data=EncryptionService.decryptData(data);
                 switch(section){
@@ -217,9 +213,8 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
                     break;
                 }
                 console.log(data);
-                //ref.child(pathToSection).set(null);
+                ref.child(pathToSection).set(null);
                 ref.child(pathToSection).off();
-
                 r.resolve(true);
             }
         });

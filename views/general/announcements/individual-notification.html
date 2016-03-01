@@ -8,11 +8,11 @@
     <ons-list-item class="item">
       <div style="line-height:1" align="left">
         <header>
-            <span class="item-title">{{notification.Type}}</span>
+            <span class="item-title" ng-class="fontSizeTitle">{{notification.Type}}</span>
 
         </header>
-        <p class="item-desc">{{notification.DateAdded|formatDateAppointmentTask}}</p>
-        <p class="item-desc">{{notification.AliasDescription_EN}}</p>
+        <p class="item-desc" ng-class="fontSizeDesc">{{notification.DateAdded|formatDateAppointmentTask}}</p>
+        <p class="item-desc" ng-class="fontSizeDesc">{{notification.AliasDescription_EN}}</p>
       </div>
     </ons-list-item>
   </ons-list>
@@ -20,7 +20,7 @@
   <ons-list class="settings-list" ng-if="showTab">
      <ons-list-item >
        <div class="text-center">
-         <a href ng-click="tabbar.setActiveTab(2)">Go to my general tab &raquo;</a>
+         <a href ng-click="tabbar.setActiveTab(2)" ng-class="fontSizeDesc">Go to my general tab &raquo;</a>
        </div>
       </ons-list-item>
   </ons-list>

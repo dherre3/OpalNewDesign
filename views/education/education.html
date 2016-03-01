@@ -10,7 +10,7 @@
 
   </ons-toolbar>
   <ons-list style="margin: 0px 0">
-    <ons-list-header class="person-list-header">Prior to Treatment</ons-list-header>
+    <ons-list-header class="person-list-header" ng-class="fontSizeTitle">Prior to Treatment</ons-list-header>
     <ons-list-item modifier="chevron" class="item" ng-click="openPDF('RadBook')">
       <ons-row align="center" >
         <ons-col width="60px" align="center">
@@ -20,9 +20,9 @@
         </ons-col>
         <ons-col>
           <header>
-            <span class="item-title">Radiotherapy at the Cedars Cancer Centre</span>
+            <span class="item-title" ng-class="fontSizeTitle">Radiotherapy at the Cedars Cancer Centre</span>
           </header>
-          <p class="item-desc">Booklet</p>
+          <p class="item-desc" ng-class="fontSizeDesc">Booklet</p>
         </ons-col>
       </ons-row>
     </ons-list-item>
@@ -35,13 +35,13 @@
         </ons-col>
         <ons-col>
           <header>
-            <span class="item-title">Planning for your radiotherapy</span>
+            <span class="item-title" ng-class="fontSizeTitle">Planning for your radiotherapy</span>
           </header>
-          <p class="item-desc">Video</p>
+          <p class="item-desc" ng-class="fontSizeDesc">Video</p>
         </ons-col>
       </ons-row>
     </ons-list-item>
-    <ons-list-header class="person-list-header">During Treatment</ons-list-header>
+    <ons-list-header class="person-list-header" ng-class="fontSizeTitle">During Treatment</ons-list-header>
     <ons-list-item modifier="chevron" class="item" ng-click="openPDF('RadBreast')">
       <ons-row align="center" style="height:40px">
         <ons-col width="60px" align="center">
@@ -51,13 +51,13 @@
         </ons-col>
         <ons-col>
           <header>
-            <span class="item-title">Breast Cancer</span>
+            <span class="item-title" ng-class="fontSizeTitle">Breast Cancer</span>
           </header>
-          <p class="item-desc">Treatment guidelines</p>
+          <p class="item-desc" ng-class="fontSizeDesc">Treatment guidelines</p>
         </ons-col>
       </ons-row>
     </ons-list-item>
-    <ons-list-header class="person-list-header">After Treatment</ons-list-header>
+    <ons-list-header class="person-list-header" ng-class="fontSizeTitle">After Treatment</ons-list-header>
     <ons-list-item modifier="chevron" class="item" ng-click="openPDF('RadEnd')">
       <ons-row align="center">
         <ons-col width="60px" align="center">
@@ -67,9 +67,9 @@
         </ons-col>
         <ons-col>
           <header>
-            <span class="item-title">When Radiotherapy Treatment Ends</span>
+            <span class="item-title" ng-class="fontSizeTitle">When Radiotherapy Treatment Ends</span>
           </header>
-          <p class="item-desc">Factsheet</p>
+          <p class="item-desc" ng-class="fontSizeDesc">Factsheet</p>
         </ons-col>
       </ons-row>
     </ons-list-item>

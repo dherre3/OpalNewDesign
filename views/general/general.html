@@ -8,8 +8,8 @@
   </ons-toolbar>
   <ons-list>
 <ons-list style="margin: 0px 0">
-  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/maps.html')">
-      <ons-row align="center"  style="height:40px" >
+  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/maps/maps.html')">
+      <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
                 <i class="ion-map iconHomeView" style="color:darkblue"></i>
@@ -17,14 +17,14 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title">Maps</span>
+                  <span class="item-title" ng-class="fontSizeTitle" >Maps</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>
       </ons-row>
   </ons-list-item>
   <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/announcements/announcements.html')">
-      <ons-row align="center" style="height:50px">
+      <ons-row align="center" >
           <ons-col width="60px" >
               <div>
                 <i class="ion-android-notifications iconHomeView" style="color:DarkRed"></i>
@@ -32,14 +32,14 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title">Announcements</span>
+                  <span class="item-title" ng-class="fontSizeTitle">Announcements</span>
               </header>
-              <p class="item-desc">The Ceadars Cancer Center will be closed on...</p>
+              <p class="item-desc" ng-class="fontSizeDesc">The Ceadars Cancer Center will be closed on...</p>
           </ons-col>
       </ons-row>
   </ons-list-item>
   <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/parking.html')">
-      <ons-row align="center"  style="height:40px" >
+      <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
                 <i class="ion-android-car iconHomeView" style="color:red"></i>
@@ -47,14 +47,14 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title">Parking</span>
+                  <span class="item-title" ng-class="fontSizeTitle">Parking</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>
       </ons-row>
   </ons-list-item>
   <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/contacts/contacts.html')">
-      <ons-row align="center"  style="height:40px" >
+      <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
                 <i class="ion-person-stalker iconHomeView" style="color:darkblue"></i>
@@ -62,7 +62,7 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title">Contacts</span>
+                  <span class="item-title" ng-class="fontSizeTitle">Contacts</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>

@@ -5,8 +5,9 @@
       </div>
         <div class="center">Hospital Maps</div>
     </ons-toolbar>
+    
     <ons-list style="margin: 0px 0">
-      <ons-list-header class="person-list-header">DS1 (Baseman)</ons-list-header>
+      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">DS1 (Baseman)</ons-list-header>
       <ons-list-item modifier="chevron" class="item" ng-click="showMap('./img/D-S1_map_RadOnc-MedPhys_16June2015_en.png')">
         <ons-row align="center" >
           <ons-col width="60px" align="center">
@@ -16,12 +17,12 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Radiation Oncology/Cancer Care Clinic</span>
+              <span class="item-title" ng-class="fontSizeTitle">Radiation Oncology/Cancer Care Clinic</span>
             </header>
           </ons-col>
         </ons-row>
       </ons-list-item>
-      <ons-list-header class="person-list-header">DRC (Main Floor)</ons-list-header>
+      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">DRC (Main Floor)</ons-list-header>
       <ons-list-item modifier="chevron" class="item" ng-click="showMap('./img/D-RC_ODC_16June2015_en_FNL.png')">
         <ons-row align="center">
           <ons-col width="60px" align="center">
@@ -31,12 +32,12 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Oncology Date Centre and Cancer Care Clinic</span>
+              <span class="item-title" ng-class="fontSizeTitle">Oncology Date Centre and Cancer Care Clinic</span>
             </header>
           </ons-col>
         </ons-row>
       </ons-list-item>
-      <ons-list-header class="person-list-header">DS2 (Second Floor)</ons-list-header>
+      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">DS2 (Second Floor)</ons-list-header>
       <ons-list-item modifier="chevron" class="item" ng-click="showMap('./img/D2_Palliative_psychoncology_16June2015_en.png')">
         <ons-row align="center" style="height:40px">
           <ons-col width="60px" align="center">
@@ -46,13 +47,20 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Palliative Care Day Hospita and Physhosocial Oncology</span>
+              <span class="item-title" ng-class="fontSizeTitle">Palliative Care Day Hospita and Physhosocial Oncology</span>
             </header>
           </ons-col>
         </ons-row>
       </ons-list-item>
+      
 
     </ons-list>
+
+    <div align="center" style="padding:20px">
+          <button class="button button--large" ng-click="scanLocation()">Scan my location</button>
+    </div>
+
+
 
 
  </ons-page>

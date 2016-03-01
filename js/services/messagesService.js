@@ -148,6 +148,16 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
                 this.UserConversationsArray[conversationIndex].Messages[i].ReadStatus=1;
             };
         },
+        getConversationBySerNum:function(role, serNum)
+        {
+          for (var i = 0; i < this.UserConversationsArray.length; i++) {
+            if(this.UserConversationsArray[i].Role==role&&this.UserConversationsArray[i].UserSerNum==serNum)
+            {
+              return i;
+            }
+          }
+          return -1;
+        },
         isEmpty:function()
         {
           return this.emptyMessages;

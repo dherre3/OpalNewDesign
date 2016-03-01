@@ -22,9 +22,9 @@
       </ons-col>
       <ons-col>
         <header>
-          <span class="item-title">{{notification.Name}}</span>
+          <span class="item-title" ng-class="fontSizeTitle">{{notification.Name}}</span>
         </header>
-        <p class="item-desc">{{notification.Content|limitLetters:60}}</p>
+        <p class="item-desc" ng-class="fontSizeDesc">{{notification.Content|limitLetters:60}}</p>
       </ons-col>
     </ons-row>
   </ons-list-item>

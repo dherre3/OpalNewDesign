@@ -36,14 +36,14 @@
               </ons-col>
               <ons-col>
                 <div style="line-height:1;padding:3px">
-                <div class="item-title">{{conversation.MessageRecipient}}</div>
-                  <div class="item-desc">
+                <div class="item-title"  ng-class="fontSizeTitle">{{conversation.MessageRecipient}}</div>
+                  <div class="item-desc" ng-class="fontSizeDesc">
                     {{conversation.LastMessageContent}}
                   </div>
               </div>
               </ons-col>
               <ons-col width="40px" align="top">
-                <div align="right" class="plan-duration" ng-show="conversation.DateOfLastMessage">{{conversation.DateOfLastMessage| dateEmail}}</div>
+                <div align="right" class="plan-duration" ng-show="conversation.DateOfLastMessage" ng-class="fontSizeDesc">{{conversation.DateOfLastMessage| dateEmail}}</div>
                 <img ng-src="./img/unread-email-icon.png" style="opacity:0.7;" width="10px" height="auto" ng-show="conversation.ReadStatus===0">
               </ons-col>
             </ons-row>

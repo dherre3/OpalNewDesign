@@ -317,7 +317,11 @@ if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPa
   delete page.options.param;
   delete page.options.param;
   console.log(parameters);
-  $scope.selectedIndex=Doctors.getDoctorIndexBySerNum(parameters.DoctorSerNum);
+  if(typeof parameters.DoctorSerNum !=='undefined')
+  {
+    $scope.selectedIndex=Messages.getConversationBySerNum('Doctor',parameters.DoctorSerNum);
+
+  }
   $scope.inContacts=true;
 }
 
@@ -326,6 +330,7 @@ if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPa
  $scope.glue=false;
 
  $scope.messages=Messages.getUserMessages();
+ console.log($scope.messages);
  $scope.conversation=$scope.messages[$scope.selectedIndex].Messages;
  $scope.conversationName=$scope.messages[$scope.selectedIndex].MessageRecipient;
  $scope.sendButtonDisabled=true;

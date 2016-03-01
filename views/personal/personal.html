@@ -17,9 +17,9 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Appointments</span>
+              <span class="item-title" ng-class="fontSizeTitle">Appointments</span>
             </header>
-            <p class="item-desc">{{appointmentTitle}} {{appointment.ScheduledStartTime|formatDateAppointmentTask}}</p>
+            <p class="item-desc" ng-class="fontSizeDesc">{{appointmentTitle}} {{appointment.ScheduledStartTime|formatDateAppointmentTask}}</p>
           </ons-col>
         </ons-row>
       </ons-list-item>
@@ -32,14 +32,14 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Treatment Planning</span>
+              <span class="item-title" ng-class="fontSizeTitle">Treatment Planning</span>
             </header>
-            <p class="item-desc">{{nameCurrentStage}} {{outOf}}</p>
+            <p class="item-desc" ng-class="fontSizeDesc">{{nameCurrentStage}} {{outOf}}</p>
           </ons-col>
         </ons-row>
       </ons-list-item>
       <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/my-chart/documents.html')">
-        <ons-row align="center" style="height:40px">
+        <ons-row align="center" >
           <ons-col width="60px" align="center">
             <div>
               <i class="ion-ios-folder iconHomeView" style="color:DarkGoldenRod"></i>
@@ -47,14 +47,14 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">My Documents</span>
+              <span class="item-title" ng-class="fontSizeTitle">My Documents</span>
             </header>
-            <p class="item-desc"></p>
+            <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>
         </ons-row>
       </ons-list-item>
       <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/lab-results/lab-results.html')">
-        <ons-row align="center" style="height:40px">
+        <ons-row align="center" >
           <ons-col width="60px" align="center">
             <div>
               <i class="ion-erlenmeyer-flask iconHomeView" style="color:darkmagenta "></i>
@@ -62,29 +62,29 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Lab Results</span>
+              <span class="item-title" ng-class="fontSizeTitle">Lab Results</span>
             </header>
-            <p class="item-desc"></p>
+            <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>
         </ons-row>
       </ons-list-item>
       <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/messages/messages.html')">
-          <ons-row align="center"  style="height:40px" >
+          <ons-row align="center"  >
               <ons-col width="60px" align="center">
                   <div >
                     <i class="ion-android-chat iconHomeView" style="color:DarkTurquoise"></i>
                   </div>
               </ons-col>
               <ons-col>
-                  <header>
-                      <span class="item-title">Messages</span>
+                  <header> 
+                      <span class="item-title" ng-class="fontSizeTitle">Messages</span>
                   </header>
-                  <p class="item-desc"></p>
+                  <p class="item-desc" ng-class="fontSizeDesc"></p>
               </ons-col>
           </ons-row>
       </ons-list-item>
       <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/questionnaires.html')">
-        <ons-row align="center" style="height:40px">
+        <ons-row align="center">
           <ons-col width="60px" align="center">
             <div>
               <i class="ion-help-circled iconHomeView" style="color:DarkSlateGray"></i>
@@ -92,9 +92,9 @@
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title">Questionnaires</span>
+              <span class="item-title" ng-class="fontSizeTitle">Questionnaires</span>
             </header>
-            <p class="item-desc"></p>
+            <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>
         </ons-row>
       </ons-list-item>

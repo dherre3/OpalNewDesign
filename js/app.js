@@ -117,9 +117,9 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
         resolve: {
       // controller will not be loaded until $waitForAuth resolves
       // Auth refers to our $firebaseAuth wrapper in the example above
-      "currentAuth": ["Auth", function(Auth) {
+      "currentAuth": ["FirebaseService", function(FirebaseService) {
         // $waitForAuth returns a promise so the resolve waits for it to complete
-        return Auth.$waitForAuth();
+        return FirebaseService.getAuthentication().$waitForAuth();
       }]
     }
 
@@ -131,9 +131,9 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
         resolve: {
       // controller will not be loaded until $waitForAuth resolves
       // Auth refers to our $firebaseAuth wrapper in the example above
-      "currentAuth": ["Auth", function(Auth) {
+      "currentAuth": ["FirebaseService", function(FirebaseService) {
         // $waitForAuth returns a promise so the resolve waits for it to complete
-        return Auth.$requireAuth();
+        return FirebaseService.getAuthentication().$requireAuth();
       }]
     }
     })
@@ -144,9 +144,9 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
            resolve: {
       // controller will not be loaded until $waitForAuth resolves
       // Auth refers to our $firebaseAuth wrapper in the example above
-      "currentAuth": ["Auth", function(Auth) {
+      "currentAuth": ["FirebaseService", function(FirebaseService) {
         // $waitForAuth returns a promise so the resolve waits for it to complete
-        return Auth.$requireAuth();
+        return FirebaseService.getAuthentication().$requireAuth();
       }]
     }
 
@@ -154,15 +154,7 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
     .state('logOut', {
         url: '/Logout',
         templateUrl: 'views/logOut.html',
-        controller: 'logOutController',
-           resolve: {
-      // controller will not be loaded until $waitForAuth resolves
-      // Auth refers to our $firebaseAuth wrapper in the example above
-      "currentAuth": ["Auth", function(Auth) {
-        // $waitForAuth returns a promise so the resolve waits for it to complete
-        return Auth.$requireAuth();
-      }]
-    }
+        controller: 'logOutController'
   });
     $translatePartialLoaderProvider.addPart('home');
     $translateProvider.useLoader('$translatePartialLoader', {
@@ -189,6 +181,7 @@ myApp.run(function ($rootScope, $state, $stateParams,$q, $rootScope,$translate) 
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+      console.log(error);
   // We can catch the error thrown when the $requireAuth promise is rejected
   // and redirect the user back to the home page
   $state.go('logIn');

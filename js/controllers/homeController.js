@@ -35,20 +35,22 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
         homePageInit();
         $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','All');
-          $timeout(function() {
-            loadInfo();
-                $done();
-          }, 5000);
-        };
-
-        function loadInfo(){
+          var updated=false;
           UpdateUI.UpdateSection('All').then(function()
           {
             $timeout(function(){
+              updated=true;
               homePageInit();
+              $done();
             });
           });
-       }
+          $timeout(function(){
+            if(!updated)
+            {
+              $done();
+            }
+          },5000);
+        };
         function homePageInit(){
           setTabViews();
           $scope.checkinButtonLabel='Check-in';

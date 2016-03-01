@@ -1,9 +1,9 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('ForgotPasswordController', ['$scope', '$state','$timeout', function ($scope, $state,$timeout) {
+myApp.controller('ForgotPasswordController', ['$scope', 'FirebaseService','$state','$timeout', function ($scope,FirebaseService, $state,$timeout) {
     $scope.email="";
     $scope.alert={};
     $scope.submitPasswordReset = function (email) {
-        var ref = new Firebase("https://brilliant-inferno-7679.firebaseio.com/");
+        var ref = new Firebase(FirebaseService.getFirebaseUrl());
         console.log(email);
         try{
           ref.resetPassword({
