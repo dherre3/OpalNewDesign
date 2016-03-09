@@ -105,7 +105,7 @@ myApp.factory('CheckinService', ['$q', 'RequestToServer', 'Appointments', '$time
       {
         var nextAppointment=Appointments.getUpcomingAppointment();
         Appointments.checkinNextAppointment();
-        RequestToServer.sendRequest('Checkin', nextAppointment.AppointmentSerNum);
+        RequestToServer.sendRequest('Checkin', {AppointmentSerNum:nextAppointment.AppointmentSerNum});
         return true;
       }
 

@@ -6,7 +6,7 @@ myApp.controller('EducationalMaterialController',function($scope, $timeout, $cor
     console.log('device button pressed do nothing');
 
   }
-$scope.openPDF=function(type){
+$scope.open=function(type){
 
 	//file:///data/data/com.example.hello/files/pdfs
 	var url='';
@@ -16,8 +16,14 @@ $scope.openPDF=function(type){
 	}else if(type=='RadBreast')
 	{
 		url='./pdfs/breast-radiotherapy-treatment-guidelines.pdf';
-	}else{
+	}else if(type=='End of Treatment'){
 		url='./pdfs/end-of-radiotherapy-treatment-guidelines.pdf';
+	}else if(type=='What is Raditherapy?')
+	{
+		url='https://www.depdocs.com/opal/educational/pathway/Pathway1.html';
+	}else if(type=='Your Radiotherapy Pathway')
+	{
+		url='https://www.depdocs.com/opal/educational/pathway/Pathway2.html';
 	}
 	var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 	if(app){

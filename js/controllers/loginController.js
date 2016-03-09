@@ -18,27 +18,27 @@ var myApp=angular.module('MUHCApp')
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService',function (ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService) {
+myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage',function (ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage) {
   console.log(FirebaseService);
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());
   //demoSignIn();
-  checkForSessionEnd=function()
+  /*checkForSessionEnd=function()
   {
     var  authInfoLocalStorage=window.localStorage.getItem('UserAuthorizationInfo');
     if(authInfoLocalStorage&&typeof  authInfoLocalStorage!=='undefined')
     {
       var authInfoObject=JSON.parse(authInfoLocalStorage);
-    
+
       var timeNow=(new Date()).getTime()/1000;
       if(authInfoObject.Expires<timeNow) {
         console.log(authInfoObject.Expires);
         console.log((new Date()).getTime()/1000);
         UserAuthorizationInfo.setUserAuthData(authInfoObject.UserName,authInfoObject.Password , authInfoObject.Expires,authInfoObject.Token);
-        $state.go('logOut');   
+        $state.go('logOut');
       }
     }
   };
-  checkForSessionEnd();
+  checkForSessionEnd();*/
   myDataRef.onAuth(function(authData){
     var  authInfoLocalStorage=window.localStorage.getItem('UserAuthorizationInfo');
     if($rootScope.activeLogin!=='true')
@@ -65,17 +65,14 @@ myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$root
             window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
             console.log(UserAuthorizationInfo.getUserAuthData());
             console.log("Authenticated successfully with payload:", authData);
-            RequestToServer.setIdentifier().then(function(uuid)
-            {
               RequestToServer.sendRequest('Refresh','All');
               $state.go('loading');
-          });
         }
       }else{
-        if($state.current.name=='Home')
+        if($state.current.name=='Home'||authInfoLocalStorage)
         {
           console.log('here state');
-          $state.go('logOut');
+          LocalStorage.resetUserLocalStorage();
         }
       }
     }else{
@@ -162,14 +159,11 @@ myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$root
         var temporary=authData.password.isTemporaryPassword;
         console.log(temporary);
         if(temporary){
-          RequestToServer.setIdentifier().then(function(uuid)
-          {
             ResetPassword.setUsername(authData.auth.uid);
             ResetPassword.setToken(authData.token)
             ResetPassword.setEmail($scope.email);
             ResetPassword.setTemporaryPassword($scope.password);
-            navigatorForms.pushPage('views/login/set-new-password.html');
-          });
+            navigatorForms.pushPage('views/login/verify-ssn.html');
         }else{
           UserAuthorizationInfo.setUserAuthData(authData.auth.uid, CryptoJS.SHA256($scope.password).toString(), authData.expires,authData.token);
           userId = authData.uid;
@@ -187,17 +181,13 @@ myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$root
                   Email:$scope.email,
                   Token:authData.token
           }
-          
           $rootScope.refresh=true;
           window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
           console.log(UserAuthorizationInfo.getUserAuthData());
           console.log("Authenticated successfully with payload:", authData);
-          RequestToServer.setIdentifier().then(function(uuid)
-          {
-              $rootScope.activeLogin='false';
-              RequestToServer.sendRequest('Login');
-              $state.go('loading');
-          });
+          $rootScope.activeLogin='false';
+          RequestToServer.sendRequest('Login');
+          $state.go('loading');
         }
 
     }

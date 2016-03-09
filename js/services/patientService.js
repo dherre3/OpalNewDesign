@@ -3,7 +3,7 @@ var myApp=angular.module('MUHCApp');
 myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordovaDevice','FileManagerService','$filter',function(UserPreferences,$q, $cordovaFileTransfer, $cordovaDevice,FileManagerService,$filter){
     var profileImage='';
     return{
-        setUserFieldsOnline:function(patientFields,diagnosis){
+        setUserFieldsOnline:function(patientFields){
             var r=$q.defer();
             console.log(patientFields);
             this.FirstName=patientFields.FirstName;
@@ -11,7 +11,6 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
             this.Alias=patientFields.Alias;
             this.TelNum=patientFields.TelNum;
             this.Email=patientFields.Email;
-            this.Diagnosis=diagnosis;
             this.PatientId=patientFields.PatientId;
             this.Alias=patientFields.Alias;
             this.UserSerNum=patientFields.PatientSerNum;
@@ -62,7 +61,7 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
               }
             return r.promise;
         },
-        setUserFieldsOffline:function(patientFields,diagnosis)
+        setUserFieldsOffline:function(patientFields)
         {
           var r=$q.defer();
           this.FirstName=patientFields.FirstName;
@@ -71,7 +70,6 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
           this.TelNum=$filter('phone-number')(patientFields.TelNum);
           this.Email=patientFields.Email;
           this.PatientId=patientFields.PatientId;
-          this.Diagnosis=diagnosis;
           this.UserSerNum=patientFields.PatientSerNum;
           this.ProfileImage=patientFields.ProfileImage;
           this.Alias=patientFields.Alias;
@@ -94,9 +92,6 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
           }
           return r.promise;
         },
-        setDiagnosis:function(diagnosis){
-            this.Diagnosis=diagnosis;
-        },
         setFirstName:function(name){
             this.FirstName=name;
         },
@@ -111,9 +106,6 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
         },
         setEmail:function(email){
             this.Email=email;
-        },
-        getDiagnosis:function(){
-            return this.Diagnosis;
         },
         getPatientId:function()
         {

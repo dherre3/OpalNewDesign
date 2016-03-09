@@ -16,11 +16,11 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
     return{
         sendRequest:function(typeOfRequest,content){
           var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-          
+
           if(app){
               if($cordovaNetwork.isOnline()){
 
-                
+
                 var userID=UserAuthorizationInfo.UserName;
                 var token=UserAuthorizationInfo.Token;
                 console.log(token);
@@ -28,7 +28,8 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
                 content= EncryptionService.encryptData(content);
 
                 console.log(content);
-
+                Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':Firebase.ServerValue.TIMESTAMP });
+                /*
                 if(typeOfRequest=='Login'||typeOfRequest=='Logout')
                 {
                   Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID })
@@ -53,16 +54,17 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
                   Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'NotificationSerNum' : content }});
                 }else if(typeOfRequest=='MapLocation'){
                   Ref.push({'Request': encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID':userID, 'Parameters':content});
-                }
+                }*/
               }else{
-                //  navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
+                navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
               }
           }else{
             var userID=UserAuthorizationInfo.UserName;
             var token=UserAuthorizationInfo.Token;
             var encryptedRequestType=EncryptionService.encryptData(typeOfRequest);
             content= EncryptionService.encryptData(content);
-            if(typeOfRequest=='Login'||typeOfRequest=='Logout')
+            Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier,'Token':token,  'UserID': userID, 'Parameters':content,'Timestamp':Firebase.ServerValue.TIMESTAMP});
+            /*if(typeOfRequest=='Login'||typeOfRequest=='Logout')
             {
               Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID })
             }else if(typeOfRequest=='Refresh')
@@ -84,21 +86,8 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
             else if (typeOfRequest=='NotificationRead')
             {
               Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'NotificationSerNum' : content }});
-            }
+            }*/
           }
-        },
-        setIdentifier:function()
-        {
-          var r=$q.defer();
-          var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-          if(app){
-            identifier=device.uuid;
-            r.resolve(device.uuid);
-          }else{
-              identifier='browser';
-              r.resolve('browser');
-          }
-          return r.promise;
         },
         getIdentifier:function()
         {

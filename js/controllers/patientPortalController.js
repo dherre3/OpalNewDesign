@@ -41,7 +41,7 @@ $scope.personClicked=function(index){
        if($scope.messages[$scope.selectedIndex].ReadStatus==0){
         for (var i = 0; i < conversation.length; i++) {
             console.log($scope.messages[index].Messages[i].MessageSerNum);
-            RequestToServer.sendRequest('MessageRead',$scope.messages[index].Messages[i].MessageSerNum);
+            RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
             $scope.messages[index].Messages[i].ReadStatus=1;
         };
     }
@@ -65,7 +65,7 @@ $scope.$watch('person.selected', function(){
         if($scope.messages[$scope.selectedIndex].ReadStatus==0){
             for (var i = 0; i < $scope.messages[$scope.selectedIndex].Messages.length; i++) {
                 console.log($scope.messages[index].Messages[i].MessageSerNum);
-                RequestToServer.sendRequest('MessageRead',$scope.messages[index].Messages[i].MessageSerNum);
+                RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
                 $scope.messages[index].Messages[i].ReadStatus=1;
             };
         Messages.changeConversationReadStatus($scope.selectedIndex);
@@ -79,7 +79,7 @@ $scope.$watch('person.selected', function(){
           if($scope.messages[$scope.selectedIndex].ReadStatus==0){
             for (var i = 0; i < $scope.messages[$scope.selectedIndex].Messages.length; i++) {
               console.log($scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum);
-                RequestToServer.sendRequest('MessageRead',$scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum);
+                RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum});
                 $scope.messages[$scope.selectedIndex].Messages[i].ReadStatus=1;
             };
             Messages.changeConversationReadStatus($scope.selectedIndex);
@@ -251,7 +251,7 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
             var index=$scope.person.selected.index;
             if($scope.messages[index].ReadStatus==0){
               for (var i = 0; i < $scope.messages[index].Messages.length; i++) {
-                  RequestToServer.sendRequest('MessageRead',$scope.messages[index].Messages[i].MessageSerNum);
+                  RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
                   $scope.messages[index].Messages[i].ReadStatus=1;
               };
             }
@@ -269,7 +269,7 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
         if($scope.messages[index].ReadStatus==0){
           for (var i = 0; i < $scope.messages[index].Messages.length; i++) {
               console.log($scope.messages[index].Messages[i]);
-              RequestToServer.sendRequest('MessageRead',$scope.messages[index].Messages[i].MessageSerNum);
+              RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
               $scope.messages[index].Messages[i].ReadStatus=1;
           };
         }

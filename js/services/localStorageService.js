@@ -29,6 +29,11 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 				storage=JSON.parse(storage);
 				return storage[section];
 			}
+		},
+		resetUserLocalStorage:function()
+		{
+			window.localStorage.removeItem('UserAuthorizationInfo');
+			window.localStorage.removeItem(UserAuthorizationInfo.UserName);
 		}
 
 

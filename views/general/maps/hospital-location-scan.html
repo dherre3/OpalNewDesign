@@ -12,68 +12,28 @@
       <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
     </svg>
     </div>
-    <div ng-hide="showLoadingScreen"> 
+    <div ng-hide="showLoadingScreen">
     <ons-list class="settings-list">
       <ons-list-item class="item">
         <div style="line-height:1" align="left">
           <header>
-              <span class="item-title" ng-class="fontSizeTitle">{{stage.Name}}</span>
-              <div class="plan-info" ng-class="fontSizeDesc">
-                  <div ng-show="stage.Type=='Appointment'">
-                      <ons-icon icon="fa-calendar " style="color:#2B6197;"></ons-icon>&nbsp;{{stage.Date|formatDateAppointmentTask}}
-                  </div>
-                  <div ng-show="stage.Type=='Task'&&stage.Status=='Past'" ng-class="fontSizeDesc">
-                  <strong><i class="ion-compose iconHomeView" ng-class="fontSizeDesc" ></i>&nbsp;Stage completed: </strong>{{stage.Date|formatDateAppointmentTask}}
-                  </div>
-                  <div ng-show="stage.Type=='Task'&&stage.Status=='Future'">
-                  <strong>Pending </strong>
-                  </div>
-                  <div ng-show="stage.Type=='Task'&&stage.Status=='Next'">
-                  <strong><i class="ion-loop iconHomeView"></i>&nbsp;In progress...</strong>
-                  </div>
-              </div>
+              <span class="item-title" ng-class="fontSizeTitle">{{map.Name}}</span>
           </header>
-
-          <p class="item-desc" ng-class="fontSizeDesc">{{stage.Description}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">	{{map.Description}}</p>
         </div>
       </ons-list-item>
     </ons-list>
-    <ons-list class="settings-list" ng-show="showTab">
-      <ons-list-item class="item" ng-click="openDocument()" style="height:220px">
-        <ons-row style="padding:5px;">
-            <ons-col align="center">
-                <div class="progressStatus" id="progressStatusPresentStage2">
-                </div>
-                <div ng-show="!treatmentPlanCompleted" class="progressStatus" id="progressStatusPastStages2" style="margin-top:-200px">
-                </div>
-                <div align="center">
-                    <div class="progressStatusTextBox" style="font-size:15px">
-                        <strong>Stage {{outOf}} </strong>
-                        <div ng-show="!treatmentPlanCompleted" align="middle" style="margin-left:5px">
-                            {{currentStage}}
-                            <br><br>
-                            <strong>Starting Treatment:</strong>
-                            <br> {{completionDate|date:'MMM d'}} <a href ng-click="menu.setMainPage('views/educational-material.html',{closedMenu:true})"><i class="ion-help-circled iconStatusBox"></i></a>
-                            <br>
-                            <span style="color:grey;font-size:13px">(Estimated)</span>
-                        </div>
-                        <div ng-show='treatmentPlanCompleted' align="middle" style="margin-left:5px">
-                            <p><i class="ion-checkmark-circled iconStatusBox"></i> Treatment plan completed on
-                                <br><strong>{{completionDate|formatDateAppointmentTask}}</strong></p>
-                        </div>
-                    </div>
-                </div>
-            </ons-col>
-        </ons-row>
+    <ons-list class="settings-list" align="center">
+      <ons-list-item ng-click="openMap()" align="center">
+      	<div align="center" class="text-center" style="padding:5px">
+					<img ng-src="{{map.MapUrl}}" style="max-width:100%;height:auto">
+				</div>
       </ons-list-item>
     </ons-list>
-
-
-
-  <ons-list class="settings-list" ng-if="showTab">
+  <ons-list class="settings-list">
      <ons-list-item >
        <div class="text-center">
-         <a href ng-click="tabbar.setActiveTab(1)">Go to my chart &raquo;</a>
+         <a href  ng-click="openMap()">Open Map &raquo;</a>
        </div>
       </ons-list-item>
   </ons-list>

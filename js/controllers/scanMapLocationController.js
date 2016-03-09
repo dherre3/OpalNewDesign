@@ -1,26 +1,41 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('ScanMapLocationController',['$timeout','$scope','RequestToServer','FirebaseService', function($timeout,$scope,RequestToServer,FirebaseService ){
+myApp.controller('ScanMapLocationController',['$timeout','$scope','RequestToServer','FirebaseService', 'UpdateUI', 'UserPreferences','MapLocation','NativeNotification',function($timeout,$scope,RequestToServer,FirebaseService,UpdateUI,UserPreferences,MapLocation,NativeNotification ){
 	var page=generalNavigator.getCurrentPage();
 	var parameter=page.options.param;
 	console.log(parameter);
 	$scope.showLoadingScreen=true;
-	RequestToServer.sendRequest('MapLocation',{'QRCode':parameter});
-	console.log(FirebaseService.getFirebaseUserFieldsUrl());
-	var ref=new Firebase(FirebaseService.getFirebaseUserFieldsUrl()+'/MapLocation');
-	ref.on('value',function(snapshot)
+	RequestToServer.sendRequest('MapLocation',{QRCode:parameter})
+	var languagePreference=UserPreferences.getLanguage();
+	UpdateUI.UpdateSection('MapLocation',true, true).then(function(data)
 	{
-		var value=snapshot.val();
-		if(typeof value!=='undefined')
-		{
-			console.log(value);
-			ref.set(null);
-			ref.off();
-		}
+		$scope.showLoadingScreen=false;
+		$timeout(function(){
+				$scope.map=MapLocation.getMapLocation();
+				if(typeof $scope.map !=='undefined')
+				{
+					if(languagePreference=='EN')
+					{
+						$scope.map.Name=$scope.map.MapName_EN;
+						$scope.map.Description=$scope.map.MapDescription_EN;
+					}else if(languagePreference=='FR'){
+						$scope.map.Name=$scope.map.MapName_FR;
+						$scope.map.Description=$scope.map.MapDescription_FR;
+					}
+				}
+		});
+	},function(error)
+	{
+		console.log('popping');
+		NativeNotification.showNotificationAlert('Could not retrieve location, check your internet connection');
+		generalNavigator.popPage();
 
 	});
-
-
-
-
-
+	$scope.openMap=function()
+	{
+		if(app){
+       var ref = cordova.InAppBrowser.open($scope.map.MapUrl, '_blank', 'EnableViewPortScale=yes');
+    }else{
+       window.open($scope.map.MapUrl);
+    }
+	}
 }]);

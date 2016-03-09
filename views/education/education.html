@@ -11,7 +11,37 @@
   </ons-toolbar>
   <ons-list style="margin: 0px 0">
     <ons-list-header class="person-list-header" ng-class="fontSizeTitle">Prior to Treatment</ons-list-header>
-    <ons-list-item modifier="chevron" class="item" ng-click="openPDF('RadBook')">
+    <ons-list-item modifier="chevron" class="item" ng-click="open('What is Raditherapy?')">
+      <ons-row align="center" >
+        <ons-col width="60px" align="center">
+          <div>
+            <i class="ion-ios-list-outline iconHomeView" style="color:SaddleBrown"></i>
+          </div>
+        </ons-col>
+        <ons-col>
+          <header>
+            <span class="item-title" ng-class="fontSizeTitle">What is Radiotherapy?</span>
+          </header>
+          <p class="item-desc" ng-class="fontSizeDesc">Factsheet</p>
+        </ons-col>
+      </ons-row>
+    </ons-list-item>
+    <ons-list-item modifier="chevron" class="item"  ng-click="open('Your Radiotherapy Pathway')">
+      <ons-row align="center" >
+        <ons-col width="60px" align="center">
+          <div>
+            <i class="ion-ios-list-outline iconHomeView" style="color:SaddleBrown"></i>
+          </div>
+        </ons-col>
+        <ons-col>
+          <header>
+            <span class="item-title" ng-class="fontSizeTitle">Your Radiotherapy Pathway</span>
+          </header>
+          <p class="item-desc" ng-class="fontSizeDesc">Factsheet</p>
+        </ons-col>
+      </ons-row>
+    </ons-list-item>
+    <ons-list-item modifier="chevron" class="item" ng-click="open('RadBook')">
       <ons-row align="center" >
         <ons-col width="60px" align="center">
           <div>
@@ -42,7 +72,7 @@
       </ons-row>
     </ons-list-item>
     <ons-list-header class="person-list-header" ng-class="fontSizeTitle">During Treatment</ons-list-header>
-    <ons-list-item modifier="chevron" class="item" ng-click="openPDF('RadBreast')">
+    <ons-list-item modifier="chevron" class="item" ng-click="open('RadBreast')">
       <ons-row align="center" style="height:40px">
         <ons-col width="60px" align="center">
           <div >

@@ -1,17 +1,18 @@
 var myApp=angular.module('MUHCApp');
-myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork', 'UserAuthorizationInfo','$q','$rootScope', '$filter','FileManagerService',function(UserPreferences,$cordovaDevice,$cordovaNetwork,UserAuthorizationInfo,$q,$rootScope,$filter,FileManagerService){
+myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork', 'UserAuthorizationInfo','$q','$rootScope', '$filter','FileManagerService','RequestToServer',function(UserPreferences,$cordovaDevice,$cordovaNetwork,UserAuthorizationInfo,$q,$rootScope,$filter,FileManagerService,RequestToServer){
 	var photos=[];
 	function isDocumentStored(serNum){
 		var user=UserAuthorizationInfo.getUserName();
 		var key=user+Documents;
 
 	}
+	var unreadDocuments=[];
 	return{
-		setDocumentsOnline:function(documents, mode){
+		setDocumentsOnline:function(documents){
 			var r=$q.defer();
 			photos=[];
 			console.log(documents);
-			this.Photos=[];
+			$rootScope.unreadDocuments=0;
 			if(!documents) return;
 				var keysDocuments=Object.keys(documents);
 				var promises=[];
@@ -40,33 +41,23 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 					}
 
 					var imageToPhotoObject={};
-					imageToPhotoObject.AliasName_EN=documents[keysDocuments[i]].AliasName_EN;
-					imageToPhotoObject.AliasName_FR=documents[keysDocuments[i]].AliasName_FR;
-					imageToPhotoObject.DateAdded=$filter('formatDate')(documents[keysDocuments[i]].DateAdded);
-					imageToPhotoObject.AliasDescription_EN=documents[keysDocuments[i]].AliasDescription_EN;
-					imageToPhotoObject.AliasDescription_FR=documents[keysDocuments[i]].AliasDescription_FR;
-					imageToPhotoObject.DocumentSerNum=documents[keysDocuments[i]].DocumentSerNum;
-					imageToPhotoObject.PathFileSystem=documents[keysDocuments[i]].PathFileSystem;
-					imageToPhotoObject.NameFileSystem=documents[keysDocuments[i]].NameFileSystem;
-					imageToPhotoObject.DocumentType=documents[keysDocuments[i]].DocumentType;
-					imageToPhotoObject.Content=documents[keysDocuments[i]].Content;
+					imageToPhotoObject=angular.copy(documents[i]);
 					delete documents[keysDocuments[i]].Content;
           delete documents[keysDocuments[i]].PathLocation;
 					photos.push(imageToPhotoObject);
-					this.Photos.push(imageToPhotoObject);
 				};
+				console.log(imageToPhotoObject);
 				$q.all(promises).then(function(results){
 					console.log(documents);
 					r.resolve(documents);
 				});
 				return r.promise;
-			console.log(this.Photos);
+
 
 		},
 		setDocumentsOffline:function(documents)
 		{
 			var r=$q.defer();
-			this.Photos=[];
 			photos=[];
 			if(!documents) return;
 			var keysDocuments=Object.keys(documents);
@@ -76,7 +67,6 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 				documents[keysDocuments[i]].DateAdded=$filter('formatDate')(documents[keysDocuments[i]].DateAdded);
 				promises.push(FileManagerService.getFileUrl(documents[keysDocuments[i]].PathFileSystem));
 				photos.push(documents[keysDocuments[i]]);
-				this.Photos.push(imageToPhotoObject);
 			}
 			console.log(documents);
 			$q.all(promises).then(function(results){
@@ -89,17 +79,38 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 				console.log(error);
 				r.resolve(documents);
 			});
-			this.Photos=photos;
 			 return r.promise;
 		},
 		getDocuments:function(){
 			return photos;
 		},
+		getUnreadDocuments:function()
+		{
+			var array=[];
+			for (var i = 0; i < photos.length; i++) {
+				console.log(photos[i]);
+				if(photos[i].ReadStatus=='0'){
+					array.push(photos[i]);
+				}
+			}
+			console.log(array);
+			array=$filter('orderBy')(array,'DateAdded');
+			return array;
+		},
+		readDocument:function(serNum)
+		{
+			for (var i = 0; i < photos.length; i++) {
+				if(photos[i].DocumentSerNum==serNum){
+					photos[i].ReadStatus='1';
+					RequestToServer.sendRequest('ReadDocument',{DocumentSerNum:serNum});
+				}
+			}
+		},
 		getDocumentBySerNum:function(serNum)
 		{
-			for (var i = 0; i < this.Photos.length; i++) {
-				if(this.Photos[i].DocumentSerNum==serNum){
-					return this.Photos[i];
+			for (var i = 0; i < photos.length; i++) {
+				if(photos[i].DocumentSerNum==serNum){
+					return photos[i];
 				}
 			};
 		}

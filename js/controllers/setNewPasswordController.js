@@ -22,9 +22,11 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
       {
         console.log(snapshot.val());
         var response=snapshot.val();
+
         console.log(response);
         if(response&&typeof response.type!=='undefined')
         {
+          response=EncryptionService.decryptWithKey(response,ssn);
           if(response.type=='error')
           {
             $timeout(function(){
@@ -36,9 +38,10 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
             ref.child(path).off();
           }else{
             console.log(ssn);
-            var decryptObject=EncryptionService.decryptWithKey(response,ssn);
-            console.log(decryptObject);
-            navigatorForms.pushPage('./views/login/security-question.html',{param:{Question:decryptObject.Question,Answer:decryptObject.Answer}},{ animation : 'slide' } );
+
+            console.log(response);
+            ResetPassword.setSSN(ssn);
+            navigatorForms.pushPage('./views/login/security-question.html',{param:{Question:response.Question}},{ animation : 'slide' } );
             $timeout(function(){
               $scope.loading=false;
             });
@@ -57,37 +60,63 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
   };
 
   }]);
-  myApp.controller('SecurityQuestionController',['$scope','$timeout','ResetPassword',function($scope,$timeout,ResetPassword){
+  myApp.controller('SecurityQuestionController',['$scope','$timeout','ResetPassword','RequestToServer','FirebaseService','EncryptionService',function($scope,$timeout,ResetPassword,RequestToServer,FirebaseService,EncryptionService){
     var page=navigatorForms.getCurrentPage();
     var params=page.options.param;
     console.log(params);
     $scope.Question=params.Question;
     $scope.tryReset=0;
+    var ref=new Firebase(FirebaseService.getFirebaseUrl());
     $scope.submitAnswer=function(answer)
     {
-      if(answer==''||typeof answer=='undefined')
+      if(!answer||answer==''||typeof answer=='undefined')
       {
         $scope.alert.type='danger';
         $scope.alert.content='Enter an answer';
       }else{
+        var objectToSend={};
         answer=answer.toUpperCase();
         var hash=CryptoJS.SHA256(answer).toString();
-        ResetPassword.setAnswer(params.Answer);
-        if(hash==params.Answer)
+        ResetPassword.sendRequest('VerifyAnswer',{Question:$scope.Question, Answer:hash});
+        $scope.loading=true;
+        var path='Users/'+ResetPassword.getUsername()+'/'+RequestToServer.getIdentifier()+'/VerifySecurityAnswer';
+        console.log(path);
+        ref.child(path).on('value',function(snapshot)
         {
-          navigatorForms.pushPage('./views/login/new-password.html',{ animation : 'slide' } );
-        }else{
-          $scope.alert.type='danger';
-          $scope.alert.content='Answer does not match our records';
-          $scope.tryReset++;
-          if($scope.tryReset>3)
+          console.log(snapshot.val());
+          var response=snapshot.val();
+          console.log(response);
+          if(response&&typeof response.type!=='undefined')
           {
-            $scope.alert.type='danger';
-            $scope.alert.content='Contact the hospital for assitance';
-            $scope.threeTries=true;
-          }
-        }
+            response=EncryptionService.decryptWithKey(response,ResetPassword.getSSN());
+            if(response.type=='error')
+            {
+              $timeout(function(){
+                $scope.alert.type='danger';
+                $scope.alert.content='Answer does not match our records';
+                $scope.tryReset++;
+                if($scope.tryReset>3)
+                {
+                  $scope.alert.type='danger';
+                  $scope.alert.content='Contact the hospital for assitance';
+                  $scope.threeTries=true;
+                }
+              });
+              ref.child(path).set({});
+              ref.child(path).off();
+            }else if(response.type='Success'){
+              $timeout(function(){
+                $scope.loading=false;
+              });
+              var hash=CryptoJS.SHA256(answer).toString();
+              ResetPassword.setAnswer(hash);
+              ref.child(path).set({});
+              ref.child(path).off();
+              navigatorForms.pushPage('./views/login/new-password.html',{ animation : 'slide' } );
 
+            }
+          }
+        });
       }
     }
     }]);

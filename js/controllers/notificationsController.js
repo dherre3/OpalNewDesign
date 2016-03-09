@@ -58,7 +58,7 @@ myApp.controller('NotificationsController', ['RequestToServer','Notifications', 
     $scope.goToNotification=function(index,notification){
         console.log(notification.Type);
         if(notification.ReadStatus==='0'){
-            RequestToServer.sendRequest('NotificationRead',notification.NotificationSerNum);
+            RequestToServer.sendRequest('NotificationRead',{NotificationSerNum:notification.NotificationSerNum});
             Notifications.setNotificationReadStatus(index);
         }
         generalNavigator.pushPage('./views/general/announcements/individual-notification.html',{param:notification},{ animation : 'slide' } );

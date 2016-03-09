@@ -72,6 +72,16 @@ myApp.service('ResetPassword',function(RequestToServer, FirebaseService){
         parameter=CryptoJS.AES.encrypt(parameter,this.Answer).toString();
         Ref.push({ 'Request' : 'SetNewPassword', 'DeviceId':RequestToServer.getIdentifier(),'Token':this.Token, 'UserID':this.Username, 'Parameters':{'NewPassword' : parameter }});
         Ref.off();
+      }else if(type=='VerifyAnswer')
+      {
+        var Ref=new Firebase(FirebaseService.getFirebaseUrl()+'requests');
+        console.log(this.SSN);
+        console.log(parameter);
+        parameter.Answer=CryptoJS.AES.encrypt(parameter.Answer,this.SSN).toString();
+        parameter.Question=CryptoJS.AES.encrypt(parameter.Question,this.SSN).toString();
+
+        Ref.push({ 'Request' : 'VerifySecurityAnswer', 'DeviceId':RequestToServer.getIdentifier(),'Token':this.Token, 'UserID':this.Username, 'Parameters':parameter});
+        Ref.off();
       }
     }/*,
     sendNewPasswordToServer:function(newValue)

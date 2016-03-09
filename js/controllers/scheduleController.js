@@ -20,12 +20,10 @@ function david()
 //Logic for the calendar controller view
 
 myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$location','$anchorScroll',function (Appointments, $scope,$timeout,$location,$anchorScroll) {
-  function david()
-  {
-    console.log('boom');
-  }
   var divTreatment=document.getElementById('scrollerAppointments');
-  var heightTreatment=document.documentElement.clientHeight-350;
+  var heightTreatment=document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-157;
+  console.log(heightTreatment);
+  console.log(document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-154);
   divTreatment.style.height=heightTreatment+'px';
   $scope.appointments=Appointments.getUserAppointments();
   $scope.dt = new Date();

@@ -1,7 +1,8 @@
 var myApp=angular.module('MUHCApp');
 
 
-myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','Appointments','Messages','Documents','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults','FirebaseService',function (EncryptionService,$http, Patient,Doctors, Appointments,Messages, Documents, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults,FirebaseService) {
+myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','Appointments','Messages','Documents','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults','Diagnoses','FirebaseService','MapLocation',
+function (EncryptionService,$http, Patient,Doctors, Appointments,Messages, Documents, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults,Diagnoses,FirebaseService,MapLocation ) {
 
     function updateAllServices(dataUserObject,mode){
         console.log(mode);
@@ -14,13 +15,13 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
           var doctors=dataUserObject.Doctors;
           var doctorProm=Doctors.setUserContactsOnline(doctors);
           var patientFields=dataUserObject.Patient;
-          var patientProm=Patient.setUserFieldsOnline(patientFields, dataUserObject.Diagnosis);
+          var patientProm=Patient.setUserFieldsOnline(patientFields);
           console.log(patientProm);
           promises=[doctorProm,documentProm,patientProm];
         }else{
           var documentProm=Documents.setDocumentsOffline(dataUserObject.Documents);
           var doctorProm=Doctors.setUserContactsOffline(dataUserObject.Doctors);
-          var patientProm=Patient.setUserFieldsOffline(dataUserObject.Patient, dataUserObject.Diagnosis);
+          var patientProm=Patient.setUserFieldsOffline(dataUserObject.Patient);
           promises=[documentProm,doctorProm,patientProm];
         }
         $q.all(promises).then(function(){
@@ -44,8 +45,8 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
             valAdded+=2;
             plan[key].Date=$filter('formatDateToFirebaseString')(tmp);
           }
+            Diagnoses.setDiagnoses(dataUserObject.Diagnoses);
           	LabResults.setTestResults(dataUserObject.LabTests);
-            console.log(plan);
             UserPlanWorkflow.setUserPlanWorkflow(plan);
             UserPreferences.setUserPreferences(dataUserObject.Patient.Language,dataUserObject.Patient.EnableSMS);
             UserPreferences.getFontSize();
@@ -60,51 +61,6 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
         });
     }
 
-    function updateUIOnline(){
-        var r = $q.defer();
-        var firebaseLink = new Firebase(FirebaseService.getFirebaseUrl()+'users/' + UserAuthorizationInfo.getUserName()+ '\/'+RequestToServer.getIdentifier());
-        obtainDataLoop();
-       function obtainDataLoop(){
-        firebaseLink.once('value', function (snapshot) {
-            var firebaseData = snapshot.val();
-            if(firebaseData.Patient===undefined){
-                firebaseLink.update({logged:'true'});
-                obtainDataLoop();
-            }else{
-                function decryptPromise(){
-                    var r=$q.defer();
-                    EncryptionService.decryptData(firebaseData);
-                    r.resolve(true);
-                    return r.promise;
-                }
-                function setUpServicesLocalStorage(){
-                    updateAllServices(firebaseData,'Online');
-                    var imageKeys=Object.keys(firebaseData.Images);
-                    window.localStorage.setItem(UserAuthorizationInfo.UserName, JSON.stringify(firebaseData));
-                }
-
-                decryptPromise().then( setUpServicesLocalStorage());
-                r.resolve(true);
-            }
-
-        },function(error){
-
-            r.reject(error);
-
-            });
-
-
-    }
-    return r.promise;
-    }
-    function updateUIOffline(){
-        var r=$q.defer();
-        var userName=UserAuthorizationInfo.getUserName();
-        var dataUserString=window.localStorage.getItem(userName);
-        var dataUserObject=JSON.parse(dataUserString);
-        r.resolve(updateAllServices(dataUserObject,'Offline'));
-        return r.promise;
-    }
     function UpdateSectionOffline(section)
     {
         var r=$q.defer();
@@ -168,7 +124,7 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
         }
         if(section=='All')
         {
-            pathToSection=username+'/'+deviceId;
+            pathToSection=username+'/'+deviceId+'/All';
         }
         console.log(pathToSection);
         ref.child(pathToSection).on('value',function(snapshot){
@@ -177,6 +133,7 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
             if(data&&typeof data!=='undefined'){
                 console.log(data);
                 data=EncryptionService.decryptData(data);
+                console.log(data);
                 switch(section){
                     case 'All':
                         updateAllServices(data, 'Online');
@@ -207,6 +164,9 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
                         break;
                     case 'LabTests':
                         LabResults.setTestResults(data);
+                        break;
+                    case 'MapLocation':
+                        MapLocation.setMapLocation(data);
                         break;
                     case 'UserPlanWorkflow':
                     //To be done eventually!!!
@@ -253,7 +213,7 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
         {
           return UpdateSectionOnline(section);
         },
-        UpdateSection:function(section)
+        UpdateSection:function(section,onDemand)
         {
             var r=$q.defer();
             var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
@@ -263,8 +223,12 @@ myApp.service('UpdateUI', ['EncryptionService','$http', 'Patient','Doctors','App
                     return UpdateSectionOnline(section);
                 }else{
                     this.internetConnection=false;
-                    //navigator.notification.alert('Connect to the internet for your most recent data, loading last saved data from device. Your documents will not be available',function(){},'Internet Connectivity','Ok');
-                    return UpdateSectionOffline(section);
+                    if(onDemand)
+                    {
+                      r.reject('No internet connection');
+                    }else{
+                      return UpdateSectionOffline(section);
+                    }
                 }
             }else{
                 //Computer check if online

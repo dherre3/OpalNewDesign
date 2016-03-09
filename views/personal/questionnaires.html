@@ -1,4 +1,4 @@
-<ons-page>
+<ons-page ng-controller="QuestionnairesController">
     <ons-toolbar>
       <div class="left">
           <ons-back-button>Back</ons-back-button>
@@ -8,5 +8,15 @@
     <div style="margin-top:15vh;color:grey" class="text-center">
       Available Soon!
     </div>
+    <ons-carousel>
+    	<ons-carousel-item ng-repeat="question in questions">
+    	<div ng-show="question.Type=='scale'">
+    	scale
+    	</div>
+    	<div ng-show="question.Type=='body'">
+    	body
+    	</div>
+    	</ons-carousel-item>
+    </ons-carousel>
 
  </ons-page>

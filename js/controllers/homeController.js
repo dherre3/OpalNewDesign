@@ -3,7 +3,7 @@
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
 var myApp = angular.module('MUHCApp');
-myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','$cordovaNetwork','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,$cordovaNetwork,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location) {
+myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','$cordovaNetwork','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,$cordovaNetwork,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences) {
        /**
         * @ngdoc method
         * @name load
@@ -25,13 +25,6 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
         homeNavigator.on('prepop',function(){
           $location.hash('');
         });
-        setTimeout(function(){
-          $("#alertDemoInformationHome").addClass('animated fadeOutUp');
-          $timeout(function(){
-            $scope.hideDemoInformationHome=true;
-          },1000);
-        },3000)
-        $scope.checkinButtonClass='button button--large';
         homePageInit();
         $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','All');
@@ -45,133 +38,124 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
             });
           });
           $timeout(function(){
-            if(!updated)
-            {
               $done();
-            }
           },5000);
         };
+
         function homePageInit(){
-          setTabViews();
-          $scope.checkinButtonLabel='Check-in';
+
+          //Basic patient information
+          $scope.PatientId=Patient.getPatientId();
+          console.log($scope.PatientId);
+          $scope.Email=Patient.getEmail();
+          $scope.FirstName = Patient.getFirstName();
+          $scope.LastName = Patient.getLastName();
+          $scope.ProfileImage=Patient.getProfileImage();
           $scope.noUpcomingAppointments=false;
+          //Setting up appointments tab
+          setTabViews();
           //Setting up status
-          if(!UserPlanWorkflow.isEmpty())
-          {
-            if(UserPlanWorkflow.isCompleted()){
-              $scope.status='In Treatment';
-            }else{
-              $scope.status='Radiotherapy Treatment Planning';
-            }
-          }else{
-            $scope.status='No treatment plan available';
-          }
-          //Next appointment information
-          if(Appointments.isThereAppointments())
-          {
-            if(Appointments.isThereNextAppointment()){
-                var nextAppointment=Appointments.getUpcomingAppointment();
-                $scope.noAppointments=false;
-                $scope.appointmentShown=nextAppointment;
-                $scope.titleAppointmentsHome='Next Appointment';
-
-            }else{
-              console.log('boom');
-              $scope.noUpcomingAppointments=true;
-              var lastAppointment=Appointments.getLastAppointmentCompleted();
-              $scope.nextAppointmentIsToday=false;
-              $scope.appointmentShown=lastAppointment;
-              $scope.titleAppointmentsHome='Last Appointment';
-            }
-          }else{
-              $scope.noAppointments=true;
-          }
-          //Checking if user is allowed to checkin
-          $scope.enableCheckin=false;
-          if(CheckinService.haveNextAppointmentToday())
-          {
-            if(!CheckinService.isAlreadyCheckedin())
-            {
-              $scope.loading=true;
-              CheckinService.isAllowedToCheckin().then(function(response)
-              {
-                if(response)
-                {
-                  console.log(response);
-                  $timeout(function(){
-                    $scope.enableCheckin=true;
-                    $scope.loading=false;
-                  });
-                }else{
-                  $scope.loading=false;
-                  $scope.enableCheckin=false;
-                }
-              });
-            }else{
-              $scope.checkinButtonLabel='You are checked in';
-              $scope.checkinButtonClass='button button--large-success';
-              $scope.enableCheckin=false;
-            }
-          }else{
-            $scope.enableCheckin=false;
-          }
-
+          settingStatus();
+          //Setting up next appointment
+          setUpNextAppointment();
           //start by initilizing variables
-          function setTabViews()
-          {
-            if(Appointments.isThereNextAppointment())
-            {
-              if(UserPlanWorkflow.isCompleted())
-              {
-                $scope.showAppointmentTab=false;
-              }else{
-                $scope.showAppointmentTab=true;
-              }
-            }else{
-              $scope.showAppointmentTab=false;
-            }
-          }
-          $scope.goToView=function(param)
-          {
-            if(Appointments.isThereNextAppointment())
-            {
-              if(UserPlanWorkflow.isCompleted())
-              {
-                //Status goes to next appointment details
-                homeNavigator.pushPage('views/personal/appointment/individual-appointment.html');
-              }else{
-              homeNavigator.pushPage('views/personal/treatment-plan/individual-stage.html');
-              }
-            }else{
-              if(UserPlanWorkflow.isCompleted())
-              {
-                //set active tab to personal, no future appointments, treatment plan completed
-                tabbar.setActiveTab(1);
-              }else{
-                homeNavigator.pushPage('views/personal/treatment-plan/individual-stage.html');
+          setNotifications();
+        }
+    $scope.goToView=function(param)
+    {
+      if(Appointments.isThereNextAppointment())
+      {
+        if(UserPlanWorkflow.isCompleted())
+        {
+          //Status goes to next appointment details
+          homeNavigator.pushPage('views/personal/appointment/individual-appointment.html');
+        }else{
+        homeNavigator.pushPage('views/personal/treatment-plan/individual-stage.html');
+        }
+      }else{
+        if(UserPlanWorkflow.isCompleted())
+        {
+          //set active tab to personal, no future appointments, treatment plan completed
+          tabbar.setActiveTab(1);
+        }else{
+          homeNavigator.pushPage('views/personal/treatment-plan/individual-stage.html');
 
-              }
-            }
-
-          }
-        //Basic patient information
-        $scope.PatientId=Patient.getPatientId();
-        console.log($scope.PatientId);
-        $scope.Email=Patient.getEmail();
-        $scope.FirstName = Patient.getFirstName();
-        $scope.LastName = Patient.getLastName();
-        $scope.ProfileImage=Patient.getProfileImage();
+        }
+      }
     }
-    $scope.checkin=function(){
-      $scope.checkinButtonLabel='You are checked in';
-      $scope.checkinButtonClass='button button--large-success';
-      CheckinService.checkinToAppointment();
-      $scope.alert.message='You have successfully checked in to your appointment, proceed to waiting room';
-      $scope.enableCheckin=false;
+    function setNotifications()
+    {
+      //Obtaining language
+      var language=UserPreferences.getLanguage();
+
+      //Obtaining new documents and setting the number and value for last document
+      var newDocuments=Documents.getUnreadDocuments();
+      console.log(newDocuments);
+      if(newDocuments.length>0)
+      {
+        $scope.numberOfNewDocuments=newDocuments;
+        $scope.lastNewDocument=newDocuments[0];
+        //Setting the language for the notification
+        if(language=='EN')
+        {
+          $scope.lastNewDocument.Name=$scope.lastNewDocument.AliasName_EN;
+          $scope.lastNewDocument.Description=$scope.lastNewDocument.AliasDescription_EN;
+        }else{
+          $scope.lastNewDocument.Name=$scope.lastNewDocument.AliasName_FR;
+          $scope.lastNewDocument.Description=$scope.lastNewDocument.AliasDescription_FR;
+        }
+      }
+
     }
+    function settingStatus()
+    {
+      if(!UserPlanWorkflow.isEmpty())
+      {
+        if(UserPlanWorkflow.isCompleted()){
+          $scope.status='In Treatment';
+        }else{
+          $scope.status='Radiotherapy Treatment Planning';
+        }
+      }else{
+        $scope.status='No treatment plan available';
+      }
+    }
+    function setTabViews()
+    {
+      if(Appointments.isThereNextAppointment())
+      {
+        if(UserPlanWorkflow.isCompleted())
+        {
+          $scope.showAppointmentTab=false;
+        }else{
+          $scope.showAppointmentTab=true;
+        }
+      }else{
+        $scope.showAppointmentTab=false;
+      }
+    }
+    function setUpNextAppointment()
+    {
+      //Next appointment information
+      if(Appointments.isThereAppointments())
+      {
+        if(Appointments.isThereNextAppointment()){
+            var nextAppointment=Appointments.getUpcomingAppointment();
+            $scope.noAppointments=false;
+            $scope.appointmentShown=nextAppointment;
+            $scope.titleAppointmentsHome='Next Appointment';
 
-
-
+        }else{
+          $scope.noUpcomingAppointments=true;
+          var lastAppointment=Appointments.getLastAppointmentCompleted();
+          $scope.nextAppointmentIsToday=false;
+          $scope.appointmentShown=lastAppointment;
+          $scope.titleAppointmentsHome='Last Appointment';
+        }
+      }else{
+          $scope.noAppointments=true;
+      }
+    }
 //Sets all the variables in the view.
 
 }]);
