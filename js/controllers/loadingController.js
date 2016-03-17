@@ -6,12 +6,18 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 		console.log('Im doing it');
 		modal.show();
 		console.log('starting upfatye');
-		var updateUI=UpdateUI.UpdateSection('All');
+		$rootScope.statusRoot='About to go into updateUI';
+		$rootScope.statusRoot='Time out over about to go into init function';
+		console.log('setting timeout');
+		var updateUI=UpdateUI.init();
 		updateUI.then(function(){
+			$rootScope.statusRoot='Resolving init function';
 				$rootScope.refresh=true;
 					$state.go('Home');
 					modal.hide();
-			});
+		});
+
+
 
 		setTimeout(function(){
 			if(typeof Patient.getFirstName()=='undefined'){

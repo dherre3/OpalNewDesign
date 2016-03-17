@@ -29,13 +29,11 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
         $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','All');
           var updated=false;
-          UpdateUI.UpdateSection('All').then(function()
+          UpdateUI.update('All').then(function()
           {
-            $timeout(function(){
               updated=true;
               homePageInit();
               $done();
-            });
           });
           $timeout(function(){
               $done();

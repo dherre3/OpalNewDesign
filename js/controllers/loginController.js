@@ -18,7 +18,7 @@ var myApp=angular.module('MUHCApp')
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage',function (ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage) {
+myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage',function ($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage) {
   console.log(FirebaseService);
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());
   //demoSignIn();
@@ -65,14 +65,15 @@ myApp.controller('LoginController', ['ResetPassword','$scope','$timeout', '$root
             window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
             console.log(UserAuthorizationInfo.getUserAuthData());
             console.log("Authenticated successfully with payload:", authData);
-              RequestToServer.sendRequest('Refresh','All');
-              $state.go('loading');
+            RequestToServer.sendRequest('Resume');
+            $state.go('loading');
         }
       }else{
         if($state.current.name=='Home'||authInfoLocalStorage)
         {
           console.log('here state');
           LocalStorage.resetUserLocalStorage();
+          $state.go('logOut');
         }
       }
     }else{

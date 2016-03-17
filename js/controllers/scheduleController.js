@@ -21,7 +21,7 @@ function david()
 
 myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$location','$anchorScroll',function (Appointments, $scope,$timeout,$location,$anchorScroll) {
   var divTreatment=document.getElementById('scrollerAppointments');
-  var heightTreatment=document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-157;
+  var heightTreatment=document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-180;
   console.log(heightTreatment);
   console.log(document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-154);
   divTreatment.style.height=heightTreatment+'px';
@@ -45,7 +45,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
     flag=true;
 
   });
-  $scope.$watch('heightCalendar',function(){
+  /*$scope.$watch('heightCalendar',function(){
     var flag=false;
     if(flag)
     {
@@ -55,7 +55,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
       divTreatment.style.height=heightTreatment+'px';
     }
     flag=true;
-  });
+  });*/
   function findClosestAnchor()
   {
     var today=new Date($scope.dt);
@@ -333,8 +333,10 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
     };
 
     $scope.dateOptions = {
-        formatYear: 'yy',
-        startingDay: 1
+        formatYear: 'yyyy',
+        startingDay: 0,
+        formatDay:'d',
+        showWeeks:false
     };
 
     $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];

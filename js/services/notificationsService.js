@@ -5,8 +5,9 @@ var myApp=angular.module('MUHCApp');
 *
 *
 **/
-myApp.service('Notifications',['$rootScope','$filter','RequestToServer', function($rootScope,$filter,RequestToServer){
-    this.notifications={};
+myApp.service('Notifications',['$rootScope','$filter','RequestToServer','LocalStorage', function($rootScope,$filter,RequestToServer,LocalStorage){
+    var Notifications=[];
+    var notificationsLocalStorage=[];
     function setNotificationsNumberAlert(){
         $rootScope.TotalNumberOfNews=$rootScope.Notifications+$rootScope.NumberOfNewMessages;
         if($rootScope.TotalNumberOfNews===0)$rootScope.TotalNumberOfNews='';
@@ -18,45 +19,56 @@ myApp.service('Notifications',['$rootScope','$filter','RequestToServer', functio
             $rootScope.noNotifications=false;
         }
     }
+    function addUserNotifications(notifications)
+    {
+      if(typeof notifications==='undefined'){
+          setNotificationsNumberAlert();
+         return;
+      }
+      var temp=angular.copy(notifications);
+      for (var i = 0; i < notifications.length; i++) {
+          temp[i].DateAdded=$filter('formatDate')(temp[i].DateAdded);
+          if(temp[i].ReadStatus==='0'){
+              $rootScope.Notifications+=1;
+          }
+          Notifications.push(temp[i]);
+          notificationsLocalStorage.push(notifications[i]);
+      };
+      console.log(Notifications);
+      Notifications=$filter('orderBy')(Notifications,'DateAdded',true);
+      console.log(Notifications);
+      LocalStorage.WriteToLocalStorage('Notifications',notificationsLocalStorage);
+      setNotificationsNumberAlert();
+    }
     return{
         setUserNotifications:function(notifications){
-            this.Notifications=[];
+            Notifications=[];
+            notificationsLocalStorage=[];
             $rootScope.Notifications=0;
-            if(notifications===undefined){
-                setNotificationsNumberAlert();
-               return;
-            }
-            var notificationsKeys=Object.keys(notifications);
-            for (var i = 0; i < notificationsKeys.length; i++) {
-                notifications[notificationsKeys[i]].DateAdded=$filter('formatDate')(notifications[notificationsKeys[i]].DateAdded);
-                if(notifications[notificationsKeys[i]].ReadStatus==='0'){
-                    $rootScope.Notifications+=1;
-                }
-                this.Notifications.push(notifications[notificationsKeys[i]]);
-            };
-            console.log(this.Notifications);
-            this.Notifications=$filter('orderBy')(this.Notifications,'DateAdded',true);
-            console.log(this.Notifications);
-            setNotificationsNumberAlert();
+            addUserNotifications(notifications);
+        },
+        updateUserNotifications:function(notifications)
+        {
+          addUserNotifications(notifications);
         },
          getUserNotifications:function(){
-            return this.Notifications;
+            return Notifications;
         },
         getLastNotification:function()
         {
-          if(this.Notifications.length==0)
+          if(Notifications.length==0)
           {
             return -1;
           }else{
-            return this.Notifications[0];
+            return Notifications[0];
           }
         },
         setNotificationReadStatus:function(notificationIndex){
-            this.Notifications[notificationIndex].ReadStatus='1';
-            RequestToServer.sendRequest('Notification',this.Notifications[notificationIndex].NotificationSerNum);
+            Notifications[notificationIndex].ReadStatus='1';
+            RequestToServer.sendRequest('Notification',Notifications[notificationIndex].NotificationSerNum);
         },
         getNotificationReadStatus:function(notificationIndex){
-            return this.notifications[notificationIndex].ReadStatus;
+            return Notifications[notificationIndex].ReadStatus;
         }
     };
 

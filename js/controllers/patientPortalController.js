@@ -9,7 +9,7 @@ myApp.controller('MessagesController',function(UpdateUI, RequestToServer, $filte
   $scope.sendButtonDisabled=true;
   $scope.newMessage='';
  function loadInfo(){
-           var dataVal= UpdateUI.UpdateSection('Messages');
+           var dataVal= UpdateUI.update('Messages');
            dataVal.then(function(){
                 $timeout(function(){
                   $scope.messages=Messages.getUserMessages();
@@ -163,6 +163,7 @@ $scope.$watchGroup(['newMessage','upload'],function(){
     objectToSend.SenderRole='Patient';
     objectToSend.ReceiverRole=conversation.Role;
     $scope.messages[$scope.selectedIndex].DateOfLastMessage=new Date();
+
     Messages.setDateOfLastMessage($scope.selectedIndex, $scope.messages[$scope.selectedIndex].DateOfLastMessage);
     objectToSend.MessageDate=$filter('formatDateToFirebaseString')(new Date());
     objectToSend.MessageContent=$scope.newMessage;
@@ -176,6 +177,11 @@ $scope.$watchGroup(['newMessage','upload'],function(){
 
     //Send message request
     RequestToServer.sendRequest('Message',objectToSend);
+    RequestToServer.sendRequest('Refresh','Messages');
+    UpdateUI.update('Messages').then(function()
+    {
+      $scope.messages=Messages.getUserMessages();
+    });
     $scope.newMessage='';
     $scope.glue=true;
     $scope.messages=Messages.getUserMessages();
@@ -415,6 +421,14 @@ $scope.submitMessage=function(){
   //Add message to conversation
   //Send message request
   RequestToServer.sendRequest('Message',objectToSend);
+  RequestToServer.sendRequest('Refresh','Messages');
+  UpdateUI.update('Messages').then(function()
+  {
+    console.log('in message sent');
+    $timeout(function(){
+      $scope.messages=Messages.getUserMessages();
+    });
+  });
   $scope.newMessageMobile='';
   $scope.glue=true;
   $timeout(function(){

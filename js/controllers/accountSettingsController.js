@@ -12,20 +12,11 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
       console.log('device button pressed do nothing');
 
     }
-        function loadInfo(){
-                var UserData=UpdateUI.UpdateSection('Patient');
-                UserData.then(function(){
-                            $scope.FirstName = Patient.getFirstName();
-                            $scope.LastName = Patient.getLastName();
-                            $scope.Alias=Patient.getAlias();
-                            $scope.Email = Patient.getEmail();
-                            $scope.TelNum = Patient.getTelNum();
-                            $scope.smsPreference=UserPreferences.getEnableSMS();
-                            $scope.Language=UserPreferences.getLanguage();
-                            $scope.passwordLength=7;
-                            $scope.ProfilePicture=Patient.getProfileImage();
-                });
-        };
+    function loadInfo(){
+        UpdateUI.update('Patient').then(function(){
+            accountInit();
+        });
+    };
 
 
          $scope.load2 = function($done) {
@@ -33,7 +24,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
           $timeout(function() {
             loadInfo();
                 $done();
-          }, 3000);
+          }, 500);
         };
     accountInit();
     settingsNavigator.on('postpop',function(){

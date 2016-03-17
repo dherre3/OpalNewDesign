@@ -1,7 +1,7 @@
 var myApp=angular.module('MUHCApp');
 myApp.service('MapLocation',function(){
 	return{
-		setMapLocation:function(maplocation)
+		updateMapLocation:function(maplocation)
 		{
 			this.Map=maplocation;
 		},

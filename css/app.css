@@ -1743,6 +1743,13 @@ Button appointments
   border-top:1px solid lightgrey;
   border-radius:1px;
 }
+.uib-daypicker .uib-monthpicker .uib-months .uib-month button
+{
+  border:0;
+  border-top:1px solid black;
+  height:9vh;
+  background-color: blue;
+}
 
 .calendar--appointments .uib-daypicker .uib-title {
   width:70vw;

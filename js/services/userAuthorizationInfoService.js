@@ -33,6 +33,14 @@ myApp.service('UserAuthorizationInfo', function () {
         *@methodOf MUHCApp.services:UserAuthorizationInfo
         *@description Sets all the user authorization.Called by the {@link MUHCApp.controller:LoginController LoginController} right after user enters credentials.
         */
+        setLastUpdateTime:function(timestamp)
+        {
+          this.lastUpdateTime=timestamp;
+        },
+        getLastUpdateTime:function(timestamp)
+        {
+          this.lastUpdateTime=timestamp;
+        },
         setUserAuthData: function (username, password, expires,token) {
             this.UserName = username;
             this.Expires = expires;

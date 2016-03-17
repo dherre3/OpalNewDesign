@@ -9,13 +9,13 @@
   <div id="firstAnchor"></div>
     <div align="center" class="calendar--appointments" style="margin-top:5px;position:relative;z-index:1" height-element>
      <div class="calendar-list">
-    <uib-datepicker id="scrollTo" ng-model="dt"  datepicker-mode="calendarMode" show-weeks="false" custom-class="getDayClass(date, mode)" style="width:100vw" ></uib-datepicker></div>
+    <uib-datepicker id="scrollTo" ng-model="dt"  datepicker-mode="calendarMode" datepicker-options ="dateOptions" show-weeks="false" custom-class="getDayClass(date, mode)" style="width:100vw" ></uib-datepicker></div>
     </div>
 
 <!--<ons-list>
   <ons-list-item style="font-size:14px"><div class="text-center"><a ng-click="personalNavigator.pushPage('views/personal/appointments/appointments-list.html')" >see list of appointments &raquo;</a><div></ons-list-item>
 </ons-list>-->
-<div id="topListAnchor" style="height:5px;background-color:lightgrey;margin-top:-7vh;position:relative;z-index:1"></div>
+<div id="topListAnchor" style="height:5px;background-color:lightgrey;position:relative;z-index:1"></div>
 <ons-scroller id="scrollerAppointments" style="position:relative;z-index:1">
 <ons-list  ng-repeat="app in appointments"  ng-click="personalNavigator.pushPage('./views/personal/appointments/individual-appointment.html', {param:app,flag:'Appointments'},{ animation : 'slide' } )" >
   <ons-list-header  ng-if="setHeaderPickedDay($index)" style="color:red">{{dt|date:'EEE MMM dd yyyy'}}</ons-list-header>

@@ -1,12 +1,15 @@
-<ons-page ng-device-backbutton="educationDeviceBackButton()">
+<ons-page ng-controller="individualEduMaterialController" ng-device-backbutton="educationDeviceBackButton()">
   <ons-toolbar>
       <div class="left">
         <ons-back-button>Back</ons-back-button>
       </div>
 
-    <div class="center">Education</div>
+    <div class="center">Education Factsheet</div>
   </ons-toolbar>
-  <div id="frameEducational">
-    <iframe src="https://www.depdocs.com/opal/educational/pathway/Pathway1.html" style="width:100vw"></iframe>
+  <div class="container" style="background-color:white;padding-top:10px;margin:1px solid black">
+    <div ng-bind-html="htmlBind"></div>
   </div>
+  <!--<div id="frameEducational">
+    <iframe  ng-src="{{url}}" style="width:100vw;height:100%"></iframe>
+  </div>-->
 </ons-page>

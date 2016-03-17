@@ -7,7 +7,7 @@ var myApp=angular.module('MUHCApp');
 *@description Service deals with patient/doctor messaging portal, parses Firebase object into the appropiate format
 *             and defines methods for sending messages back to Firebase.
 **/
-myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Doctors','$rootScope', function($filter, UserAuthorizationInfo, Patient,Doctors,$rootScope){
+myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Doctors','$rootScope','LocalStorage', function($filter, UserAuthorizationInfo, Patient,Doctors,$rootScope,LocalStorage){
 /**
 *@ngdoc property
 *@name  UserConversationsArray
@@ -22,6 +22,8 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
 *@description Date of the last message.
 *
 **/
+var UserConversationsArray=[];
+var messagesLocalStorage=[];
     return {
         /**
         *@ngdoc method
@@ -35,7 +37,8 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
         setUserMessages:function(messages){
 
             //Initializing the array of conversations
-             this.UserConversationsArray = [];
+
+             UserConversationsArray = [];
              this.ConversationsObject={};
              $rootScope.NumberOfNewMessages=0;
             //Iterating through each conversation
@@ -64,7 +67,10 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
             };
             for (var i = 0; i < keysArray.length; i++) {
                 var Message={};
-                var message=messages[keysArray[i]];
+                var message=angular.copy(messages[i]);
+                delete messages[i].Attachment;
+                messagesLocalStorage.push(messages[i]);
+
                 if(message.SenderSerNum==Patient.getUserSerNum()){
                     Message.Role='1';
                     Message.MessageContent=message.MessageContent;
@@ -76,7 +82,7 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
                     Message.Role='0';
                     Message.MessageContent=message.MessageContent;
                     Message.Date=$filter('formatDate')(message.MessageDate);
-                    Message.ReadStatus=message.ReadStatus;
+                    Message.ReadStatus=Number(message.ReadStatus);
                     Message.MessageSerNum=message.MessageSerNum;
                     this.ConversationsObject[message.SenderSerNum].Messages.push(Message);
                 }
@@ -92,12 +98,39 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
                         $rootScope.NumberOfNewMessages+=1;
                     }
                 }
-                this.UserConversationsArray.push(this.ConversationsObject[keysArrayConvo[i]]);
+                UserConversationsArray.push(this.ConversationsObject[keysArrayConvo[i]]);
 
 
             };
 
-            console.log(this.UserConversationsArray);
+            LocalStorage.WriteToLocalStorage('Messages',messagesLocalStorage);
+            console.log(UserConversationsArray);
+        },
+      updateUserMessages:function(messages)
+      {
+          if(typeof messages=='undefined') return;
+          for (var i = 0; i < messages.length; i++) {
+            var messageTmp=angular.copy(messages);
+
+            for (var j = 0; j< UserConversationsArray.length; j++) {
+              console.log(UserConversationsArray[j]);
+              messageTmp[i].Date=new Date(messageTmp[i].MessageDate);
+              if((messageTmp[i].ReceiverRole=='Patient'&&messageTmp[i].SenderSerNum==UserConversationsArray[j].UserSerNum))
+              {
+                messageTmp[i].Role='0';
+                console.log(UserConversationsArray[j]);
+                UserConversationsArray[j].ReadStatus=1;
+
+                UserConversationsArray[j].DateOfLastMessage=messageTmp[i].MessageDate;
+                UserConversationsArray[j].LastMessageContent=messageTmp[i].MessageContent;
+                UserConversationsArray[j].Messages.push(messageTmp[i]);
+                messagesLocalStorage.push(messages[i]);
+                break;
+              }
+
+            }
+          }
+          LocalStorage.WriteToLocalStorage('Messages',messagesLocalStorage);
         },
         /**
         *@ngdoc method
@@ -107,10 +140,10 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
         **/
         getUserMessages:function(){
 
-            return this.UserConversationsArray;
+            return UserConversationsArray;
         },
         setDateOfLastMessage:function(index, date){
-            this.UserConversationsArray[index].DateOfLastMessage=date;
+            UserConversationsArray[index].DateOfLastMessage=date;
         },
         /**
         *@ngdoc method
@@ -139,19 +172,20 @@ myApp.service('Messages', ['$filter', 'UserAuthorizationInfo', 'Patient', 'Docto
             messageToService.MessageContent=messageContent;
             messageToService.Date=date;
             messageToService.Attachment=attachment;
-            this.UserConversationsArray[conversationIndex].Messages.push(messageToService);
-            this.UserConversationsArray[conversationIndex].DateOfLastMessage=date;
+            UserConversationsArray[conversationIndex].LastMessageContent=messageContent;
+            UserConversationsArray[conversationIndex].Messages.push(messageToService);
+            UserConversationsArray[conversationIndex].DateOfLastMessage=date;
         },
         changeConversationReadStatus:function(conversationIndex){
-            this.UserConversationsArray[conversationIndex].ReadStatus=1;
-            for (var i = 0; i < this.UserConversationsArray[conversationIndex].Messages.length; i++) {
-                this.UserConversationsArray[conversationIndex].Messages[i].ReadStatus=1;
+            UserConversationsArray[conversationIndex].ReadStatus=1;
+            for (var i = 0; i < UserConversationsArray[conversationIndex].Messages.length; i++) {
+                UserConversationsArray[conversationIndex].Messages[i].ReadStatus=1;
             };
         },
         getConversationBySerNum:function(role, serNum)
         {
-          for (var i = 0; i < this.UserConversationsArray.length; i++) {
-            if(this.UserConversationsArray[i].Role==role&&this.UserConversationsArray[i].UserSerNum==serNum)
+          for (var i = 0; i < UserConversationsArray.length; i++) {
+            if(UserConversationsArray[i].Role==role&&UserConversationsArray[i].UserSerNum==serNum)
             {
               return i;
             }

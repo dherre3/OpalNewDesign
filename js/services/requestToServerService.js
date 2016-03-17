@@ -13,80 +13,89 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
       }else{
           identifier='browser';
       }
+    var lastUpdateTimestamp={};
+    function initTimestamps(time)
+    {
+
+      lastUpdateTimestamp={
+        'All':time,
+        'Appointments':time,
+        'Messages':time,
+        'Documents':time,
+        'Tasks':time,
+        'Doctors':time,
+        'LabTests':time,
+        'Patient':time,
+        'Notifications':time
+      };
+      console.log(lastUpdateTimestamp);
+    }
+    function obtainTimestamp(content)
+    {
+      if(typeof content=='undefined')
+      {
+        return lastUpdateTimestamp.All;
+      }else if(angular.isArray(content))
+      {
+        var min=Infinity;
+        for (var i = 0; i < content.length; i++) {
+          if(min>lastUpdateTimestamp[content[i]])
+          {
+            min=lastUpdateTimestamp[content[i]];
+          }
+        }
+        return min;
+      }else{
+        return lastUpdateTimestamp[content];
+      }
+    }
     return{
         sendRequest:function(typeOfRequest,content){
+          //Deciding whether is an app or a website
+          console.log('I am in there');
           var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-
+          var userID=UserAuthorizationInfo.UserName;
+          var token=UserAuthorizationInfo.Token;
+          var time=(new Date()).getTime();
+          var encryptedRequestType=EncryptionService.encryptData(typeOfRequest);
+          var timestamp=null;
+          console.log(typeOfRequest);
+          if(typeOfRequest=='Login'||typeOfRequest=='Resume')
+          {
+              initTimestamps(time);
+          }else if(typeOfRequest=='Refresh')
+          {
+            console.log(timestamp);
+            timestamp=obtainTimestamp(content);
+            console.log(lastUpdateTimestamp);
+          }
+          content= EncryptionService.encryptData(content);
           if(app){
+            //If online send request as normal
               if($cordovaNetwork.isOnline()){
-
-
-                var userID=UserAuthorizationInfo.UserName;
-                var token=UserAuthorizationInfo.Token;
-                console.log(token);
-                var encryptedRequestType=EncryptionService.encryptData(typeOfRequest);
-                content= EncryptionService.encryptData(content);
-
-                console.log(content);
-                Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':Firebase.ServerValue.TIMESTAMP });
-                /*
-                if(typeOfRequest=='Login'||typeOfRequest=='Logout')
-                {
-                  Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID })
-                }else if(typeOfRequest=='Refresh')
-                {
-                  Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content })
-                }
-                else if (typeOfRequest=="NewNote"||typeOfRequest=="EditNote"||typeOfRequest=="DeleteNote"||typeOfRequest=="AccountChange"||typeOfRequest=="AppointmentChange"||typeOfRequest=="Message"||typeOfRequest=="Feedback")
-                {
-                  Ref.push({'Request': encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID':userID, 'Parameters':content});
-                }
-                else if (typeOfRequest=='Checkin')
-                {
-                  Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'AppointmentSerNum' : content}});
-                }
-                else if (typeOfRequest=='MessageRead')
-                {
-                  Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'MessageSerNum' : content }});
-                }
-                else if (typeOfRequest=='NotificationRead')
-                {
-                  Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'NotificationSerNum' : content }});
-                }else if(typeOfRequest=='MapLocation'){
-                  Ref.push({'Request': encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID':userID, 'Parameters':content});
-                }*/
+                Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':timestamp });
               }else{
+                //If offline notify the patient and ask to connect to the internet
                 navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
               }
           }else{
-            var userID=UserAuthorizationInfo.UserName;
-            var token=UserAuthorizationInfo.Token;
-            var encryptedRequestType=EncryptionService.encryptData(typeOfRequest);
-            content= EncryptionService.encryptData(content);
-            Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier,'Token':token,  'UserID': userID, 'Parameters':content,'Timestamp':Firebase.ServerValue.TIMESTAMP});
-            /*if(typeOfRequest=='Login'||typeOfRequest=='Logout')
-            {
-              Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID })
-            }else if(typeOfRequest=='Refresh')
-            {
-              Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier,'Token':token,  'UserID': userID, 'Parameters':content })
+            //If its not an app just try sending the request
+            Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier,'Token':token,  'UserID': userID, 'Parameters':content,'Timestamp':timestamp});
+          }
+
+        },
+        updateTimestamps:function(content,time)
+        {
+          if(typeof content=='undefined')
+          {
+            initTimestamps(time);
+          }else if(angular.isArray(content))
+          {
+            for (var i = 0; i < content.length; i++) {
+              lastUpdateTimestamp[content[i]]=time;
             }
-            else if (typeOfRequest=="NewNote"||typeOfRequest=="EditNote"||typeOfRequest=="DeleteNote"||typeOfRequest=="AccountChange"||typeOfRequest=="AppointmentChange"||typeOfRequest=="Message"||typeOfRequest=="Feedback")
-            {
-              Ref.push({'Request': encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID':userID, 'Parameters':content});
-            }
-            else if (typeOfRequest=='Checkin')
-            {
-              Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'AppointmentSerNum' : content}});
-            }
-            else if (typeOfRequest=='MessageRead')
-            {
-              Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'MessageSerNum' : content }});
-            }
-            else if (typeOfRequest=='NotificationRead')
-            {
-              Ref.push({ 'Request' : encryptedRequestType, 'DeviceId':identifier,'Token':token, 'UserID':userID, 'Parameters':{'NotificationSerNum' : content }});
-            }*/
+          }else{
+            lastUpdateTimestamp[content]=time;
           }
         },
         getIdentifier:function()

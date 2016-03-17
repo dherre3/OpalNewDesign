@@ -1,21 +1,34 @@
 var myApp=angular.module('MUHCApp');
 
-myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordovaDevice','FileManagerService','$filter',function(UserPreferences,$q, $cordovaFileTransfer, $cordovaDevice,FileManagerService,$filter){
-    var profileImage='';
+myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordovaDevice','FileManagerService','$filter','LocalStorage','UserPreferences',function(UserPreferences,$q, $cordovaFileTransfer, $cordovaDevice,FileManagerService,$filter,LocalStorage,UserPreferences){
+    var ProfileImage='';
+    var FirstName='';
+    var LastName='';
+    var Alias='';
+    var TelNum='';
+    var Email='';
+    var PatientId='';
+    var UserSerNum='';
+    var NameFileSystem='';
+    var PathFileSystem='';
     return{
         setUserFieldsOnline:function(patientFields){
             var r=$q.defer();
+            patientFields=patientFields[0];
+            UserPreferences.setEnableSMS(patientFields.EnableSMS);
+            UserPreferences.setLanguage(patientFields.Language);
+            UserPreferences.getFontSize();
             console.log(patientFields);
-            this.FirstName=patientFields.FirstName;
-            this.LastName=patientFields.LastName;
-            this.Alias=patientFields.Alias;
-            this.TelNum=patientFields.TelNum;
-            this.Email=patientFields.Email;
-            this.PatientId=patientFields.PatientId;
-            this.Alias=patientFields.Alias;
-            this.UserSerNum=patientFields.PatientSerNum;
-            this.ProfileImage='data:image/'+patientFields.DocumentType+';base64,'+patientFields.ProfileImage;
-            profileImage=this.ProfileImage;
+            if(typeof patientFields=='undefined') return;
+            FirstName=patientFields.FirstName;
+            LastName=patientFields.LastName;
+            Alias=patientFields.Alias;
+            console.log(Alias);
+            TelNum=patientFields.TelNum;
+            Email=patientFields.Email;
+            PatientId=patientFields.PatientId;
+            UserSerNum=patientFields.PatientSerNum;
+            ProfileImage='data:image/'+patientFields.DocumentType+';base64,'+patientFields.ProfileImage;
             var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
             if(app){
                 if(typeof patientFields.ProfileImage!=='undefined'||patientFields.ProfileImage=='')
@@ -32,31 +45,32 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
                   delete patientFields.ProfileImage;
                   var trustHosts = true
                   var options = {};
-                  this.NameFileSystem='patient'+patientFields.PatientSerNum+"."+patientFields.DocumentType;
-                  this.PathFileSystem=targetPath;
+                  NameFileSystem='patient'+patientFields.PatientSerNum+"."+patientFields.DocumentType;
+                  PathFileSystem=targetPath;
                   patientFields.NameFileSystem='patient'+patientFields.PatientSerNum+"."+patientFields.DocumentType;
+                  patientFields.CDVfilePath="cdvfile://localhost/persistent/Patient/"+patientFields.NameFileSystem;
                   patientFields.PathFileSystem=targetPath;
+                  LocalStorage.WriteToLocalStorage('Patient',[patientFields]);
                   var promise=[FileManagerService.downloadFileIntoStorage(url, targetPath)];
                   $q.all(promise).then(function()
                   {
                     r.resolve(patientFields);
                   },function(error){
             				console.log(error);
-            				r.resolve(documents);
+            				r.resolve(patientFields);
             			});
                 }else{
-                  profileImage='./img/patient.png';
+                  ProfileImage='./img/patient.png';
                   r.resolve(patientFields);
                 }
               }else{
-                if(typeof patientFields.ProfileImage!=='undefined'||patientFields.ProfileImage=='')
+                if(!patientFields.ProfileImage||typeof patientFields.ProfileImage=='undefined'||patientFields.ProfileImage=='')
                 {
-                  patientFields.ProfileImage='data:image/'+patientFields.DocumentType+';base64,'+patientFields.ProfileImage;
-                  profileImage=patientFields.ProfileImage;
-                }else{
-                  profileImage='./img/patient.png';
+                  ProfileImage='./img/patient.png';
+
                 }
                 delete patientFields.ProfileImage;
+                LocalStorage.WriteToLocalStorage('Patient',[patientFields]);
                 r.resolve(patientFields);
               }
             return r.promise;
@@ -64,79 +78,82 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
         setUserFieldsOffline:function(patientFields)
         {
           var r=$q.defer();
-          this.FirstName=patientFields.FirstName;
-          this.LastName=patientFields.LastName;
-          this.Alias=patientFields.Alias;
-          this.TelNum=$filter('phone-number')(patientFields.TelNum);
-          this.Email=patientFields.Email;
-          this.PatientId=patientFields.PatientId;
-          this.UserSerNum=patientFields.PatientSerNum;
-          this.ProfileImage=patientFields.ProfileImage;
-          this.Alias=patientFields.Alias;
+          patientFields=patientFields[0];
+          FirstName=patientFields.FirstName;
+          LastName=patientFields.LastName;
+          Alias=patientFields.Alias;
+          TelNum=patientFields.TelNum;
+          Email=patientFields.Email;
+          PatientId=patientFields.PatientId;
+          UserSerNum=patientFields.PatientSerNum;
+          ProfileImage=patientFields.ProfileImage;
+          Alias=patientFields.Alias;
           if(patientFields.PathFileSystem)
           {
-            var promise=[FileManagerService.getFileUrl(patientFields.PathFileSystem)];
+            ProfileImage=patientFields.CDVfilePath;
+            /*var promise=[FileManagerService.getFileUrl(patientFields.PathFileSystem)];
             $q.all(promise).then(function(result){
               console.log(result);
               patientFields.ProfileImage=result[0];
-              profileImage=result[0];
-              console.log(profileImage);
+              ProfileImage=result[0];
+              console.log(ProfileImage);
               r.resolve(patientFields);
             },function(error){
               console.log(error);
               r.resolve(patientFields);
-            });
+            });*/
+            r.resolve(true);
           }else{
-            this.ProfileImage='./img/patient.png';
-            r.resolve(patientFields);
+            ProfileImage='./img/patient.png';
+            r.resolve(true);
           }
           return r.promise;
         },
         setFirstName:function(name){
-            this.FirstName=name;
+            FirstName=name;
         },
         setLastName:function(name){
-            this.LastName=name;
+            LastName=name;
         },
         setAlias:function(name){
-            this.Alias=name;
+            Alias=name;
         },
         setTelNum:function(telephone){
-            this.TelNum=telephone;
+            TelNum=telephone;
         },
         setEmail:function(email){
-            this.Email=email;
+            Email=email;
         },
         getPatientId:function()
         {
-          return this.PatientId;
+          return PatientId;
         },
         getFirstName:function(){
-            return this.FirstName;
+            return FirstName;
         },
         getLastName:function(){
-            return this.LastName;
+            return LastName;
         },
         getAlias:function(){
-            return this.Alias;
+            return Alias;
         },
         getTelNum:function(){
-            return this.TelNum;
+            return TelNum;
         },
         getEmail:function(){
-            return this.Email;
+            return Email;
         },
         getUserSerNum:function(){
-            return this.UserSerNum;
+            return UserSerNum;
         },
         setProfileImage:function(img){
-            this.ProfileImage='data:image/png;base64,'+img;
+            ProfileImage='data:image/png;base64,'+img;
         },
         getProfileImage:function(){
-            return profileImage;
+            return ProfileImage;
         },
         getStatus:function(){
-            return this.Status;
+            return Status;
         }
     };
 }]);

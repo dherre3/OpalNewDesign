@@ -5,7 +5,7 @@ myApp.controller('TabsController',['$scope','$timeout',function($scope,$timeout)
 
 
   }]);
-myApp.controller('personalTabController',['$scope','$timeout','Appointments','UserPlanWorkflow','$location',function($scope,$timeout,Appointments,UserPlanWorkflow,$location){
+myApp.controller('personalTabController',['$scope','$timeout','Appointments','UserPlanWorkflow','$location','RequestToServer','UpdateUI',function($scope,$timeout,Appointments,UserPlanWorkflow,$location,RequestToServer,UpdateUI){
   personalNavigator.on('prepop',function(){
     $location.hash('');
   });
@@ -14,6 +14,21 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','Us
     console.log('device button pressed do nothing');
 
   }
+  $scope.load = function($done) {
+    RequestToServer.sendRequest('Refresh','Appointments');
+    var updated=false;
+    UpdateUI.update('Appointments').then(function()
+    {
+      $timeout(function(){
+        updated=true;
+        console.log(Appointments.getUserAppointments());
+        $done();
+      });
+    });
+    $timeout(function(){
+        $done();
+    },5000);
+  };
 
 
   tabbar.once('postchange',function(event){

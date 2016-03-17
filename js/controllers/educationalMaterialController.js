@@ -6,6 +6,7 @@ myApp.controller('EducationalMaterialController',function($scope, $timeout, $cor
     console.log('device button pressed do nothing');
 
   }
+
 $scope.open=function(type){
 
 	//file:///data/data/com.example.hello/files/pdfs
@@ -18,12 +19,6 @@ $scope.open=function(type){
 		url='./pdfs/breast-radiotherapy-treatment-guidelines.pdf';
 	}else if(type=='End of Treatment'){
 		url='./pdfs/end-of-radiotherapy-treatment-guidelines.pdf';
-	}else if(type=='What is Raditherapy?')
-	{
-		url='https://www.depdocs.com/opal/educational/pathway/Pathway1.html';
-	}else if(type=='Your Radiotherapy Pathway')
-	{
-		url='https://www.depdocs.com/opal/educational/pathway/Pathway2.html';
 	}
 	var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 	if(app){
@@ -37,7 +32,27 @@ $scope.open=function(type){
 	}
 
 };
-
+$scope.openEmbed=function(type)
+{
+	var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+	if(type=='What is Raditherapy?')
+	{
+		url='https://www.depdocs.com/opal/educational/pathway/PathwayTemplate1.php';
+	}else if(type=='Your Radiotherapy Pathway')
+	{
+		url='https://www.depdocs.com/opal/educational/pathway/PathwayTemplate2.php';
+	}
+		educationNavigator.pushPage('./views/education/individual-material.html',{param:url});
+/*	if(app){
+		if(ons.platform.isAndroid()){
+			var ref=window.open(url,'location=no');
+		}else{
+			var ref = cordova.InAppBrowser.open(url, '_blank', 'location=yes');
+		}
+	}else{
+		educationNavigator.pushPage('./views/education/individual-material.html',{param:url});
+	}*/
+}
 $scope.openVideo=function(){
 	var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 	if(app){
@@ -46,24 +61,25 @@ $scope.openVideo=function(){
 	  var ref = window.open('https://www.youtube.com/watch?v=c8nHbGPs5SE', '_blank', 'location=yes');
 	}
 };
-/*var options = {
-    date: new Date(),
-    mode: 'date', // or 'time'
-    minDate: new Date() - 10000,
-    allowOldDates: true,
-    allowFutureDates: false,
-    doneButtonLabel: 'DONE',
-    doneButtonColor: '#F2F3F4',
-    cancelButtonLabel: 'CANCEL',
-    cancelButtonColor: '#000000'
-  };
-
-  document.addEventListener("deviceready", function () {
-
-    $cordovaDatePicker.show(options).then(function(date){
-        alert(date);
-    });
-
-  }, false);*/
 
 });
+myApp.controller('individualEduMaterialController',['$scope','$timeout','$sce',function($scope,$timeout,$sce){
+	var page=educationNavigator.getCurrentPage();
+	var url=page.options.param;
+	console.log(url);
+	$.get(url, function(res) {
+			 console.log("index.html", res.replace(/(\r\n|\n|\r)/gm, " "));
+			 $timeout(function(){
+				 $scope.htmlBind=res;
+			 });
+
+	 });
+
+	//$scope.url=$sce.trustAsResourceUrl(url);
+	/*var frame=document.getElementById('frameEducational');
+	var heightTreatment=document.documentElement.clientHeight-95;
+	frame.style.height=heightTreatment+'px';
+*/
+
+
+  }]);

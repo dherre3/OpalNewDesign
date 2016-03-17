@@ -6,6 +6,7 @@ myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$s
     if($scope.documents.length==0){
       $scope.noDocuments=true;
     }
+    console.log($scope.documents);
     $scope.documents=$filter('orderBy')($scope.documents,'DateAdded',false);
     if (UserPreferences.getLanguage() == 'EN') {
 console.log('english');
@@ -36,19 +37,16 @@ console.log('english');
     }
   }
 
-  function loadDocuments() {
-    var UserData = UpdateUI.UpdateSection('Documents');
-    UserData.then(function() {
-      documentsInit();
-    });
-  };
-
   $scope.refreshDocuments = function($done) {
-    RequestToServer.sendRequest('Refresh', 'Documents')
-    $timeout(function() {
-      loadDocuments();
+    RequestToServer.sendRequest('Refresh', 'Documents');
+    var UserData = UpdateUI.update('Documents');
+    UserData.then(function(){
+      documentsInit();
       $done();
-    }, 2000);
+    });
+    $timeout(function() {
+      $done();
+    }, 5000);
   };
 }]);
 

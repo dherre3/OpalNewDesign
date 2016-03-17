@@ -24,7 +24,7 @@ myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI',
     };
 
     function loadInfo(){
-       var dataVal= UpdateUI.UpdateSection('Doctors').
+       var dataVal= UpdateUI.update('Doctors').
        then(function(){
             doctorsInit();
        });
