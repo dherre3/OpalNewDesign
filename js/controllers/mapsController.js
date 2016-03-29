@@ -2,7 +2,7 @@ var myApp=angular.module('MUHCApp');
 myApp.controller('MapsController',['$timeout', '$scope','FirebaseService','RequestToServer', function($timeout,$scope,FirebaseService,RequestToServer){
   var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
   $scope.showMap=function(str){
-    
+
     if(app){
        var ref = cordova.InAppBrowser.open(str, '_blank', 'EnableViewPortScale=yes');
     }else{
@@ -12,6 +12,7 @@ myApp.controller('MapsController',['$timeout', '$scope','FirebaseService','Reque
   function goToScanMyLocation(result)
   {
     console.log('Im in there!');
+    
     generalNavigator.pushPage('./views/general/maps/hospital-location-scan.html',{param:result});
 
    /* RequestToServer.sendRequest('MapLocation',{'QRCode':result});
@@ -64,20 +65,37 @@ myApp.controller('MapsController',['$timeout', '$scope','FirebaseService','Reque
         }
       );
     }
-    
+
   }
 }]);
 
-/*myApp.controller('IndividualMapController',['$timeout', '$scope',function($timeout,$scope){
-  var gesturableImg = new ImgTouchCanvas({
-            canvas: document.getElementById('mycanvas'),
-            path: "./img/D-S1_map_RadOnc-MedPhys_16June2015_en.png"
-        });
+myApp.controller('IndividualMapController',['$timeout', '$scope','NavigatorParameters','UserPreferences',function($timeout,$scope,NavigatorParameters,UserPreferences ){
+  $scope.map=NavigatorParameters.getParameters();
+  var language=UserPreferences.getLanguage();
+  console.log($scope.map);
+  if(language=='EN')
+  {
+    $scope.name=$scope.map.MapName_EN;
+    $scope.description=$scope.map.MapDescription_EN;
+  }else if(language=='FR'){
+    $scope.name=$scope.map.MapName_FR;
+    $scope.description=$scope.map.MapDescription_FR;
+  }
+  $scope.openMap=function()
+  {
+    var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+    if(app)
+    {
+      var ref = cordova.InAppBrowser.open($scope.map.MapUrl, '_blank', 'EnableViewPortScale=yes');
+    }else{
+      window.open($scope.map.MapUrl);
+    }
+  }
 
 
   }]);
 
-myApp.controller('IndividualMapController1',['$timeout', '$scope',function($timeout,$scope){
+/*myApp.controller('IndividualMapController1',['$timeout', '$scope',function($timeout,$scope){
   var gesturableImg = new ImgTouchCanvas({
             canvas: document.getElementById('mycanvas1'),
             path: "./img/D2_Palliative_psychoncology_16June2015_en.png"

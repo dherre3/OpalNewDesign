@@ -113,12 +113,10 @@ var messagesLocalStorage=[];
             var messageTmp=angular.copy(messages);
 
             for (var j = 0; j< UserConversationsArray.length; j++) {
-              console.log(UserConversationsArray[j]);
               messageTmp[i].Date=new Date(messageTmp[i].MessageDate);
               if((messageTmp[i].ReceiverRole=='Patient'&&messageTmp[i].SenderSerNum==UserConversationsArray[j].UserSerNum))
               {
                 messageTmp[i].Role='0';
-                console.log(UserConversationsArray[j]);
                 UserConversationsArray[j].ReadStatus=1;
 
                 UserConversationsArray[j].DateOfLastMessage=messageTmp[i].MessageDate;

@@ -9,13 +9,19 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 		$rootScope.statusRoot='About to go into updateUI';
 		$rootScope.statusRoot='Time out over about to go into init function';
 		console.log('setting timeout');
-		var updateUI=UpdateUI.init();
-		updateUI.then(function(){
-			$rootScope.statusRoot='Resolving init function';
-				$rootScope.refresh=true;
-					$state.go('Home');
-					modal.hide();
+		setTimeout(function()
+		{
+			var updateUI=UpdateUI.init();
+			updateUI.then(function(){
+				$rootScope.statusRoot='Resolving init function';
+					$rootScope.refresh=true;
+						$state.go('Home');
+						modal.hide();
+			});
 		});
+
+
+
 
 
 

@@ -91,7 +91,7 @@ myApp.service('Doctors',['$q','LocalStorage','$filter','FileManagerService','$co
                 var trustHosts = true
                 var options = {};
                 doctors[i].NameFileSystem='doctor'+doctors[i].DoctorSerNum+"."+doctors[i].DocumentType;
-                doctors[i].CDVfilePath="cdvfile://localhost/persistent/Doctors/"+doctors[i].NameFileSystem;
+                doctors[i].CDVfilePath="cdvfile://localhost/files/Doctors/"+doctors[i].NameFileSystem;
                 doctors[i].PathFileSystem=targetPath;
                 promises.push(FileManagerService.downloadFileIntoStorage(url, targetPath));
               }

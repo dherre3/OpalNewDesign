@@ -1,12 +1,17 @@
-<ons-page ng-controller="individualEduMaterialController" ng-device-backbutton="educationDeviceBackButton()">
+<ons-page ng-controller="IndividualEduMaterialController" ng-device-backbutton="educationDeviceBackButton()">
   <ons-toolbar>
       <div class="left">
         <ons-back-button>Back</ons-back-button>
       </div>
 
-    <div class="center">Education Factsheet</div>
+    <div class="center">Education</div>
+    <div class="center" ng-click="goToOptions()">Options</div>
+
   </ons-toolbar>
-  <div class="container" style="background-color:white;padding-top:10px;margin:1px solid black">
+  <div style="margin-top:25vh" ng-show="notLoaded" align="center">
+    <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+  </div>
+  <div ng-hide="notLoaded" class="container" style="background-color:white;padding-top:10px;margin:1px solid black">
     <div ng-bind-html="htmlBind"></div>
   </div>
   <!--<div id="frameEducational">

@@ -1,0 +1,9 @@
+<ons-page ng-controller="IndividualTxTeamMessageController">
+  <ons-toolbar >
+    <div class="left"><ons-back-button>Back</ons-back-button></div>
+    <div class="center">{{message.Name}}</div>
+  </ons-toolbar>
+  <div style="margin-top:5vh">
+  <div ng-bind-html="message.Content" ng-class="fontSizeDesc" ></div>
+</div>
+</ons-page>

@@ -12,11 +12,21 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 			for (var j = 0; j < photos.length; j++) {
 				if(photos[j].DocumentSerNum==documents[i].DocumentSerNum)
 				{
+					console.log(photos[j]);
 					photos.splice(j,1);
 					break;
 				}
 			}
 		}
+	}
+	function copyObject(object)
+	{
+		var newObject={};
+		for (var key in object)
+		{
+			newObject[key]=object[key];
+		}
+		return newObject;
 	}
 	//Checks to see if a documents
 	function isDocumentStored(serNum){
@@ -24,49 +34,65 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 		var key=user+Documents;
 
 	}
-	function addDocumentsToService(documents,localStorage)
+	function addDocumentsToService(documents)
 	{
 		var r=$q.defer();
 		$rootScope.unreadDocuments=0;
 		if(!documents) return;
-			var keysDocuments=Object.keys(documents);
 			var promises=[];
-			for (var i = 0; i < keysDocuments.length; i++) {
-				if(documents[keysDocuments[i]].DocumentType=='pdf')
+			console.log(documents);
+			console.log(documents.length);
+			for (var i = 0; i < documents.length; i++) {
+				//Get document type to build base64 string
+				if(documents[i].DocumentType=='pdf')
 				{
-					documents[keysDocuments[i]].Content='data:application/pdf;base64,'+documents[keysDocuments[i]].Content;
+					documents[i].Content='data:application/pdf;base64,'+documents[i].Content;
 				}else{
-					documents[keysDocuments[i]].Content='data:image/'+documents[keysDocuments[i]].DocumentType+';base64,'+documents[keysDocuments[i]].Content;
+					documents[i].Content='data:image/'+documents[i].DocumentType+';base64,'+documents[i].Content;
 				}
+				//If app check to save in filesystem.
 				var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 				if(app){
 						var platform=$cordovaDevice.getPlatform();
 						var targetPath='';
 						if(platform==='Android'){
-								targetPath = cordova.file.externalRootDirectory+'Documents/docMUHC'+documents[keysDocuments[i]].DocumentSerNum+"."+documents[keysDocuments[i]].DocumentType;
+								targetPath = cordova.file.externalRootDirectory+'Documents/docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
+								documents[i].NameFileSystem='docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
+								console.log(documents[i].NameFileSystem);
+								documents[i].CDVfilePath=" cdvfile://localhost/sdcard/Documents/"+documents[i].NameFileSystem;
 						}else if(platform==='iOS'){
-							targetPath = cordova.file.dataDirectory+ 'Documents/docMUHC'+documents[keysDocuments[i]].DocumentSerNum+"."+documents[keysDocuments[i]].DocumentType;
+							targetPath = cordova.file.documentsDirectory+ 'Documents/docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
+							documents[i].NameFileSystem='docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
+							console.log(documents[i].NameFileSystem);
+							documents[i].CDVfilePath="cdvfile://localhost/persistent/Documents/"+documents[i].NameFileSystem;
+							//no sync, no icloud storage
+							//targetPath = cordova.file.dataDirectory+ 'Documents/docMUHC'+documents[keysDocuments[i]].DocumentSerNum+"."+documents[keysDocuments[i]].DocumentType;
 						}
-						var url = documents[keysDocuments[i]].Content;
+						var url = documents[i].Content;
 							var trustHosts = true
 							var options = {};
-							documents[keysDocuments[i]].NameFileSystem='docMUHC'+documents[keysDocuments[i]].DocumentSerNum+"."+documents[keysDocuments[i]].DocumentType;
-							documents[i].CDVfilePath="cdvfile://localhost/persistent/Documents/"+documents[keysDocuments[i]].NameFileSystem;
-							documents[keysDocuments[i]].PathFileSystem=targetPath;
+							documentsNoFiles.push(documents[i]);
+							documents[i].PathFileSystem=targetPath;
 							promises.push(FileManagerService.downloadFileIntoStorage(url, targetPath));
+				}else{
+					//Add to localStorage array
+					documentsNoFiles.push(documents[i]);
 				}
 
 				var imageToPhotoObject={};
-				imageToPhotoObject=angular.copy(documents[i]);
+				var url = documents[i].Content;
+				imageToPhotoObject=copyObject(documents[i]);
+				delete documents[i].Content;
+				delete documents[i].PathLocation;
+				imageToPhotoObject.Content=url;
 				imageToPhotoObject.DateAdded=$filter('formatDate')(imageToPhotoObject.DateAdded);
-				delete documents[keysDocuments[i]].Content;
-				delete documents[keysDocuments[i]].PathLocation;
+				console.log('boom');
 				photos.push(imageToPhotoObject);
-				documentsNoFiles.push(documents[i]);
+
 				//Update Local Storage
-				LocalStorage.WriteToLocalStorage('Documents',documentsNoFiles);
 			};
-			console.log(imageToPhotoObject);
+			console.log(photos);
+			LocalStorage.WriteToLocalStorage('Documents',documentsNoFiles);
 			$q.all(promises).then(function(results){
 				console.log(documents);
 				r.resolve(documents);
@@ -94,15 +120,15 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 			var r=$q.defer();
 			photos=[];
 			if(!documents) return;
-			var keysDocuments=Object.keys(documents);
 			//var promises=[];
-			for (var i = 0; i < keysDocuments.length; i++) {
+			for (var i = 0; i < documents.length; i++) {
 				var imageToPhotoObject={};
-				documents[i].DateAdded=new Date(documents[i].DateAdded);
+				documents[i].DateAdded=$filter('formatDate')(documents[i].DateAdded);
 				//promises.push(FileManagerService.getFileUrl(documents[i].PathFileSystem));
-				photos.push(documents[i]);
 				documents[i].Content=documents[i].CDVfilePath;
+				photos.push(documents[i]);
 			}
+			console.log(photos);
 			console.log(documents);
 			r.resolve(documents);
 

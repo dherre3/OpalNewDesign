@@ -63,13 +63,20 @@ $scope.openVideo=function(){
 };
 
 });
-myApp.controller('individualEduMaterialController',['$scope','$timeout','$sce',function($scope,$timeout,$sce){
+myApp.controller('IndividualEduMaterialController',['$scope','$timeout','$sce','NavigatorParameters',function($scope,$timeout,$sce,NavigatorParameters){
 	var page=educationNavigator.getCurrentPage();
 	var url=page.options.param;
 	console.log(url);
+	$scope.notLoaded=true;
+	$scope.goToOptions=function()
+	{
+		NavigatorParameters.setParameters({'view':'Educational'});
+	}
 	$.get(url, function(res) {
+
 			 console.log("index.html", res.replace(/(\r\n|\n|\r)/gm, " "));
 			 $timeout(function(){
+				 $scope.notLoaded=false;
 				 $scope.htmlBind=res;
 			 });
 

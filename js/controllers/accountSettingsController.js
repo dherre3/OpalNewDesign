@@ -46,6 +46,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
       $scope.Email = Patient.getEmail();
       $scope.TelNum = Patient.getTelNum();
       $scope.Language=UserPreferences.getLanguage();
+      console.log(UserPreferences.getLanguage());
       $scope.ProfilePicture=Patient.getProfileImage();
       $scope.passwordLength=7;
     }

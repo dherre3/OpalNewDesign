@@ -1,8 +1,8 @@
 var myApp=angular.module('MUHCApp');
 
 
-myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient','Doctors','Appointments','Messages','Documents','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults','Diagnoses','FirebaseService','MapLocation',
-'NativeNotification',function (EncryptionService,$timeout, $rootScope, Patient,Doctors, Appointments,Messages, Documents, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults,Diagnoses,FirebaseService,MapLocation,NativeNotification ) {
+myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService','$timeout', '$rootScope','Patient','Doctors','Appointments','Messages','Documents','EducationalMaterial','UserPreferences', 'UserAuthorizationInfo', '$q', 'Notifications', 'UserPlanWorkflow','$cordovaNetwork', 'Notes', 'LocalStorage','RequestToServer','$filter','LabResults','Diagnoses','FirebaseService','MapLocation',
+'NativeNotification',function (Announcements, TxTeamMessages, EncryptionService,$timeout, $rootScope, Patient,Doctors, Appointments,Messages, Documents, EducationalMaterial, UserPreferences, UserAuthorizationInfo, $q, Notifications, UserPlanWorkflow,$cordovaNetwork,Notes,LocalStorage,RequestToServer,$filter,LabResults,Diagnoses,FirebaseService,MapLocation,NativeNotification ) {
   var sectionServiceMappings={
     'All':
       {
@@ -51,13 +51,28 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
     {
       init:Diagnoses.setDiagnoses,
       update:Diagnoses.updateDiagnoses
+    },
+    'TxTeamMessages':
+    {
+      init:TxTeamMessages.setTxTeamMessages,
+      update:TxTeamMessages.updateTxTeamMessages
+    },
+    'Announcements':
+    {
+      init:Announcements.setAnnouncements,
+      update:Announcements.updateAnnouncements
+    },
+    'EducationalMaterial':
+    {
+      init:EducationalMaterial.setEducationalMaterial,
+      update:EducationalMaterial.updateEducationalMaterial
     }
   };
   function initLocalStorage()
   {
     var objectToLocalStorage={};
     for (var key in sectionServiceMappings.length) {
-      objectToLocalStorage[key]=[];
+      objectToLocalStorage[key]=[{}];
     }
     LocalStorage.WriteToLocalStorage('All',objectToLocalStorage);
   }
@@ -69,6 +84,7 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
       console.log(dataUserObject);
       if(mode=='Online')
       {
+        console.log('boom');
         initLocalStorage();
         console.log('I am in there');
         var documents=dataUserObject.Documents;
@@ -107,14 +123,16 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
           valAdded+=2;
           plan[key].Date=$filter('formatDateToFirebaseString')(tmp);
         }
+          TxTeamMessages.setTxTeamMessages(dataUserObject.TxTeamMessages);
+          Announcements.setAnnouncements(dataUserObject.Announcements);
           Diagnoses.setDiagnoses(dataUserObject.Diagnosis);
           LabResults.setTestResults(dataUserObject.LabTests);
           UserPlanWorkflow.setUserPlanWorkflow(plan);
-          console.log(dataUserObject.Patient[0].Language);
-          UserPreferences.setUserPreferences(dataUserObject.Patient[0].Language,dataUserObject.Patient[0].EnableSMS);
+          //UserPreferences.setUserPreferences(dataUserObject.Patient[0].Language,dataUserObject.Patient[0].EnableSMS);
           UserPreferences.getFontSize();
           Appointments.setUserAppointments(dataUserObject.Appointments);
           Notes.setNotes(dataUserObject.Notes);
+          EducationalMaterial.setEducationalMaterial(dataUserObject.EduationalMaterial)
           console.log(dataUserObject);
         /*if(mode=='Online')
           {
@@ -126,53 +144,16 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
     function updateAllServices(dataUserObject){
         var promises=[];
         console.log(dataUserObject);
-        if(mode=='Online')
+        for(var key in dataUserObject)
         {
-          var documents=dataUserObject.Documents;
-          var documentProm=Documents.updateDocumentsOnline(documents);
-          var doctors=dataUserObject.Doctors;
-          var doctorProm=Doctors.updateUserContactsOnline(doctors);
-          var patientFields=dataUserObject.Patient[0];
-          var patientProm=Patient.updateUserFieldsOnline(patientFields);
-          console.log(patientProm);
-          promises=[doctorProm,documentProm,patientProm];
-        }else{
-          var documentProm=Documents.setDocumentsOffline(dataUserObject.Documents);
-          var doctorProm=Doctors.setUserContactsOffline(dataUserObject.Doctors);
-          var patientProm=Patient.setUserFieldsOffline(dataUserObject.Patient[0]);
-          promises=[documentProm,doctorProm,patientProm];
-        }
-        $q.all(promises).then(function(){
-          Messages.updateUserMessages(dataUserObject.Messages);
-          Notifications.updateUserNotifications(dataUserObject.Notifications);
-          UserPlanWorkflow.setTreatmentPlan(dataUserObject.Tasks, dataUserObject.Appointments);
-          var plan={
-              '1':{'Name':'CT for Radiotherapy Planning','Date':'2015-10-19T09:00:00Z','Description':' CT simulation includes a CT scan of the area of your body to be treated with radiation. The CT images acquired during your scan will be reconstructed and used to design the best and most precise treatment plan for you.','Type': 'Appointment'},
-              '2':{'Name':'Physician Plan Preparation','Date':'2015-10-21T09:15:00Z','Description':'During this stage countoring of area is performed by Medical Physicist and approved by physician','Type':'Task'},
-              '3':{'Name':'Calculation of Dose & Physician Review','Date':'2015-10-23T09:15:00Z','Description':'The dose is calculated the physician reviews and approves the treatment plan.','Type':'Task'},
-              '4':{'Name':'Physics Quality Control','Date':'2015-10-28T10:15:00Z','Description':'In the QA stage, the physicians plan is compared to previous plans performed for similar patients to make sure everything is normal and the plan fits the standards','Type':'Task'},
-              '5':{'Name':'Scheduling','Date':'2015-10-30T09:15:00Z','Description':'At this stage, the scheduling of the treatment appointments is done.','Type':'Task'},
-              '6':{'Name':'First Treatment','Date':'2015-11-02T09:15:00Z','Description':'First treatment for radiation','Type':'Task'}
-          };
-          var newDate=new Date();
-          var valAdded=-6;
-
-          for (var key in plan) {
-            var tmp=new Date(newDate);
-            tmp.setDate(tmp.getDate()+valAdded);
-            valAdded+=2;
-            plan[key].Date=$filter('formatDateToFirebaseString')(tmp);
+          if(sectionServiceMappings.hasOwnProperty(key))
+          {
+            sectionServiceMappings[key]['update'](dataUserObject[key]);
           }
-            Diagnoses.updateDiagnoses(dataUserObject.Diagnosis);
-          	LabResults.updateTestResults(dataUserObject.LabTests);
-            UserPlanWorkflow.setUserPlanWorkflow(plan);
-            console.log(dataUserObject.Patient[0].Language);
-            Appointments.updateUserAppointments(dataUserObject.Appointments);
-            console.log(dataUserObject);
-        });
+        }
     }
 
-    function UpdateSectionOffline(section)
+    /*function UpdateSectionOffline(section)
     {
         var r=$q.defer();
         var data='';
@@ -218,7 +199,7 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
               r.resolve(true);
           }, 7000);
         return r.promise;
-    }
+    }*/
     function updateSection(sections,parameters)
     {
 
@@ -236,11 +217,12 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
       }else if(sections=='ArrayFields'){
         pathToSection=username+'/'+deviceId+'/ArrayFields';
       }else{
-        if(sections!=='UserPreferences'){
-            pathToSection=username+'/'+deviceId+'/'+sections;
+        pathToSection=username+'/'+deviceId+'/Field';
+        /*if(sections!=='UserPreferences'){
+
         }else{
            pathToSection=username+'/'+deviceId+'/'+'Patient';
-        }
+        }*/
       }
       //Connection to Firebase
       ref.child(pathToSection).on('value',function(snapshot){
@@ -265,7 +247,7 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
               {
                 RequestToServer.updateTimestamps('All',time);
                 sectionServiceMappings[sections]['update'](data,'Online');
-                updateAllServices(data, 'Online');
+                //updateAllServices(data, 'Online');
               }else if(sections=='ArrayFields'){
                 RequestToServer.updateTimestamps(parameters,time);
 
@@ -277,18 +259,22 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
               }else{
 
                 //Update individual fields e.g. 'Messages'
-
-                RequestToServer.updateTimestamps(sections,time);
+                console.log(sections);
+                if(sections!=='MapLocation')
+                {
+                  RequestToServer.updateTimestamps(sections,time);
+                }
                 console.log('Im here');
                 console.log(data);
-                  sectionServiceMappings[sections]['update'](data);
+                console.log(sections);
+                  sectionServiceMappings[sections]['update'](data[sections]);
                 }
               console.log(data);
               //Delete the data now that it has been proccessed, and dettaches the firebase ref.
               ref.child(pathToSection).set(null);
               ref.child(pathToSection).off();
               //Resolve our promise to finish the loading and get the application going.
-              r.resolve(true);
+              r.resolve(data);
           }
       });
       return r.promise;
@@ -321,7 +307,7 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
               ref.child(pathToSection).set(null);
               ref.child(pathToSection).off();
               r.resolve(true);
-            },20000)
+            },40000)
           });
         return r.promise;
     }
@@ -338,6 +324,22 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
       console.log(data);
       sectionServiceMappings['All'].init(data, 'Offline');
       r.resolve(true);
+      return r.promise;
+    }
+    function initServicesFromLocalStorage()
+    {
+      var r=$q.defer();
+      $timeout(function(){
+        $rootScope.statusRoot="Beginning init offline";
+      });
+      console.log('Inside the init offline function');
+      data=LocalStorage.ReadLocalStorage('All');
+      console.log(data);
+      sectionServiceMappings['All'].init(data, 'Offline');
+      updateSection('All').then(function()
+      {
+        r.resolve(true);
+      });
       return r.promise;
     }
 
@@ -458,15 +460,20 @@ myApp.service('UpdateUI', ['EncryptionService','$timeout', '$rootScope','Patient
         {
           $timeout(function(){
             $rootScope.statusRoot='Inside init function';
-          })
-
-
+          });
           var r=$q.defer();
           var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
           if(app){
               if($cordovaNetwork.isOnline()){
                   this.internetConnection=true;
-                  return initServicesOnline();
+                  console.log(LocalStorage.isUserDataDefined());
+                  if(LocalStorage.isUserDataDefined())
+                  {
+                    return initServicesFromLocalStorage();
+                  }else{
+                    return initServicesOnline();
+                  }
+
               }else{
                 $timeout(function(){
                 $rootScope.statusRoot="About to initiate services offline";

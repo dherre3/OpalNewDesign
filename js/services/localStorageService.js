@@ -22,6 +22,7 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 		{
 			if(section=='All')
 			{
+				console.log(data);
 				 window.localStorage.setItem(UserAuthorizationInfo.UserName, JSON.stringify(data));
 			}else{
 				var storage=window.localStorage.getItem(UserAuthorizationInfo.UserName);
@@ -31,7 +32,9 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 				{
 					var object={};
 					object[section]=data;
+					console.log(object);
 					window.localStorage.setItem(UserAuthorizationInfo.UserName,JSON.stringify({object}));
+					console.log(	window.localStorage.getItem(UserAuthorizationInfo.UserName));
 
 				}else{
 					storage[section]=data;
@@ -39,6 +42,15 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 				}
 			}
 
+		},
+		isUserDataDefined:function()
+		{
+			var storage=window.localStorage.getItem(UserAuthorizationInfo.UserName);
+				if(!storage||typeof storage=='undefined'){
+					return false;
+				}else{
+					return true;
+				}
 		},
 		ReadLocalStorage:function(section)
 		{

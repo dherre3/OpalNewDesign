@@ -8,11 +8,11 @@
       <ons-list-item class="item">
         <div style="line-height:1" align="left">
           <header>
-              <span class="item-title">{{documentObject.Name}}</span>
+              <span class="item-title" ng-class="fontSizeTitle">{{documentObject.Name}}</span>
 
           </header>
-          <p class="item-desc">{{documentObject.DateAdded|formatDateAppointmentTask}}</p>
-          <p class="item-desc">{{documentObject.Description}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">{{documentObject.DateAdded|formatDateAppointmentTask}}</p>
+          <p class="item-desc" ng-class="fontSizeDesc">{{documentObject.Description}}</p>
         </div>
       </ons-list-item>
     </ons-list>
@@ -33,6 +33,13 @@
        <ons-list-item >
          <div class="text-center">
            <a ng-click="shareViaEmail()" style="font-size:18px"><i class="ion-share"></i> Share via email</a>
+         </div>
+        </ons-list-item>
+    </ons-list>
+    <ons-list class="settings-list">
+       <ons-list-item >
+         <div class="text-center">
+           <a ng-click="printDocument()" style="font-size:18px"><i class="ion-printer"></i> Print Document</a>
          </div>
         </ons-list-item>
     </ons-list>

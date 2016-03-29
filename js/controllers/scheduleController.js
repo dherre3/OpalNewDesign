@@ -12,13 +12,7 @@ var myApp = angular.module('MUHCApp');
 *@description
 *Controller manages the logic in the schedule appointment main view, it as as "child" controllers,
 */
-
-function david()
-  {
-    console.log('boom');
-  }
 //Logic for the calendar controller view
-
 myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$location','$anchorScroll',function (Appointments, $scope,$timeout,$location,$anchorScroll) {
   var divTreatment=document.getElementById('scrollerAppointments');
   var heightTreatment=document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-180;
@@ -570,8 +564,8 @@ function ($scope,$timeout, Appointments,$location,$anchorScroll) {
       }
     }
 }]);
-myApp.controller('IndividualAppointmentController', ['$scope','$timeout', 'Appointments', '$q',
-    function ($scope, $timeout, Appointments, $q) {
+myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$scope','$timeout', 'Appointments', '$q',
+    function (NavigatorParameters,$scope, $timeout, Appointments, $q) {
         //Information of current appointment
         if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPage()!=='undefined')
         {
@@ -592,6 +586,12 @@ myApp.controller('IndividualAppointmentController', ['$scope','$timeout', 'Appoi
           $scope.app=Appointments.getUpcomingAppointment();
           $scope.showTab=true;
 
+        }
+
+        $scope.goToMap=function()
+        {
+          NavigatorParameters.setParameters($scope.app);
+          personalNavigator.pushPage('./views/general/maps/individual-map.html');
         }
 }]);
 

@@ -1,0 +1,29 @@
+<ons-page ng-controller="TxTeamMessagesController">
+  <ons-toolbar>
+    <div class="left"><ons-back-button>Back</ons-back-button></div>
+    <div class="center">Team Messages</div>
+  </ons-toolbar>
+<div ng-hide="txTeamMessages.lenght==0">
+  <ons-list  ng-repeat="message in txTeamMessages" ng-click="goToTeamMessage(message)">
+  <ons-list-header class="person-list-header" style="text-align:right">{{message.DateAdded|dateEmail}}</ons-list-header>
+  <ons-list-item modifier="chevron" class="item">
+    <ons-row align="center" >
+      <ons-col width="60px" align="center">
+        <div style="margin-left:10px">
+          <i class="fa fa-user-md  iconHomeView" style="color:Olive"></i><span class="notification" ng-if="notification.ReadStatus==='0'"> </span>
+        </div>
+      </ons-col>
+      <ons-col>
+        <header>
+          <span class="item-title" ng-class="fontSizeTitle">{{message.Name}}</span>
+        </header>
+        <p class="item-desc" ng-class="fontSizeDesc"></p>
+      </ons-col>
+    </ons-row>
+  </ons-list-item>
+</ons-list>
+</div>
+<div class="container" align="center">
+  <p style="margin-top:25vh;color:grey" ng-show="txTeamMessages.lenght==0">No team messages</p>
+</div>
+</ons-page>

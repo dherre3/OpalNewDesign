@@ -106,7 +106,7 @@ NOTE: Once in the Home page, the routing is dealt by onsen functions. Link to ex
 */
 
 //Routes for angular views
-var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.translate','ngAnimate','luegg.directives','ngSanitize','ui.router', 'onsen', 'firebase','ui.bootstrap','MUHCApp.filters','ngCordova','monospaced.elastic'])
+var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.translate','ngAnimate','luegg.directives','ngSanitize','ui.router', 'onsen', 'ngTouch','firebase','ui.bootstrap','MUHCApp.filters','ngCordova','monospaced.elastic'])
     .config(['$urlRouterProvider', 'tmhDynamicLocaleProvider','$stateProvider', '$translateProvider', '$translatePartialLoaderProvider', function ($urlRouterProvider, tmhDynamicLocaleProvider, $stateProvider, $translateProvider, $translatePartialLoaderProvider) {
 
     $urlRouterProvider.otherwise('/');
@@ -166,7 +166,13 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
 
 }]);
 
-
+myApp.config( [
+'$compileProvider',
+function($compileProvider)
+  {
+    $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile):|data:image\//);
+  }
+]);
 /**
 *@ngdoc service
 *@name MUHCApp.run

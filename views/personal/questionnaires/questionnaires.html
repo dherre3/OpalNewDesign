@@ -6,14 +6,13 @@
       </div>
       <div class="center">Questionnaire</div>
     </ons-toolbar>
-
 	<ons-carousel swipeable overscrollable auto-scroll fullscreen var="carousel">
 		<ons-carousel-item ng-repeat="question in Questions">
 			<!-- Overall Div for the page -->
 			<div>
 
 				<!-- Question number -->
-				<div class="text-center" style="color:#b3b3b3;padding-top:3vw"> You are on question {{ $index + 1}} of {{ maxNumberOfQuestions }} </div>
+				<div class="text-center" style="color:#b3b3b3;padding-top:1vw"> You are on question {{ $index + 1}} of {{ maxNumberOfQuestions }} </div>
 				<!-- Progress bar -->
 <!-- 				<div style="height=100px;width=200px">
 					<ons-progress value="50" secondary-value="0"></ons-progress>
@@ -24,23 +23,82 @@
 					<!-- Question and Explanation -->
 					<div ng-controller="PopoverController">
 						<!-- Question text -->
-				        <div ng-bind-html="toSafeHTML(question)" style="color:grey;padding-left:7vw;padding-right:7vw;padding-top:5vw;" class="body.app"></div>
+				        <div ng-bind-html="toSafeHTML(question)" style="color:grey;padding-left:7vw;padding-right:7vw;"></div>
 				        <!-- Explanation icon + popup -->
-				    </div>
+				  </div>
 					<!-- Response slider -->
-					<div style="margin-top:10px;padding:5px;">
-						<input type="range" min="0" max="10" class="range"></input>
-					</div>
-          <div class="col-xs-12" style="margin-left:20px;padding:0">
-          <ons-row>
-          <ons-col ng-repeat="index in [0,1,2,3,4,5,6,7,8,9,10]" align="center">
-            <div style="color:lightgrey" class="text-center">
-              <strong>{{index}}</strong>
+          <ons-row align="center" style="margin-top:-10px">
+            <ons-col >
+              <div  style="padding:0">
+              <ons-row class="text-right" ng-repeat="index in [0,1,2,3,4,5,6,7,8,9,10]" >
+              <ons-col align="right" class="text-right">
+                <div style="color:lightgrey;height:37px" class="text-right">
+                  <strong>{{10 - index}}</strong>
+                </div>
+              </ons-col>
+            </ons-row>
+            </div>
+          </ons-col>
+          <ons-col width="50px" align="center">
+          <div>
+            <div style="margin-top:-200px" class="rotateDiv">
+              <input type="range" min="0" max="10" style="width:400px;border:1px solid black" class="range"></input>
+            </div>
+          </div>
+        </ons-col>
+        <ons-col align="middle">
+        <div>
+          <div class="pull-right" style="margin-left:50px;">
+          <ons-row ng-repeat="index in [0,1,2,3,4,5,6,7,8,9,10]">
+          <ons-col align="center">
+            <div style="color:lightgrey;height:38px" class="text-center">
+              <div ng-show="$index==0">
+                <div style="width:150px;" class="text-left pull-right">
+                  <div ng-bind-html="question.max" style="color:grey;"></div>
+                </div>
+              </div>
+              <div ng-show="$index==10">
+                <div style="width:150px;" class="text-left pull-right">
+                  <div ng-bind-html="question.min" style="color:grey;"></div>
+                </div>
+              </div>
             </div>
           </ons-col>
         </ons-row>
       </div>
-					<!-- Max and Min labels -->
+        </div>
+      </ons-col>
+          </ons-row>
+        </div>
+<!--
+          <div  style="border:1px solid black;margin-top:-215px;padding:0">
+          <ons-row class="text-right" ng-repeat="index in [0,1,2,3,4,5,6,7,8,9,10]" style="border:1px solid black;padding:0;">
+          <ons-col align="right" class="text-right">
+            <div style="color:lightgrey;height:36px" class="text-right">
+              <strong>{{10 - index}}</strong>
+            </div>
+          </ons-col>
+        </ons-row>
+      </div>
+      <div class="pull-right" style="margin-left:50px;border:1px solid black;margin-top:-400px;padding:0">
+      <ons-row ng-repeat="index in [0,1,2,3,4,5,6,7,8,9]">
+      <ons-col align="center">
+        <div style="color:lightgrey;height:40px" class="text-center">
+          <div ng-show="$index==0">
+            <div style="width:150px;display:inline-block;" class="text-left pull-right">
+							<div ng-bind-html="question.max" style="color:grey;"></div>
+						</div>
+          </div>
+          <div ng-show="$index==9">
+            <div style="width:150px;display:inline-block;" class="text-left pull-right">
+              <div ng-bind-html="question.min" style="color:grey;"></div>
+            </div>
+          </div>
+        </div>
+      </ons-col>
+    </ons-row>
+  </div>
+					<!-- Max and Min labels
 					<div>
 						<div style="width:150px;display:inline-block;" class="text-left pull-left">
 							<div ng-bind-html="question.min" style="color:grey;"></div>
@@ -49,7 +107,7 @@
 							<div ng-bind-html="question.max" style="color:grey;"></div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
 				<!-- If type=="image" -->
 				<div ng-show="question.type=='image'" >

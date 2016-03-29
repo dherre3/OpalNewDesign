@@ -66,7 +66,7 @@ myApp.controller('NotificationsController', ['RequestToServer','Notifications', 
     }
 }]);
 
-myApp.controller('IndividualNotificationController',['$scope','Notifications',function($scope,Notifications){
+myApp.controller('IndividualNotificationController',['$scope','Notifications','NavigatorParameters',function($scope,Notifications,NavigatorParameters){
 
   if(typeof generalNavigator!=='undefined'&&typeof generalNavigator.getCurrentPage()!=='undefined'&&typeof generalNavigator.getCurrentPage().options.param !=='undefined')
   {
@@ -76,9 +76,9 @@ myApp.controller('IndividualNotificationController',['$scope','Notifications',fu
       $scope.notification=parameters;
       $scope.showTab=false;
   }else{
-    $scope.notification=Notifications.getLastNotification();
-    console.log($scope.notification);
-    $scope.showTab=true;
-
+    var param= NavigatorParameters.getParameters();
+    console.log(param);
+      $scope.notification=param.Type;
+      $scope.notification=param.Value;
   }
 }]);

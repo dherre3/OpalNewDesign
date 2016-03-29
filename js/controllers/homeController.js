@@ -3,7 +3,7 @@
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
 var myApp = angular.module('MUHCApp');
-myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','$cordovaNetwork','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,$cordovaNetwork,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences) {
+myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','$cordovaNetwork','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,$cordovaNetwork,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters) {
        /**
         * @ngdoc method
         * @name load
@@ -15,7 +15,12 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
         *
         *
         */
+          var language=UserPreferences.getLanguage();
+        //$scope.notications=Notifications.getUserNotifications();
+        $scope.getIconNotification=function(type)
+        {
 
+        }
         $scope.homeDeviceBackButton=function()
         {
           console.log('device button pressed do nothing');
@@ -44,7 +49,6 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
 
           //Basic patient information
           $scope.PatientId=Patient.getPatientId();
-          console.log($scope.PatientId);
           $scope.Email=Patient.getEmail();
           $scope.FirstName = Patient.getFirstName();
           $scope.LastName = Patient.getLastName();
@@ -83,28 +87,22 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
     }
     function setNotifications()
     {
-      //Obtaining language
-      var language=UserPreferences.getLanguage();
-
       //Obtaining new documents and setting the number and value for last document
-      var newDocuments=Documents.getUnreadDocuments();
-      console.log(newDocuments);
-      if(newDocuments.length>0)
-      {
-        $scope.numberOfNewDocuments=newDocuments;
-        $scope.lastNewDocument=newDocuments[0];
-        //Setting the language for the notification
-        if(language=='EN')
-        {
-          $scope.lastNewDocument.Name=$scope.lastNewDocument.AliasName_EN;
-          $scope.lastNewDocument.Description=$scope.lastNewDocument.AliasDescription_EN;
-        }else{
-          $scope.lastNewDocument.Name=$scope.lastNewDocument.AliasName_FR;
-          $scope.lastNewDocument.Description=$scope.lastNewDocument.AliasDescription_FR;
-        }
-      }
-
+      $scope.notifications = Notifications.getGroupNotifications();
     }
+    $scope.goToNotification=function(type, notification){
+      Notifications.readGroupNotifications(type);
+      if(notification.Notifications.lenght>1)
+      {
+        NavigatorParameters.setParameters({'Type':type, 'Value':notification});
+        homeNavigator.pushPage('./views/general/notifications/notification-list.html');
+      }else{
+        NavigatorParameters.setParameters(notification.Notifications[0]);
+        homeNavigator.pushPage(notification.PageUrl);
+      }
+    }
+
+
     function settingStatus()
     {
       if(!UserPlanWorkflow.isEmpty())

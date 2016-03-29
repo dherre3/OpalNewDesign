@@ -14,6 +14,10 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
           identifier='browser';
       }
     var lastUpdateTimestamp={};
+    function initTimestampsFromLocalStorage()
+    {
+      lastUpdateTimestamp=JSON.parse(window.localStorage.getItem(UserAuthorizationInfo.UserName+'/Timestamps'));
+    }
     function initTimestamps(time)
     {
 
@@ -26,10 +30,12 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
         'Doctors':time,
         'LabTests':time,
         'Patient':time,
-        'Notifications':time
+        'Notifications':time,
+        'EducationalMaterial':time
       };
+      window.localStorage.setItem(UserAuthorizationInfo.UserName+'/Timestamps',JSON.stringify(lastUpdateTimestamp))
       console.log(lastUpdateTimestamp);
-    }
+  }
     function obtainTimestamp(content)
     {
       if(typeof content=='undefined')
@@ -65,8 +71,10 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
               initTimestamps(time);
           }else if(typeOfRequest=='Refresh')
           {
-            console.log(timestamp);
+
+            if(!lastUpdateTimestamp.hasOwnProperty('All')) initTimestampsFromLocalStorage();
             timestamp=obtainTimestamp(content);
+
             console.log(lastUpdateTimestamp);
           }
           content= EncryptionService.encryptData(content);
@@ -86,7 +94,7 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
         },
         updateTimestamps:function(content,time)
         {
-          if(typeof content=='undefined')
+          if(content=='All')
           {
             initTimestamps(time);
           }else if(angular.isArray(content))
@@ -97,6 +105,7 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
           }else{
             lastUpdateTimestamp[content]=time;
           }
+          window.localStorage.setItem(UserAuthorizationInfo.UserName+'/Timestamps',JSON.stringify(lastUpdateTimestamp));
         },
         getIdentifier:function()
         {

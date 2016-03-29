@@ -41,6 +41,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
   checkForSessionEnd();*/
   myDataRef.onAuth(function(authData){
     var  authInfoLocalStorage=window.localStorage.getItem('UserAuthorizationInfo');
+    var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
     if($rootScope.activeLogin!=='true')
     {
       if(authData)
@@ -65,7 +66,12 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
             window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
             console.log(UserAuthorizationInfo.getUserAuthData());
             console.log("Authenticated successfully with payload:", authData);
-            RequestToServer.sendRequest('Resume');
+            if(app){
+              RequestToServer.sendRequest('Refresh','All');
+            }else{
+              //RequestToServer.sendRequest('Refresh','All');
+              RequestToServer.sendRequest('Resume');
+            }
             $state.go('loading');
         }
       }else{

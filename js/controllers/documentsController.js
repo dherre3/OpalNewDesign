@@ -1,5 +1,5 @@
 var myApp = angular.module('MUHCApp');
-myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$scope', '$timeout', 'UserPreferences', 'RequestToServer', '$cordovaFile','UserAuthorizationInfo','$q','$filter',function(Patient, Documents, UpdateUI, $scope, $timeout, UserPreferences, RequestToServer,$cordovaFile,UserAuthorizationInfo,$q,$filter) {
+myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$scope', '$timeout', 'UserPreferences', 'RequestToServer', '$cordovaFile','UserAuthorizationInfo','$q','$filter','NavigatorParameters',function(Patient, Documents, UpdateUI, $scope, $timeout, UserPreferences, RequestToServer,$cordovaFile,UserAuthorizationInfo,$q,$filter,NavigatorParameters) {
   documentsInit();
   function documentsInit() {
     $scope.documents = Documents.getDocuments();
@@ -31,12 +31,18 @@ console.log('english');
         }else{
           $scope.documents[i].PreviewContent=$scope.documents[i].Content;
         }
-        $scope.documents[i].Name = $scope.documents[i].AliasName_FR;
-        $scope.documents[i].Description = $scope.documents[i].AliasDescription_FR;
+        //$scope.documents[i].Name = $scope.documents[i].AliasName_FR;
+        //$scope.documents[i].Description = $scope.documents[i].AliasDescription_FR;
+        $scope.documents[i].Name = $scope.documents[i].AliasName_EN;
+        $scope.documents[i].Description = $scope.documents[i].AliasDescription_EN;
       }
     }
   }
-
+  $scope.goToDocument=function(doc)
+  {
+    NavigatorParameters.setParameters(doc);
+    personalNavigator.pushPage('./views/personal/my-chart/individual-document.html');
+  }
   $scope.refreshDocuments = function($done) {
     RequestToServer.sendRequest('Refresh', 'Documents');
     var UserData = UpdateUI.update('Documents');
@@ -50,10 +56,10 @@ console.log('english');
   };
 }]);
 
-myApp.controller('SingleDocumentController', ['Documents', '$timeout', '$scope', '$cordovaEmailComposer','$cordovaFileOpener2','FileManagerService','Patient',function(Documents, $timeout, $scope,$cordovaEmailComposer,$cordovaFileOpener2, FileManagerService,Patient) {
+myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents', '$timeout', '$scope', '$cordovaEmailComposer','$cordovaFileOpener2','FileManagerService','Patient',function(NavigatorParameters, Documents, $timeout, $scope,$cordovaEmailComposer,$cordovaFileOpener2, FileManagerService,Patient) {
   console.log('Simgle Document Controller');
-  var page = personalNavigator.getCurrentPage();
-  var image = page.options.param;
+  var image = NavigatorParameters.getParameters();
+  console.log(image);
   if(image.DocumentType=='pdf')
   {
     image.PreviewContent='./img/pdf-icon.png';
@@ -66,35 +72,106 @@ myApp.controller('SingleDocumentController', ['Documents', '$timeout', '$scope',
   {
     var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
     if (app) {
-      cordova.plugins.email.isAvailable(function(isAvailable){
-        if(isAvailable)
-        {
-          console.log('is available');
-          var attachment='base64:'+'attachment.'+image.DocumentType+'//'+image.Content.substring(image.Content.indexOf(',')+1,image.Content.length);
+
+          var attachment='';
           var email = {
             to: '',
             cc: '',
             bcc: [],
-            attachments: [
-              attachment
-            ],
             subject: 'MUHC Document',
             body: '',
             isHtml: true
           };
-          cordova.plugins.email.open(email,function(sent){
-            console.log('email ' + (sent ? 'sent' : 'cancelled'));
-          },this);
+          var base64=image.Content.indexOf('cdvfile');
+          var data='';
+          if(base64==-1)
+          {
+            console.log('Base64 file');
+            attachment='base64:'+'attachment.'+image.DocumentType+'//'+image.Content.substring(image.Content.indexOf(',')+1,image.Content.length);
+            email.attachments=[attachment];
+            console.log(email);
+            cordova.plugins.email.isAvailable(function(isAvailable){
+                    console.log('is available');
+              if(isAvailable)
+              {
+                cordova.plugins.email.open(email,function(sent){
+                  console.log('email ' + (sent ? 'sent' : 'cancelled'));
+                },this);
 
-        }else{
-          console.log('is not available');
-        }
-      });
+              }else{
+                console.log('is not available');
+              }
+            });
+          }else{
+            console.log('cdvfile',image.Content );
+            FileManagerService.getFileUrl(image.PathFileSystem).then(function(file){
+              console.log(file);
+              attachment='base64:'+'attachment.'+image.DocumentType+'//'+file.substring(file.indexOf(',')+1,file.length);
+              email.attachments=[attachment];
+              console.log(email);
+              cordova.plugins.email.isAvailable(function(isAvailable){
+                if(isAvailable)
+                {
+                  cordova.plugins.email.open(email,function(sent){
+                    console.log('email ' + (sent ? 'sent' : 'cancelled'));
+                  },this);
+
+                }else{
+                  console.log('is not available');
+                }
+              });
+            });
+            window.resolveLocalFileSystemURL(image.Content, function(entry) {
+
+              });
+          }
+          //var attachment='base64:'+'attachment.'+image.DocumentType+'//'+image.Content.substring(image.Content.indexOf(',')+1,image.Content.length);
     } else {
       window.open(image.Content);
     }
-
   }
+
+
+  $scope.printDocument=function()
+  {
+    var options = {
+  			// type of content, use either 'Data' or 'File'
+      title: 'Print Document', 	// title of document
+      dialogX: -1,				// if a dialog coord is not set, it defaults to -1.
+      dialogY: -1,
+      success: function(arg){
+        console.log(arg);
+      },
+      error: function(err){
+        console.log(err);
+      }
+    };
+    if(ons.platform.isAndroid())
+    {
+      if(image.DocumentType=='pdf')
+      {
+        options.type='File';
+        options.data = image.CDVfilePath;
+        console.log(options);
+        window.plugins.PrintPDF.print(options);
+      }else{
+        FileManagerService.getFileUrl(image.PathFileSystem).then(function(file){
+            var page = "<img src='"+file+"' style='width:100%;height:auto'>";
+            page.replace(/"/g, '\'');
+            console.log(page);
+            cordova.plugins.printer.print(page, 'Document.html', function () {
+                alert('printing finished or canceled')
+            });
+          }
+        );
+      }
+    }else{
+        options.type='File';
+        options.data = image.CDVfilePath;
+        console.log(options);
+        window.plugins.PrintPDF.print(options);
+    }
+  };
   $scope.openDocument = function() {
       var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
       if (app) {

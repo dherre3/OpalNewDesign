@@ -1,0 +1,20 @@
+<ons-page ng-controller="IndividualAnnouncementController">
+  <ons-toolbar >
+    <div class="left"><ons-back-button>Back</ons-back-button></div>
+    <div class="center">Announcement</div>
+  </ons-toolbar>
+  <div style="margin-top:5vh">
+  <ons-list>
+    <ons-list-item class="item">
+      <div style="line-height:1" align="left">
+        <header>
+            <span class="item-title" ng-class="fontSizeTitle">{{announcement.Type}}</span>
+
+        </header>
+        <p class="item-desc" ng-class="fontSizeDesc">{{announcement.DateAdded|formatDateAppointmentTask}}</p>
+        <p class="item-desc" ng-class="fontSizeDesc">{{announcement.AliasDescription_EN}}</p>
+      </div>
+    </ons-list-item>
+  </ons-list>
+</div>
+</ons-page>

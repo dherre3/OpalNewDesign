@@ -41,6 +41,7 @@ myApp.service('UserPreferences',[ 'UserAuthorizationInfo','$rootScope',function(
             return this.calendarOption;
         },
         setLanguage:function(lan){
+            console.log(lan);
             this.Language=lan;
         },
         setEnableSMS:function(){

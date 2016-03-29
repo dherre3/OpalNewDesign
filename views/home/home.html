@@ -15,7 +15,6 @@
             <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
             </span>
         </ons-pull-hook>
-        <img src="cdvfile://localhost/persistent/Doctors/doctor4.jpg">
         <!--<div class="container text-center" align="center" style="padding:0;margin:0 auto">
             <img src="img/muhc-logo-text.png" style="width:90vw;max-width:500px">
         </div>-->
@@ -120,6 +119,25 @@
                   </ons-col>
               </ons-row>
           </ons-list-item>
+
+
+          <!--Making new set up for notifications-->
+          <ons-list-item modifier="chevron" class="item" ng-repeat="(type, notification) in notifications" ng-click="goToNotification(type, notification)">
+              <ons-row align="center">
+                  <ons-col width="60px" align="center">
+                      <div>
+                          <i class="iconHomeView" ng-class="notification.Icon" ng-style="{color: notification.Color}"></i><span class="notification">{{notification.Number}}</span>
+                      </div>
+                  </ons-col>
+                  <ons-col>
+                      <header>
+                          <span class="item-title" ng-class="fontSizeTitle">{{notification.Title}}</span>
+                      </header>
+                      <p class="item-desc" ng-class="fontSizeDesc" ng-show="notification.Number==1">{{notification.Notifications[0].Name}}</p>
+                  </ons-col>
+              </ons-row>
+          </ons-list-item>
+
           <!-- NEXT APPOINTMENT INFORMATION-->
           <ons-list-item ng-if="showAppointmentTab" modifier="chevron" class="item" ng-click="homeNavigator.pushPage('views/personal/appointments/individual-appointment.html')">
               <ons-row align="center">

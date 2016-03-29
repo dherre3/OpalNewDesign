@@ -303,7 +303,7 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
         getAppointmentBySerNum:function(serNum){
             for (var i = 0; i < UserAppointmentsArray.length; i++) {
                 if(UserAppointmentsArray[i].AppointmentSerNum==serNum){
-                    return UserAppointmentsArray[i];
+                    return angular.copy(UserAppointmentsArray[i]);
                 }
             };
         },

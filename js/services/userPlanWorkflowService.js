@@ -58,6 +58,10 @@ myApp.service('UserPlanWorkflow',['$filter',function($filter){
     var futureStages=[];
     var pastStages=[];
     var treatmentPlansArray=[];
+    this.TasksAndAppointmentsArray=[];
+    this.FutureStages=[];
+    this.PastStages=[];
+    this.CurrentTaskOrAppointmentIndex=-1;
 
     function fillStagesLeft(tracker, planSoFar)
     {

@@ -1,4 +1,4 @@
-<ons-page ng-controller="AnnouncementsController">
+<ons-page ng-controller="NotificationsController">
   <ons-toolbar>
     <div class="left"><ons-back-button>Back</ons-back-button></div>
     <div class="center">Announcements</div>
@@ -11,26 +11,26 @@
         </span>
 </ons-pull-hook>-->
 <div ng-hide="noNotifications">
-  <ons-list  ng-repeat="announcement in announcements" ng-click="goToNotification($index,notification)">
-  <ons-list-header class="person-list-header" style="text-align:right">{{announcement.DateAdded|dateEmail}}</ons-list-header>
+  <ons-list  ng-repeat="notification in NotificationsArray" ng-click="goToNotification($index,notification)">
+  <ons-list-header class="person-list-header" style="text-align:right">{{notification.DateAdded|dateEmail}}</ons-list-header>
   <ons-list-item modifier="chevron" class="item">
     <ons-row align="center" >
       <ons-col width="60px" align="center">
         <div style="margin-left:10px">
-          <i class="fa fa-bell iconHomeView" style="color:DarkRed"></i><span class="notification" ng-if="announcement.ReadStatus==='0'"> </span>
+          <i class="fa fa-bell iconHomeView" style="color:DarkRed"></i><span class="notification" ng-if="notification.ReadStatus==='0'"> </span>
         </div>
       </ons-col>
       <ons-col>
         <header>
-          <span class="item-title" ng-class="fontSizeTitle">{{announcement.Name}}</span>
+          <span class="item-title" ng-class="fontSizeTitle">{{notification.Name}}</span>
         </header>
-        <p class="item-desc" ng-class="fontSizeDesc">{{announcement.Content|limitLetters:60}}</p>
+        <p class="item-desc" ng-class="fontSizeDesc">{{notification.Content|limitLetters:60}}</p>
       </ons-col>
     </ons-row>
   </ons-list-item>
 </ons-list>
 </div>
 <div class="container" align="center">
-  <p style="margin-top:25vh;color:grey" ng-show="announcements.length==0">No announcements</p>
+  <p style="margin-top:25vh;color:grey" ng-show="noNotifications">No notifications</p>
 </div>
 </ons-page>

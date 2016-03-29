@@ -75,7 +75,7 @@ myApp.filter('dateEmail',function($filter){
 			{
 				if(day==newDate.getDate())
 				{
-					return $filter('date')(date, 'h:mma');
+					return 'Today, ' +$filter('date')(date, 'h:mm a');
 				}else if(day-newDate.getDate()==1){
 					return 'Yesterday';
 				}else{
