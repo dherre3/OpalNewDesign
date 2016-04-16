@@ -5,7 +5,7 @@
       <ons-back-button>Back</ons-back-button>
     </div>
     <div class="center">My Chart</div>
-    <div class="right"><ons-toolbar-button ng-click="personalNavigator.pushPage('views/info-page-tabs.html',{param:home})"><ons-icon icon="ion-ios-information-outline"></ons-icon></ons-toolbar-button></div>
+    <div class="right"><ons-toolbar-button ng-click="personalNavigator.pushPage('views/tabs/info-page-tabs.html',{param:home})"><ons-icon icon="ion-ios-information-outline"></ons-icon></ons-toolbar-button></div>
   </ons-toolbar>
 
     <ons-list style="margin: 0px 0">
@@ -39,7 +39,7 @@
           </ons-col>
         </ons-row>
       </ons-list-item>
-      <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/treatment-plan/treatment-plan.html')">
+      <ons-list-item modifier="chevron" class="item" ng-click="goToStatus()">
         <ons-row align="center" style="height:40px">
           <ons-col width="60px" align="center">
             <div style="margin-left:5px">
@@ -58,7 +58,7 @@
         <ons-row align="center" >
           <ons-col width="60px" align="center">
             <div>
-              <i class="ion-ios-folder iconHomeView" style="color:DarkGoldenRod"></i>
+              <i class="ion-ios-folder iconHomeView" style="color:DarkGoldenRod"></i><span class="notification" ng-show="documentsUnreadNumber>0">{{documentsUnreadNumber}}</span>
             </div>
           </ons-col>
           <ons-col>
@@ -88,12 +88,12 @@
         <ons-row align="center" >
           <ons-col width="60px" align="center">
             <div>
-              <i class="fa fa-user-md  iconHomeView" style="color:Olive "></i>
+              <i class="fa fa-user-md  iconHomeView" style="color:Olive "></i><span class="notification" ng-show="txTeamMessagesUnreadNumber>0">{{txTeamMessagesUnreadNumber}}</span>
             </div>
           </ons-col>
           <ons-col>
             <header>
-              <span class="item-title" ng-class="fontSizeTitle">Treating Team Messages</span>
+              <span class="item-title" ng-class="fontSizeTitle">Treating Team Notifications</span>
             </header>
             <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>

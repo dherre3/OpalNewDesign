@@ -7,10 +7,10 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 		modal.show();
 		console.log('starting upfatye');
 		$rootScope.statusRoot='About to go into updateUI';
-		$rootScope.statusRoot='Time out over about to go into init function';
 		console.log('setting timeout');
 		setTimeout(function()
 		{
+			$rootScope.statusRoot='Time out over about to go into init function';
 			var updateUI=UpdateUI.init();
 			updateUI.then(function(){
 				$rootScope.statusRoot='Resolving init function';

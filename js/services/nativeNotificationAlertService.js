@@ -1,14 +1,9 @@
 var myApp=angular.module('MUHCApp');
 myApp.service('NativeNotification',[function(){
-
+  var mod= (ons.platform.isAndroid())?'material' : undefined;
   return {
     showNotificationAlert:function(message)
     {
-      var mod=undefined;
-      if(ons.platform.isAndroid())
-      {
-        mod='material';
-      }
       ons.notification.alert({
         message: message,
         modifier: mod
@@ -16,8 +11,9 @@ myApp.service('NativeNotification',[function(){
     },
     showNotificationConfirm:function(message,confirmCallback, cancelCallback)
     {
+      var message = (message)? message:'Problems with server, would you like to load your most recent saved data from the device?';
       ons.notification.confirm({
-        message: 'Problems with server, would you like to load your most recent saved data from the device?',
+        message: message,
         modifier: mod,
         callback: function(idx) {
           switch (idx) {

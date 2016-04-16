@@ -1,12 +1,13 @@
 {
 	"HEADER_MESSAGE_HOME":"Home",
-	"WELCOME_MESSAGE":"Welcome",
+	"PATIENTID":"Patient ID:",
+	"OVERVIEW":"Overview",
+	"CHECKIN_MESSAGE_BEFORE":"Check-in to your appointment",
+	"CHECKIN_MESSAGE_AFTER":"You are checked in!",
 	"STATUS":"Status",
-	"STATUS_CONTENT":"You are currently on the planning stage.",
-	"UPCOMING_NAME":"You have an upcoming",
-	"UPCOMING_APPOINT":"appointment on",
-	"CHECKIN_BUTTON":"Check-in",
-	"DETAILS_BUTTON":"Details",
-	"GO_TO_APPOINTMENTS_TAP":"Go To My Appointments",
-	"CONTACT_DOCTORS_TAP":"Contact Doctors"
+	"NOPLANNING":"No treatment plan available",
+	"PLANNING":"Radiotherapy treatment planning",
+	"INTREATMENT":"In Treatment",
+	"NEXTAPPOINTMENT":"Next Appointment",
+	"NEWS":"News"
 }

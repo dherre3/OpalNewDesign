@@ -3,32 +3,26 @@
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
 var myApp = angular.module('MUHCApp');
-myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','$cordovaNetwork','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,$cordovaNetwork,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters) {
-       /**
-        * @ngdoc method
-        * @name load
-        * @methodOf MUHCApp.controller:HomeController
-        * @callback MUHCApp.controller:HomeController.loadInfo
-        * @description
-        * Pull to refresh functionality, calls {@link MUHCApp.service:UpdateUI} service through the callback to update all the fields, then using
-        * the {@link MUHCApp.service:UpdateUI} callback it updates the scope of the HomeController.
-        *
-        *
-        */
-          var language=UserPreferences.getLanguage();
-        //$scope.notications=Notifications.getUserNotifications();
-        $scope.getIconNotification=function(type)
-        {
-
-        }
+myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters','NativeNotification',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters,NativeNotification) {
+      $translatePartialLoader.addPart('home');
         $scope.homeDeviceBackButton=function()
         {
           console.log('device button pressed do nothing');
+          NativeNotification.showNotificationConfirm('Are you sure you want to exit Opal?',function(){
+            if(ons.platform.isAndroid())
+            {
+              navigator.app.exitApp();
+            }
+          },function(){
+            console.log('cancel exit');
+          })
           console.log(homeNavigator.getDeviceBackButtonHandler());
-
         }
-        homeNavigator.on('prepop',function(){
-          $location.hash('');
+        homeNavigator.on('postpop',function(){
+          $timeout(function()
+          {
+            console.log('boom');
+          });
         });
         homePageInit();
         $scope.load = function($done) {
@@ -62,6 +56,8 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
           setUpNextAppointment();
           //start by initilizing variables
           setNotifications();
+          //setUpCheckin();
+          setUpCheckin()
         }
     $scope.goToView=function(param)
     {
@@ -85,35 +81,61 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
         }
       }
     }
+    $scope.goToStatus = function()
+    {
+      NavigatorParameters.setParameters({'Navigator':'homeNavigator'})
+      homeNavigator.pushPage('views/home/status/status.html')
+    }
+    //Set notifications function
     function setNotifications()
     {
-      //Obtaining new documents and setting the number and value for last document
-      $scope.notifications = Notifications.getGroupNotifications();
-    }
-    $scope.goToNotification=function(type, notification){
-      Notifications.readGroupNotifications(type);
-      if(notification.Notifications.lenght>1)
-      {
-        NavigatorParameters.setParameters({'Type':type, 'Value':notification});
-        homeNavigator.pushPage('./views/general/notifications/notification-list.html');
-      }else{
-        NavigatorParameters.setParameters(notification.Notifications[0]);
-        homeNavigator.pushPage(notification.PageUrl);
-      }
+      //Obtaining new documents and setting the number and value for last document, obtains unread notifications every time it reads
+      $scope.notifications = Notifications.getUnreadNotifications();
+      console.log($scope.notifications);
+
+      //Sets language for the notification
+      $scope.notifications = Notifications.setNotificationsLanguage($scope.notifications);
     }
 
+    //Goes to specific notification
+    $scope.goToNotification=function(index, notification){
+      $scope.notifications[index].Number = 0;
+      console.log(notification.NotificationSerNum);
+      Notifications.readNotification(index, notification);
+      console.log(notification);
+      var post = (notification.hasOwnProperty('Post')) ? notification.Post : Notifications.getPost(notification);
+      if(notification.hasOwnProperty('PageUrl'))
+      {
+        NavigatorParameters.setParameters({'Navigator':'homeNavigator', 'Post':post});
+        homeNavigator.pushPage(notification.PageUrl);
+      }else{
+          var result = Notifications.goToPost(notification.NotificationType, post);
+          console.log(result);
+        if(result !== -1  )
+        {
+          console.log(notification.Post);
+          NavigatorParameters.setParameters({'Navigator':'homeNavigator', 'Post':post});
+          homeNavigator.pushPage(result.Url);
+        }
+      }
+    }
+    $scope.goToNextAppointment=function(appointment)
+    {
+      NavigatorParameters.setParameters({'Navigator':'homeNavigator', 'Post':appointment});
+      homeNavigator.pushPage('./views/personal/appointments/individual-appointment.html');
+    }
 
     function settingStatus()
     {
       if(!UserPlanWorkflow.isEmpty())
       {
         if(UserPlanWorkflow.isCompleted()){
-          $scope.status='In Treatment';
+          $scope.statusDescription = "INTREATMENT";
         }else{
-          $scope.status='Radiotherapy Treatment Planning';
+          $scope.statusDescription = "PLANNING";
         }
       }else{
-        $scope.status='No treatment plan available';
+        $scope.statusDescription = "NOPLANNING";
       }
     }
     function setTabViews()
@@ -135,23 +157,44 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       //Next appointment information
       if(Appointments.isThereAppointments())
       {
+        $scope.noAppointments=false;
         if(Appointments.isThereNextAppointment()){
+            $scope.thereIsNextAppointment = true;
             var nextAppointment=Appointments.getUpcomingAppointment();
-            $scope.noAppointments=false;
             $scope.appointmentShown=nextAppointment;
             $scope.titleAppointmentsHome='Next Appointment';
 
         }else{
-          $scope.noUpcomingAppointments=true;
-          var lastAppointment=Appointments.getLastAppointmentCompleted();
-          $scope.nextAppointmentIsToday=false;
-          $scope.appointmentShown=lastAppointment;
-          $scope.titleAppointmentsHome='Last Appointment';
+          $scope.thereIsNextAppointment = false;
         }
       }else{
           $scope.noAppointments=true;
       }
     }
+
+    function setUpCheckin()
+    {
+      var checkInAppointment = Appointments.getCheckinAppointment();
+      console.log(checkInAppointment);
+      if(checkInAppointment)
+      {
+        $scope.showCheckin = true;
+        $scope.checkInAppointment = checkInAppointment;
+        if(checkInAppointment.Checkin == '0')
+        {
+          $rootScope.checkInMessage = "CHECKIN_MESSAGE_BEFORE";
+          $rootScope.showHomeScreenUpdate = false;
+        }else{
+          $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
+          $rootScope.showHomeScreenUpdate = true;
+          CheckinService.getCheckinUpdates(checkInAppointment);
+        }
+        console.log(checkInAppointment);
+      }else{
+        $scope.showCheckin = false;
+      }
+    }
+
 //Sets all the variables in the view.
 
 }]);

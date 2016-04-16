@@ -63,6 +63,14 @@ var myApp=angular.module('MUHCApp.filters',[]);
         }
       }
 	});
+	myApp.filter('ellipsis', function () {
+	    return function (text, length) {
+	        if (text.length > length) {
+	            return text.substr(0, length) + "...";
+	        }
+	        return text;
+	    }
+	});
 myApp.filter('dateEmail',function($filter){
   return function(date){
 		if(Object.prototype.toString.call(date) === '[object Date]')

@@ -2,22 +2,23 @@
   <ons-toolbar>
     <div class="left">
       <ons-back-button ng-show="!showCalendarButton">Back</ons-back-button>
-      <ons-toolbar-button ng-show="showCalendarButton" ng-click="backToTop()"><strong><i class="ion-chevron-left" style="font-size:15px"></i></strong>  <span style="margin-top:10px">Calendar</span></ons-toolbar-button>
     </div>
     <div class="center">Appointments</div>
+    <div class="right"><ons-toolbar-button ng-click="goToCalendarOptions()">Options</ons-toolbar-button></div>
   </ons-toolbar>
-  <div id="firstAnchor"></div>
     <div align="center" class="calendar--appointments" style="margin-top:5px;position:relative;z-index:1" height-element>
      <div class="calendar-list">
-    <uib-datepicker id="scrollTo" ng-model="dt"  datepicker-mode="calendarMode" datepicker-options ="dateOptions" show-weeks="false" custom-class="getDayClass(date, mode)" style="width:100vw" ></uib-datepicker></div>
+    <uib-datepicker id="scrollTo" ng-model="dt"  datepicker-mode="calendarMode" datepicker-options ="dateOptions" show-weeks="false" show-color="showColor(date)" style="width:100vw" ></uib-datepicker></div>
     </div>
 
 <!--<ons-list>
   <ons-list-item style="font-size:14px"><div class="text-center"><a ng-click="personalNavigator.pushPage('views/personal/appointments/appointments-list.html')" >see list of appointments &raquo;</a><div></ons-list-item>
 </ons-list>-->
+
 <div id="topListAnchor" style="height:5px;background-color:lightgrey;position:relative;z-index:1"></div>
 <ons-scroller id="scrollerAppointments" style="position:relative;z-index:1">
-<ons-list  ng-repeat="app in appointments"  ng-click="personalNavigator.pushPage('./views/personal/appointments/individual-appointment.html', {param:app,flag:'Appointments'},{ animation : 'slide' } )" >
+  <div id="firstAnchor"></div>
+<ons-list  ng-repeat="app in appointments" ng-click="goToAppointment(app)" >
   <ons-list-header  ng-if="setHeaderPickedDay($index)" style="color:red">{{dt|date:'EEE MMM dd yyyy'}}</ons-list-header>
     <ons-list-header class="person-list-header" ng-if="setHeader($index)" ng-class="fontSizeTitle">{{app.ScheduledStartTime|date:'EEE MMM dd yyyy'}}</ons-list-header>
     <ons-list-item modifier="chevron">

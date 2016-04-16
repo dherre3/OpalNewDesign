@@ -1,0 +1,36 @@
+{
+	"HEADER_MESSAGE_LOGIN":"Login",
+	"FORGOTPASSWORD":"Forgot Password",
+	"INVALID_USER":"User does not exist!",
+	"INVALID_PASSWORD":"Invalid Password!",
+	"INVALID_EMAIL":"Invalid e-mail",
+	"INTERNETERROR":"Sever error, please check your internet connection",
+	"EMAILPASSWORDSENT":"Password has been reset sucessfully, check your email for your temporary password!",
+	"ENTEREMAIL":"Enter your Email Address:",
+	"CANCERCENTER":"Cedars Cancer Center",
+	"RESETPASSWORD":"Reset Password",
+	"LOADING":"Loading",
+	"NEWPASSWORD":"Set Password",
+	"SETPASSWORDLABEL":"Set new password",
+	"SETPASSWORDBUTTON":"Set Password",
+	"SETPASSWORDPLACEHOLDER":"Set password...",
+	"BACKTOLOGIN":"Back To Login",
+	"ENTERSSNLABEL":"Enter your SSN Health Care ID:",
+	"ENTERSSNPLACEHOLDER":"Enter SSN...",
+	"CONTINUE":"Continue",
+	"SECURITYQUESTION":"Security Question",
+	"ENTERANSWERPLACEHOLDER":"Enter your answer...",
+	"ERRORENTERSSNNUMBER":"Enter an SSN number!",
+	"ERRORENTERVALIDSSN":"Enter Valid SSN!",
+	"ERRORINCORRECTSSN":"The SSN enter does not much our records, try again",
+	"ENTERANANSWER":"Enter an answer",
+	"ERRORANSWERNOTMATCH":"Answer does not match our records",
+	"CONTACTHOSPITAL":"Contact the hospital for assitance",
+	"ENTERVALIDPASSWORD":"Enter a valid password",
+	"SERVERPROBLEM":"Server problem, contact the hospital",
+	"PASSWORDSUCCESSRESET":"Password has been successfully changed, redirecting to login"
+
+
+
+
+}

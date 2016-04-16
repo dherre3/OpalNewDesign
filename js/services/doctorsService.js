@@ -82,17 +82,19 @@ myApp.service('Doctors',['$q','LocalStorage','$filter','FileManagerService','$co
               {
                 var platform=$cordovaDevice.getPlatform();
                 var targetPath='';
+                doctors[i].NameFileSystem='doctor'+doctors[i].DoctorSerNum+"."+doctors[i].DocumentType;
                 if(platform==='Android'){
                     targetPath = cordova.file.dataDirectory+'Doctors/doctor'+doctors[doctorKeyArray[i]].DoctorSerNum+"."+doctors[doctorKeyArray[i]].DocumentType;
+                    doctors[i].CDVfilePath="cdvfile://localhost/files/Doctors/"+doctors[i].NameFileSystem;
                 }else if(platform==='iOS'){
                   targetPath = cordova.file.documentsDirectory+ 'Doctors/doctor'+doctors[doctorKeyArray[i]].DoctorSerNum+"."+doctors[doctorKeyArray[i]].DocumentType;
+                  doctors[i].CDVfilePath="cdvfile://localhost/persistent/Doctors/"+doctors[i].NameFileSystem;
                 }
                 var url = doctors[doctorKeyArray[i]].ProfileImage;
                 var trustHosts = true
                 var options = {};
-                doctors[i].NameFileSystem='doctor'+doctors[i].DoctorSerNum+"."+doctors[i].DocumentType;
-                doctors[i].CDVfilePath="cdvfile://localhost/files/Doctors/"+doctors[i].NameFileSystem;
                 doctors[i].PathFileSystem=targetPath;
+
                 promises.push(FileManagerService.downloadFileIntoStorage(url, targetPath));
               }
             }

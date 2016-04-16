@@ -1,30 +1,31 @@
 var myApp=angular.module('MUHCApp');
 myApp.controller('InfoTabController',['$scope','$timeout',function($scope,$timeout){
   var tab=tabbar.getActiveTabIndex();
+  console.log('inside tabs controller');
   var views=[
     {
       icon:'fa fa-home',
       color:'SteelBlue',
-      name:'Home',
-      description:'In your home tab you will be provided with news about your medical status, documents, hospital announcements and appointments.'
+      name:"HOME",
+      description:"HOME_DESCRIPTION"
     },
     {
       icon:'ion-android-person',
       color:'maroon',
-      name:'My Chart' ,
-      description:'The my chart tab contains all the information regarding your electronic health data.'
+      name:"MYCHART" ,
+      description:"MYCHART_DESCRIPTION"
     },
     {
       icon:'ion-ios-book',
       color:'darkblue',
-      name: 'General',
-      description:'In your general tab you will find useful information to facilitate your hospital visit.'
+      name: "GENERAL",
+      description:"GENERAL_DESCRIPTION"
     },
     {
       icon:'ion-university',
       color:'Chocolate',
-      name:'Education',
-      description:'In your education tab you will find educational material specific to you treatment and general to radiation oncology.'
+      name:"EDUCATION",
+      description:"EDUCATION_DESCRIPTION"
     },
   ];
   $scope.view=views[tab];

@@ -13,13 +13,14 @@ var myApp = angular.module('MUHCApp');
 *Controller manages the logic in the schedule appointment main view, it as as "child" controllers,
 */
 //Logic for the calendar controller view
-myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$location','$anchorScroll',function (Appointments, $scope,$timeout,$location,$anchorScroll) {
+myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$filter', '$location','$anchorScroll','NavigatorParameters',function (Appointments, $scope,$timeout,$filter,$location,$anchorScroll,NavigatorParameters) {
   var divTreatment=document.getElementById('scrollerAppointments');
   var heightTreatment=document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-180;
   console.log(heightTreatment);
   console.log(document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-154);
   divTreatment.style.height=heightTreatment+'px';
   $scope.appointments=Appointments.getUserAppointments();
+  $scope.appointments = Appointments.setAppointmentsLanguage($scope.appointments);
   $scope.dt = new Date();
   $scope.todayDate=new Date();
   var flag=false;
@@ -39,17 +40,31 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
     flag=true;
 
   });
-  /*$scope.$watch('heightCalendar',function(){
-    var flag=false;
-    if(flag)
+  var dates = new Date();
+  dates.setHours(0,0,0,0);
+  var todaysTimeMilliseconds = dates.getTime();
+  $scope.showColor = function(date)
+  {
+    var result = $scope.appointments.filter(function(item){
+      return  item.ScheduledStartTime.toDateString() == date.toDateString();
+    });
+    date.setHours(0,0,0,0);
+    if(result.length>0)
     {
-      var divTreatment=document.getElementById('scrollerAppointments');
-      var heightTreatment=document.documentElement.clientHeight-350+$scope.heightCalendar;
-      console.log($scope.heightCalendar);
-      divTreatment.style.height=heightTreatment+'px';
+      if(date.getTime()> todaysTimeMilliseconds)
+      {
+        return '#cf5c4c';
+      }else if(date.getTime() == todaysTimeMilliseconds)
+      {
+        return '#3399ff';
+      }else{
+        return '#5CE68A';
+      }
+    }else{
+      return 'rgba(255,255,255,0.0)';
     }
-    flag=true;
-  });*/
+  }
+
   function findClosestAnchor()
   {
     var today=new Date($scope.dt);
@@ -117,17 +132,20 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
         var dateAppointment=$scope.appointments[index].ScheduledStartTime;
 
         if(today.getDate()===dateAppointment.getDate()&&today.getMonth()===dateAppointment.getMonth()&&today.getFullYear()===dateAppointment.getFullYear()){
-            return '#cf5c4c';
+            return '#3399ff';
 
         }else if(dateAppointment>today){
-            return '#D3D3D3';
+            return '#cf5c4c';
 
 
         }else{
             return '#5CE68A';
         }
     };
-
+    $scope.goToCalendarOptions = function()
+    {
+      personalNavigator.pushPage('./views/personal/appointments/calendar-options.html');
+    }
     function lookForCalendarDate(date,mode){
         if(mode==='day'){
             var year=date.getFullYear();
@@ -337,7 +355,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
     $scope.format = $scope.formats[0];
 
 
-    $scope.getDayClass = function (date, mode) {
+  /*  $scope.getDayClass = function (date, mode) {
         if (mode === 'day') {
             var dayToCheck = new Date(date);
             var today=(new Date());
@@ -368,7 +386,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
         }
 
         return '';
-    };
+    };*/
     addEventsToNativeCalendar();
 
     /**
@@ -416,6 +434,17 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$l
           console.log(eventSuccession);
         });
     }
+    }
+
+    //Go to appointment
+    $scope.goToAppointment=function(appointment)
+    {
+      if(appointment.ReadStatus == '0')
+      {
+        Appointments.readAppointmentBySerNum(appointment.AppointmentSerNum);
+      }
+      NavigatorParameters.setParameters({'Navigator':'personalNavigator', 'Post':appointment});
+      personalNavigator.pushPage('./views/personal/appointments/individual-appointment.html');
     }
 }]);
 myApp.controller('ScheduleController', ['$rootScope', 'UserPreferences', 'Appointments','$cordovaCalendar','$scope',
@@ -543,6 +572,16 @@ function ($scope,$timeout, Appointments,$location,$anchorScroll) {
         $anchorScroll();
       }
     }
+    $scope.showColor = function(date)
+    {
+
+      if(100*Math.random()>85)
+      {
+        return 'red';
+      }else{
+        return 'rgba(0,0,0,0.0)';
+      }
+    }
     $scope.setHeader=function(index)
     {
       if(index>0)
@@ -564,230 +603,125 @@ function ($scope,$timeout, Appointments,$location,$anchorScroll) {
       }
     }
 }]);
-myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$scope','$timeout', 'Appointments', '$q',
-    function (NavigatorParameters,$scope, $timeout, Appointments, $q) {
+myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$scope','$timeout', '$rootScope','Appointments', 'CheckinService','$q',
+    function (NavigatorParameters,$scope, $timeout, $rootScope, Appointments,CheckinService, $q) {
         //Information of current appointment
-        if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPage()!=='undefined')
-        {
-          console.log('grabbing parameters');
-            var page=personalNavigator.getCurrentPage();
-            if(page.options.flag=='Appointments')
-            {
-              delete page.options.flag;
-              var parameters=page.options.param;
-              $scope.app=parameters;
-              $scope.showTab=false;
-            }else{
-              $scope.app=Appointments.getUpcomingAppointment();
-              $scope.showTab=true;
-            }
+        var parameters = NavigatorParameters.getParameters();
+        console.log(parameters);
+        var navigatorName = parameters.Navigator;
+        console.log(navigatorName);
+        $scope.app = parameters.Post;
+        console.log($scope.app);
+        $scope.app = Appointments.setAppointmentsLanguage($scope.app);
 
-        }else{
-          $scope.app=Appointments.getUpcomingAppointment();
-          $scope.showTab=true;
-
-        }
+        setUpCheckin()
 
         $scope.goToMap=function()
         {
           NavigatorParameters.setParameters($scope.app);
-          personalNavigator.pushPage('./views/general/maps/individual-map.html');
+          window[navigatorName].pushPage('./views/general/maps/individual-map.html');
+        }
+        $scope.checkinToAppointment = function()
+        {
+          CheckinService.checkinToAppointment($scope.app);
+          $scope.loading = false;
+          $rootScope.showHomeScreenUpdate = true;
+          $scope.checkInMessage = 'You have checked in!';
+          $scope.showLiveUpdate = true;
+          $rootScope.checkInMessage = 'You have checked in!';
+        }
+        function setUpCheckin()
+        {
+          $scope.showCheckin = false;
+          if(Appointments.isCheckinAppointment($scope.app))
+          {
+            var checkInAppointment = $scope.app
+            $scope.showCheckin = true;
+            $scope.enableCheckinButton = false;
+            $scope.loading = true;
+            $scope.showLiveUpdate = false;
+
+            $scope.checkInAppointment = checkInAppointment;
+            if(checkInAppointment.Checkin == '0')
+            {
+              console.log('inside checkin = 0');
+              CheckinService.isAllowedToCheckin().then(
+                function(success){
+                  $scope.loading = false;
+                  $scope.enableCheckinButton = true;
+                  $scope.checkInMessage = success;
+                  $rootScope.showHomeScreenUpdate = false;
+                  ProgressBarStatus('#statusBarCheckin', 100,'#006400','#006400',200);
+                  CheckinService.getCheckinUpdates(checkInAppointment);
+                },function(failure){
+                  $scope.loading = false;
+                  $scope.enableCheckinButton = true;
+                  $scope.checkInMessage = success;
+                  $rootScope.showHomeScreenUpdate = false;
+
+
+                });
+            }else{
+
+              $scope.loading = false;
+              $scope.checkInMessage = 'You have checked in!';
+              $scope.showLiveUpdate = true;
+              $rootScope.showHomeScreenUpdate = true;
+              ProgressBarStatus('#statusBarCheckin', 100,'#006400','#006400',200);
+              CheckinService.getCheckinUpdates(checkInAppointment);
+            }
+            console.log(checkInAppointment);
+          }else{
+              $scope.showLiveUpdate = false;
+              $scope.showCheckin = false;
+
+          }
+        }
+        function ProgressBarStatus(id, percentage,startColor,endColor,duration)
+        {
+          var circle = new ProgressBar.Circle(id, {
+              color: endColor,
+              duration: duration,
+              easing: 'easeInOut',
+              strokeWidth: 5,
+              step: function(state, circle) {
+                  circle.path.setAttribute('stroke', state.color);
+              }
+          });
+          circle.animate(percentage/100, {
+              from: {color: startColor},
+              to: {color: endColor}
+          });
         }
 }]);
 
+myApp.controller('AppointmentOptionsController',['$scope','$timeout',function($scope,$timeout){
+  //Enter code here!!
+  var nativeCalendar=Number(window.localStorage.getItem('NativeCalendar'));
+  (nativeCalendar)?$scope.checkboxModelCalendar=nativeCalendar:$scope.checkboxModelCalendar=0;
+  $scope.saveSettings=function(){
+      if(ons.platform.isIOS()||ons.platform.isAndroid()){
+          var message=''
+          if($scope.checkboxModelCalendar===1){
+              message='Would you like save your appointment schedule in your phone calendar?';
+          }else{
+              message='Would you like to stop saving appointments to your phone calendar?';
+          }
+          navigator.notification.confirm(message, confirmCallbackCalendar, 'Calendar Setting', ['Continue', 'Cancel'] );
+          function confirmCallbackCalendar(index){
+              console.log(index);
+              if(index==1){
+                  window.localStorage.setItem('NativeCalendar',$scope.checkboxModelCalendar);
+              }else{
+                  $timeout(function(){
+                      ($scope.checkboxModelCalendar==1)?$scope.checkboxModelCalendar=0:$scope.checkboxModelCalendar=1;
+                  })
+              }
+          }
 
-/*myApp.controller('RequestChangeController',['$timeout','$scope','RequestToServer', 'Appointments', '$cordovaDatePicker','$filter', function($timeout, $scope, RequestToServer, Appointments,$cordovaDatePicker, $filter){
-    var page = myNavigator.getCurrentPage();
-    var parameters=page.options.param;
-    $scope.today=(new Date()).setHours(0,0,0);
-    console.log(parameters);
-    $scope.showAlert=false;
-    $scope.changeSubmitted=false;
-    $scope.app=parameters;
-    $scope.timeOfDay;
-    $scope.editRequest=function(){
-        $scope.changeSubmitted=false;
-        $scope.showAlert=false;
-    }
-    if(parameters.ChangeRequest==1){
-        $scope.showAlert=true;
-        $scope.alertClass="bg-success updateMessage-success";
-        $scope.alertMessage="Request to change appointment has been sent!";
-        $scope.changeSubmitted=true;
-    }
-    $scope.$watchGroup(['firstTimeOfDay','secondTimeOfDay','thirdTimeOfDay','firstDate', 'secondDate', 'thirdDate'],function(){
-        if(!$scope.firstTimeOfDay||!$scope.secondTimeOfDay||!$scope.thirdTimeOfDay||!$scope.firstDate||!$scope.secondDate||!$scope.thirdDate){
-            $scope.disabledButton=true;
-        }else{
-            $scope.disabledButton=false;
-        }
-    });
-    $scope.requestChange=function(){
-            objectToSend={};
-            objectToSend.AppointmentSerNum=$scope.app.AppointmentSerNum;
-            objectToSend.StartDate=$filter('formatDateToFirebaseString')($scope.firstDate);
-            objectToSend.EndDate=$filter('formatDateToFirebaseString')($scope.secondDate);
-            objectToSend.TimeOfDay=$scope.firstTimeOfDay;
-            console.log(objectToSend);
-            Appointments.setChangeRequest(parameters.AppointmentSerNum, 1);
-            RequestToServer.sendRequest('AppointmentChange',objectToSend);
-            $scope.alertMessage='Request to change appointment has been submitted';
-            $scope.alertClass="bg-success updateMessage-success"
-            $scope.showAlert=true;
-            $scope.changeSubmitted=true;
+      }
 
-    };
-}]);*/
+  };
 
 
-//Checking in the native calendar directly instead of the app service, userNativeCalendar
-
-        /* var startDateMost=appointments[0].Date;
-        var changeHourMost=startDateMost.getHours();
-        var endDateMost = new Date(startDateMost.getTime());
-        endDateMost.setHours(changeHourMost+1);
-        var titleMost=appointments[0].Type;
-        var locationMost=appointments[0].Location;
-        var notesMost='Source: ' +appointments[0].Resource+', Description: '+ appointments[0].Description;
-        $cordovaCalendar.findEvent({
-            title: titleMost,
-            location: locationMost,
-            notes: notesMost,
-            startDate: startDateMost,
-            endDate: endDateMost
-        }).then(function (result) {
-            console.log(result);
-
-        }, function (err) {
-
-
-        });*/
-            //loopAsychAppointments(0,appointments);
-            //Checks whether the app is allowed to add the events by prompting the user, only asks for the first event trying to be added i.e.
-            //flagAlreadyAddedEvents, flagNoAccess disallows the operation to continue at the next iteration.
-            /*function loopAsychAppointments(index,appointments){
-                console.log(index);
-                if(index>appointments.length-1){
-                    return;
-                }else{
-                    var startDate=appointments[index].Date;
-                    var changeHour=startDate.getHours();
-                    var endDate = new Date(startDate.getTime());
-                    endDate.setHours(changeHour+1);
-                    var title=appointments[index].Type;
-                    var location=appointments[index].Location;
-                    var notes='Source: ' +appointments[index].Resource+', Description: '+ appointments[index].Description;
-                    $cordovaCalendar.findEvent({
-                            title: title,
-                            location: location,
-                            notes: notes,
-                            startDate: startDate,
-                            endDate: endDate
-                        }).then(function (result) {
-                            //console.log(result);
-                            if(!result[0]){
-                                //console.log(appointments);
-                                //console.log(index);
-                                var startDate=appointments[index].Date;
-                                var changeHour=startDate.getHours();
-                                var endDate = new Date(startDate.getTime());
-                                endDate.setHours(changeHour+1);
-                                var title=appointments[index].Type;
-                                var location=appointments[index].Location;
-                                var notes='Source: ' +appointments[index].Resource+', Description: '+ appointments[index].Description;
-                                $cordovaCalendar.createEvent({
-                                title: title,
-                                location: location,
-                                notes: notes,
-                                startDate: startDate,
-                                endDate: endDate
-                                }).then(function (result) {
-                                    console.log('appointment added');
-                                }, function (err) {
-                                     navigator.notification.alert(
-                                        'An error occured while adding your appointments',  // message
-                                        alertDismissed,         // callback
-                                        'Error',            // title
-                                        'OK'                  // buttonName
-                                    );
-                              });
-                        }
-                        loopAsychAppointments(index+1,appointments);
-                        return;
-                        }, function (err) {
-
-
-                        });
-
-
-                }
-
-
-            }*/
-            /*
-            for (var i = 0; i < appointments.length; i++) {
-                var startDate=appointments[i].Date;
-                var changeHour=startDate.getHours();
-                var endDate = new Date(startDate.getTime());
-                endDate.setHours(changeHour+1);
-                var title=appointments[i].Type;
-                var location=appointments[i].Location;
-                var notes='Source: ' +appointments[i].Resource+', Description: '+ appointments[i].Description;
-
-               /* $cordovaCalendar.findEvent({
-                    title: title,
-                    location: location,
-                    notes: notes,
-                    startDate: startDate,
-                    endDate: endDate
-                  }).then(function (result) {
-                     console.log(result);
-                     if(result.length===0){
-                        console.log('I will try to add the appointment now!');
-                        flagAlreadyAddedEvents++;
-                        if(flagAlreadyAddedEvents==1){
-                            navigator.notification.confirm(message, confirmCallback, 'Access Calendar', ["Don't allow",'Ok'] );
-                        }
-
-
-                        $cordovaCalendar.createEvent({
-                        title: title,
-                        location: location,
-                        notes: notes,
-                        startDate: startDate,
-                        endDate: endDate
-                        }).then(function (result) {
-                            appCalendarAdded++;
-                        }, function (err) {
-                             navigator.notification.alert(
-                                'An error occured while adding your appointments',  // message
-                                alertDismissed,         // callback
-                                'Error',            // title
-                                'OK'                  // buttonName
-                            );
-                      });
-                     }else{
-                         console.log('That Appointment has already been added!');
-                     }
-                  }, function (err) {
-                        navigator.notification.alert(
-                                'An error occured while adding your appointments',  // message
-                                alertDismissed,         // callback
-                                'Error',            // title
-                                'OK'                  // buttonName
-                            );
-
-                  });
-
-                };
-                if(appCalendarAdded>0){
-                            navigator.notification.alert(
-                                'Appointment Events Successfully Added to Your Calendar!',  // message
-                                alertDismissed,         // callback
-                                'Appointment Events Added',            // title
-                                'OK'                  // buttonName
-                            );
-
-                        }
-
-        }*/
+}]);

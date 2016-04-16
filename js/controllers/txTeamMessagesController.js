@@ -1,36 +1,37 @@
 var myApp=angular.module('MUHCApp');
 myApp.controller('TxTeamMessagesController',['$scope','$timeout','TxTeamMessages','UserPreferences','NavigatorParameters',function($scope,$timeout,TxTeamMessages,UserPreferences,NavigatorParameters){
-  //Obtaining parameters
-  var messages = TxTeamMessages.getTxTeamMessages();
-  var language = UserPreferences.getLanguage();
-  console.log(messages);
+
+  //Initializing
+
+
   init();
   //Initializing name and body of post
   function init()
   {
-    for (var i = 0; i < messages.length; i++) {
-      if(language=='EN'){
-        messages[i].Name = messages[i].PostName_EN;
-        messages[i].Content = messages[i].Body_EN;
-      }else{
-        messages[i].Name = messages[i].PostName_FR;
-        messages[i].Content = messages[i].Body_FR;
-      }
-    }
+    $scope.noMessages = true;
+    var messages = TxTeamMessages.getTxTeamMessages();
+    messages = TxTeamMessages.setLanguageTxTeamMessages(messages);
+    if (messages.length>0) $scope.noMessages = false;
     $scope.txTeamMessages=messages;
   }
-
   //Function that goes to individual team message
   $scope.goToTeamMessage=function(message)
   {
     console.log(message);
-    NavigatorParameters.setParameters(message);
+    if(message.ReadStatus == '0')
+    {
+      console.log(message);
+      message.ReadStatus = '1';
+      TxTeamMessages.readTxTeamMessageBySerNum(message.TxTeamMessageSerNum);
+    }
+    NavigatorParameters.setParameters({'Navigator':'personalNavigator','Post':message});
     personalNavigator.pushPage('./views/personal/treatment-team-messages/individual-team-message.html');
   }
 }]);
-myApp.controller('IndividualTxTeamMessageController',['$scope','$timeout','NavigatorParameters',function($scope,$timeout,NavigatorParameters){
-
-
-  $scope.message=NavigatorParameters.getParameters();
-
+myApp.controller('IndividualTxTeamMessageController',['$scope','NavigatorParameters','TxTeamMessages','Patient', function($scope,NavigatorParameters,TxTeamMessages, Patient){
+    var parameters=NavigatorParameters.getParameters();
+    var message = TxTeamMessages.setLanguageTxTeamMessages(parameters.Post);
+    $scope.FirstName = Patient.getFirstName();
+    $scope.message=message;
+    console.log(message);
 }]);

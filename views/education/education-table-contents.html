@@ -1,0 +1,37 @@
+<ons-page ng-controller="EducationalMaterialTOCController">
+  <ons-toolbar>
+      <div class="left">
+        <ons-back-button>Back</ons-back-button>
+      </div>
+    <div class="center">{{edumaterial.Type}}</div>
+    <!--<div class="right"><ons-toolbar-button ng-click = "goToDetails(tableOfContents)">Options</ons-toolbar-button></div>-->
+  </ons-toolbar>
+  <div style="margin-top:5vh">
+  <ons-list>
+    <ons-list-item class="item">
+      <div style="line-height:1" align="center">
+        <header>
+            <span class="item-title" ng-class="fontSizeTitle" style="font-size:20px">{{edumaterial.Name}}</span>
+        </header>
+      </div>
+    </ons-list-item>
+  </ons-list>
+  <ons-list style="margin: 10px 0 0 0">
+    <ons-list-header class="person-list-header" ng-class="fontSizeTitle" >Table of Contents</ons-list-header>
+    <ons-list-item modifier="chevron" ng-repeat= "edumaterial in tableOfContents" class="item" ng-click="goToEducationalMaterial(edumaterial)">
+        <ons-row align="center">
+            <ons-col width="60px" align="center">
+                <div style="margin-left:20px">
+                    <strong>{{$index+1}}</strong>
+                </div>
+            </ons-col>
+            <ons-col>
+                <header>
+                    <span class="item-title" ng-class="fontSizeTitle">{{edumaterial.Name}}</span>
+                </header>
+            </ons-col>
+        </ons-row>
+    </ons-list-item >
+  </ons-list>
+</div>
+</ons-page>

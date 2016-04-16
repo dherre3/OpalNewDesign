@@ -1,7 +1,7 @@
 var myApp=angular.module('MUHCApp');
 myApp.service('NavigatorParameters',function(){
   //Enter code here!!
-  var parameters={};
+  var parameters={};  
   return{
     setParameters:function(param)
     {
@@ -12,6 +12,10 @@ myApp.service('NavigatorParameters',function(){
       var object=angular.copy(parameters);
       parameters={};
       return object;
+    },
+    getNavigator:function(navigatorName)
+    {
+      return listNavigators[navigatorName];
     }
   }
 

@@ -8,10 +8,10 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
     if(ssn==''||typeof ssn=='undefined')
     {
       $scope.alert.type='danger';
-      $scope.alert.content='Enter an SSN number';
+      $scope.alert.content="ERRORENTERSSNNUMBER";
     }else if(ssn.length!==12){
       $scope.alert.type='danger';
-      $scope.alert.content='Enter a valid SSN number';
+      $scope.alert.content="ERRORENTERVALIDSSN";
     }else{
       var objectToSend={};
       ResetPassword.sendRequest('VerifySSN',ssn);
@@ -31,7 +31,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
           {
             $timeout(function(){
               $scope.alert.type="danger";
-              $scope.alert.content="The SSN enter does not much our records, try again";
+              $scope.alert.content="ERRORINCORRECTSSN";
               $scope.loading=false;
             });
             ref.child(path).set({});
@@ -72,7 +72,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
       if(!answer||answer==''||typeof answer=='undefined')
       {
         $scope.alert.type='danger';
-        $scope.alert.content='Enter an answer';
+        $scope.alert.content='ENTERANANSWER';
       }else{
         var objectToSend={};
         answer=answer.toUpperCase();
@@ -93,12 +93,12 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
             {
               $timeout(function(){
                 $scope.alert.type='danger';
-                $scope.alert.content='Answer does not match our records';
+                $scope.alert.content="ERRORANSWERNOTMATCH";
                 $scope.tryReset++;
                 if($scope.tryReset>3)
                 {
                   $scope.alert.type='danger';
-                  $scope.alert.content='Contact the hospital for assitance';
+                  $scope.alert.content="CONTACTHOSPITAL";
                   $scope.threeTries=true;
                 }
               });
@@ -133,7 +133,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
         if(newValue==''||typeof newValue=='undefined')
         {
           $scope.alert.type='danger';
-          $scope.alert.content='Enter a valid password';
+          $scope.alert.content = "ENTERVALIDPASSWORD";
         }else{
           ref.changePassword({
             email: ResetPassword.getEmail(),
@@ -144,13 +144,13 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
               console.log(error);
                 $timeout(function(){
                   $scope.alert.type='danger';
-                  $scope.alert.content='Server Problem, contact hospital';
+                  $scope.alert.content="SERVERPROBLEM";
                 });
             } else {
               ResetPassword.sendRequest('SetNewPassword', newValue);
               $timeout(function(){
                 $scope.alert.type='success';
-                $scope.alert.content='Password has been successfully changed, redirecting to login';
+                $scope.alert.content="PASSWORDSUCCESSRESET";
               });
               $timeout(function(){
                 location.reload();

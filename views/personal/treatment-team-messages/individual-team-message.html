@@ -4,6 +4,22 @@
     <div class="center">{{message.Name}}</div>
   </ons-toolbar>
   <div style="margin-top:5vh">
-  <div ng-bind-html="message.Content" ng-class="fontSizeDesc" ></div>
+    <ons-list>
+      <ons-list-item class="item">
+        <div style="line-height:1" align="left">
+          <header>
+              <span class="item-title" ng-class="fontSizeTitle">{{message.Title}}</span>
+
+          </header>
+          <p class="item-desc" ng-class="fontSizeDesc">{{message.DateAdded|formatDateAppointmentTask}}</p>
+        </div>
+      </ons-list-item>
+    </ons-list>
+    <ons-list class="settings-list">
+      <ons-list-item class="item" ng-click="openDocument()">
+        <div align="left"><h4>Dear {{FirstName}},</h4></div>
+          <div ng-bind-html="message.Body" style =" word-wrap: break-word;" ng-class="fontSizeDesc" ></div>
+      </ons-list-item>
+    </ons-list>
 </div>
 </ons-page>

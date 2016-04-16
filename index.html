@@ -36,6 +36,7 @@
 
 <!-- Language translation and what not-->
 <script src="lib/bower_components/angular-translate/angular-translate.min.js"></script>
+<script src="lib/bower_components/angular-translate-handler-log/angular-translate-handler-log.min.js"></script>
 <script src="lib/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.min.js"></script>
 <script src="lib/bower_components/angular-dynamic-locale/tmhDynamicLocale.min.js"></script>
 
@@ -79,9 +80,9 @@
 
 
 	<!--Lab Results graphing libraries-->
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.js"></script>
- 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css">-->
+ 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css">
   <title>OPAL</title>
 
   <!--Libraries for OnsenUI-->
@@ -107,7 +108,8 @@
 
   </script>
 </head>
-<body id='boots' ng-app="MUHCApp">
+<body id='boots' >
+
 <!--Loading Modal for the initial loading screen-->
 <ons-modal var="modal">
         <ons-icon icon="ion-load-c" spin="true"></ons-icon>
@@ -115,13 +117,7 @@
         <div class="container text-center" align="center">
         <img ng-src="./img/muhc-logo-text.png" ><br>
 				Loading data...
-				{{statusRoot}}
-				<div class="popover popover--right" style="top:20px;left:20px;">
-				  <div class="popover__left-arrow"></div>
-				  <div class="popover__content">
-				    <div style="text-align:center;opacity:0.4;margin-top:40px">Content</div>
-				  </div>
-				</div>
+				<!--{{statusRoot}}-->
       </div>
 </ons-modal>
   <div ng-controller="MainController" >

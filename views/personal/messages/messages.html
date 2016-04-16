@@ -22,13 +22,10 @@
   <!--List Of Conversations Mobile View-->
   <div class="alert-dialog-mask" style="z-index:1231231" ng-show="searchingMask"></div>
   <div class="visible-xs" ng-controller="ListOfConversationMobileController">
-    <div style="overflow-y:scroll">
-      <ons-list class="plan-list">
-        <ons-list class="plan-list">
-          <ons-list-item style="1px solid black" ng-click="personClicked($index)" modifier="tappable" ng-repeat="conversation in messages|filter:searchPerson">
-            <ons-row>
-              <ons-col width="5px">
-              </ons-col>
+    <ons-scroller>
+        <ons-list class="plan-list" >
+          <ons-list-item  ng-click="personClicked($index)" modifier="tappable" style="padding:0" ng-repeat="conversation in messages|filter:searchPerson">
+            <ons-row style="margin-left:0">
               <ons-col width="50px">
                 <div style="padding:5px">
                   <img  ng-src="{{conversation.Image}}" class="image-conversation">
@@ -42,15 +39,15 @@
                   </div>
               </div>
               </ons-col>
-              <ons-col width="40px" align="top">
-                <div align="right" class="plan-duration" ng-show="conversation.DateOfLastMessage" ng-class="fontSizeDesc">{{conversation.DateOfLastMessage| dateEmail}}</div>
+              <ons-col width="120px" align="right" >
+                <div align="right" class="plan-duration item-desc" style = "margin-right:5px;line-height:1;margin-top:10px;"  ng-show="conversation.DateOfLastMessage">{{conversation.DateOfLastMessage| dateEmail}}</div>
                 <img ng-src="./img/unread-email-icon.png" style="opacity:0.7;" width="10px" height="auto" ng-show="conversation.ReadStatus===0">
               </ons-col>
             </ons-row>
           </ons-list-item>
         </ons-list>
 
-    </div>
+    </ons-scroller>
 
   </div>
 

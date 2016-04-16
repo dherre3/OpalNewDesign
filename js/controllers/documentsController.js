@@ -3,13 +3,8 @@ myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$s
   documentsInit();
   function documentsInit() {
     $scope.documents = Documents.getDocuments();
-    if($scope.documents.length==0){
-      $scope.noDocuments=true;
-    }
-    console.log($scope.documents);
-    $scope.documents=$filter('orderBy')($scope.documents,'DateAdded',false);
-    if (UserPreferences.getLanguage() == 'EN') {
-console.log('english');
+    $scope.documents = Documents.setDocumentsLanguage($scope.documents);
+    if($scope.documents.length==0) $scope.noDocuments=true;
       for (var i = 0; i < $scope.documents.length; i++) {
         if($scope.documents[i].DocumentType=='pdf')
         {
@@ -17,30 +12,16 @@ console.log('english');
         }else{
           $scope.documents[i].PreviewContent=$scope.documents[i].Content;
         }
-        $scope.documents[i].Name = $scope.documents[i].AliasName_EN;
-        $scope.documents[i].Description = $scope.documents[i].AliasDescription_EN;
-        console.log($scope.documents[i].Name );
-        console.log($scope.documents[i].Description );
-      }
-    } else {
-      console.log('french');
-      for (var i = 0; i < $scope.documents.length; i++) {
-        if($scope.documents[i].DocumentType=='pdf')
-        {
-          $scope.documents[i].PreviewContent='./img/pdf-icon.png';
-        }else{
-          $scope.documents[i].PreviewContent=$scope.documents[i].Content;
-        }
-        //$scope.documents[i].Name = $scope.documents[i].AliasName_FR;
-        //$scope.documents[i].Description = $scope.documents[i].AliasDescription_FR;
-        $scope.documents[i].Name = $scope.documents[i].AliasName_EN;
-        $scope.documents[i].Description = $scope.documents[i].AliasDescription_EN;
-      }
     }
   }
   $scope.goToDocument=function(doc)
   {
-    NavigatorParameters.setParameters(doc);
+    if(doc.ReadStatus == '0')
+    {
+      doc.ReadStatus ='1';
+      Documents.readDocument(doc.DocumentSerNum);
+    }
+    NavigatorParameters.setParameters({'navigatorName':'personalNavigator', 'Post':doc});
     personalNavigator.pushPage('./views/personal/my-chart/individual-document.html');
   }
   $scope.refreshDocuments = function($done) {
@@ -58,15 +39,15 @@ console.log('english');
 
 myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents', '$timeout', '$scope', '$cordovaEmailComposer','$cordovaFileOpener2','FileManagerService','Patient',function(NavigatorParameters, Documents, $timeout, $scope,$cordovaEmailComposer,$cordovaFileOpener2, FileManagerService,Patient) {
   console.log('Simgle Document Controller');
-  var image = NavigatorParameters.getParameters();
-  console.log(image);
+  var parameters = NavigatorParameters.getParameters();
+  var image = Documents.setDocumentsLanguage(parameters.Post);
   if(image.DocumentType=='pdf')
   {
     image.PreviewContent='./img/pdf-icon.png';
   }else{
     image.PreviewContent=image.Content;
   }
-  console.log(image);
+console.log(image);
   $scope.documentObject=image;
   $scope.shareViaEmail=function()
   {
@@ -97,16 +78,16 @@ myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents',
                 cordova.plugins.email.open(email,function(sent){
                   console.log('email ' + (sent ? 'sent' : 'cancelled'));
                 },this);
-
               }else{
                 console.log('is not available');
               }
             });
           }else{
             console.log('cdvfile',image.Content );
-            FileManagerService.getFileUrl(image.PathFileSystem).then(function(file){
+            var attachmentFilePath = (ons.platform.isAndroid())?image.PathFileSystem:image.Content;
+            window.resolveLocalFileSystemURL(attachmentFilePath,function(file){
               console.log(file);
-              attachment='base64:'+'attachment.'+image.DocumentType+'//'+file.substring(file.indexOf(',')+1,file.length);
+              attachment=file.toURL();
               email.attachments=[attachment];
               console.log(email);
               cordova.plugins.email.isAvailable(function(isAvailable){
@@ -120,10 +101,9 @@ myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents',
                   console.log('is not available');
                 }
               });
+            },function(error){
+              console.log(error);
             });
-            window.resolveLocalFileSystemURL(image.Content, function(entry) {
-
-              });
           }
           //var attachment='base64:'+'attachment.'+image.DocumentType+'//'+image.Content.substring(image.Content.indexOf(',')+1,image.Content.length);
     } else {
@@ -189,7 +169,7 @@ myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents',
                   // An error occurred. Show a message to the user
             });
           }else{
-            var ref = cordova.InAppBrowser.open(image.Content, '_blank', 'EnableViewPortScale=yes');
+            var ref = cordova.InAppBrowser.open(image.PathFileSystem, '_blank', 'EnableViewPortScale=yes');
           }
 
           //var ref = cordova.InAppBrowser.open(image.Content, '_system', 'location=yes');
@@ -205,7 +185,7 @@ myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents',
             path: "./img/D-RC_ODC_16June2015_en_FNL.png"
         });*/
 }]);
-myApp.service('FileManagerService',function($q){
+myApp.service('FileManagerService',function($q, $cordovaFileOpener2 ){
 var file='';
 function readDataUrl(file,response) {
   var r=$q.defer();
@@ -264,6 +244,38 @@ return{
         console.log(err);
         r.reject(err);
       });
+    },
+    openPDF:function(url)
+    {
+      var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
+      if (app) {
+        if(ons.platform.isAndroid()){
+
+            $cordovaFileOpener2.open(
+                url,
+                'application/pdf'
+              ).then(function() {
+                  // file opened successfully
+              }, function(err) {
+                console.log('boom');
+                  // An error occurred. Show a message to the user
+            });
+          }else{
+            var ref = cordova.InAppBrowser.open(url, '_blank', 'EnableViewPortScale=yes');
+          }
+      } else {
+        window.open(url);
+      }
+    },
+    openUrl:function(url)
+    {
+      var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
+      if (app) {
+        var ref = cordova.InAppBrowser.open(url, '_blank', 'EnableViewPortScale=yes');
+      } else {
+        window.open(url);
+      }
     }
+
   };
 });

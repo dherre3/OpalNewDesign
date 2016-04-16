@@ -1,14 +1,29 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('TabsController',['$scope','$timeout',function($scope,$timeout){
+myApp.controller('TabsController',['$scope','$timeout','$translate', '$translatePartialLoader',function($scope,$timeout,$translate, $translatePartialLoader){
   //Enter code here!!
+  console.log('inside tabs controller');
+  $translatePartialLoader.addPart('tabs');
 
 
 
   }]);
-myApp.controller('personalTabController',['$scope','$timeout','Appointments','UserPlanWorkflow','$location','RequestToServer','UpdateUI',function($scope,$timeout,Appointments,UserPlanWorkflow,$location,RequestToServer,UpdateUI){
+myApp.controller('personalTabController',['$scope','$timeout','Appointments','UserPlanWorkflow','TxTeamMessages','Documents','$location','RequestToServer','UpdateUI','NavigatorParameters',function($scope,$timeout,Appointments,UserPlanWorkflow,TxTeamMessages,Documents,$location,RequestToServer,UpdateUI,NavigatorParameters){
   personalNavigator.on('prepop',function(){
-    $location.hash('');
+    setNewsNumbers();
   });
+  setNewsNumbers();
+  //Setting up numbers on the
+  function setNewsNumbers()
+  {
+    $scope.appointmentsUnreadNumber = Appointments.getNumberUnreadAppointments();
+    $scope.documentsUnreadNumber = Documents.getNumberUnreadDocuments();
+    $scope.txTeamMessagesUnreadNumber = TxTeamMessages.getUnreadTxTeamMessages();
+  }
+  $scope.goToStatus = function()
+  {
+    NavigatorParameters.setParameters({'Navigator':'personalNavigator'});
+    personalNavigator.pushPage('views/home/status/status.html');
+  }
   $scope.personalDeviceBackButton=function()
   {
     console.log('device button pressed do nothing');
@@ -29,25 +44,6 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','Us
         $done();
     },5000);
   };
-
-
-  tabbar.once('postchange',function(event){
-    if(typeof tabbar.parameter!=='undefined')
-    {
-      var param=tabbar.parameter;
-
-      if(param=='Appointment')
-      {
-        delete tabbar.parameter;
-        personalNavigator.pushPage('views/personal/appointments/appointments.html');
-      }else if(param=='TreatmentPlan')
-      {
-        delete tabbar.parameter;
-        personalNavigator.pushPage('views/personal/treatment-plan/treatment-plan.html');
-      }
-    }
-  });
-
 
   //Setting up Appointments status
   if(Appointments.isThereNextAppointment())
@@ -73,8 +69,17 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','Us
 
 
 }]);
-myApp.controller('generalTabController',['$scope','$timeout',function($scope,$timeout){
+myApp.controller('generalTabController',['$scope','$timeout','Announcements','Notifications',function($scope,$timeout,Announcements,Notifications){
 //Enter code here!!
+setNewsNumbers();
+generalNavigator.on('prepop',function(){
+  setNewsNumbers();
+});
+function setNewsNumbers()
+{
+  $scope.announcementsUnreadNumber = Announcements.getNumberUnreadAnnouncements();
+  $scope.notificationsUnreadNumber = Notifications.getNumberUnreadNotifications();
+}
 $scope.generalDeviceBackButton=function()
 {
   console.log('device button pressed do nothing');

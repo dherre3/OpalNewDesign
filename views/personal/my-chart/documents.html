@@ -20,7 +20,7 @@
       No patient documents available!
     </div>
     <ons-list ng-repeat="document in documents">
-      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">{{document.DateAdded|formatDateAppointmentTask}}</ons-list-header>
+      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">{{document.DateAdded|formatDateAppointmentTask}}<span class="pull-right" ng-show= "document.ReadStatus =='0'">unread</span></ons-list-header>
       <ons-list-item modifier="chevron" ng-click="goToDocument(document)">
         <ons-row>
           <ons-col width="6px">
@@ -32,7 +32,7 @@
           </ons-col>
           <ons-col>
             <div style="line-height:1;padding:5px" >
-              <p ng-class="fontSizeTitle"> <strong>{{document.Name}}</strong><p>
+              <p ng-class="fontSizeTitle"> <strong>{{document.Title}}</strong><p>
               <p class="item-desc" ng-class="fontSizeDesc">{{document.Description}}</p>
             </div>
           </ons-col>

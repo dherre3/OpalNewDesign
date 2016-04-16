@@ -35,6 +35,19 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
 
       }
     }
+    function getCheckinAppointment()
+    {
+      var futureAppointment = getAppointmentsInPeriod('Future');
+      if(futureAppointment.length >0)
+      {
+        futureAppointment = futureAppointment[0];
+        console.log(futureAppointment);
+        if ((new Date()).setHours(0,0,0,0)==(new Date(futureAppointment.ScheduledStartTime)).setHours(0,0,0,0))return futureAppointment;
+        else return null;
+      }else{
+        return null;
+      }
+    }
     function getAppointmentsInPeriod(period)
     {
       //Variables for comparing dates
@@ -236,6 +249,7 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
                 return false;
             }
         }
+
         function addEventToNativeCalendar(serNum){
             var appointmentsString=window.localStorage.getItem('NativeCalendarAppoinments');
             if(appointmentsString){
@@ -348,11 +362,13 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
         getPastAppointments: function () {
           return getAppointmentsInPeriod('Past');
         },
-        setAppointmentCheckin:function(serNum, val){
+        setAppointmentCheckin:function(serNum){
               var appointments=UserAppointmentsArray;
             for(var i=0;i<appointments.length;i++){
                 if(appointments[i].AppointmentSerNum==serNum){
-                    UserAppointmentsArray[i].Checkin=val;
+                    UserAppointmentsArray[i].Checkin='1';
+                    appointmentsLocalStorage[i].Checkin = '1';
+                    LocalStorage.WriteToLocalStorage('Appoinments',appointmentsLocalStorage);
                 }
             }
         },
@@ -387,6 +403,50 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
                 }
             }
         },
+        getCheckinAppointment:function()
+        {
+          return getCheckinAppointment();
+        },
+        isCheckinAppointment:function(appointment)
+        {
+          var checkInAppointment = getCheckinAppointment();
+          if(checkInAppointment)
+          {
+            if(checkInAppointment.AppointmentSerNum == appointment.AppointmentSerNum)
+            {
+              return true;
+            }else{
+              return false;
+            }
+          }else{
+            return false;
+          }
+
+        },
+        getAppointmentName:function(serNum)
+        {
+          console.log(serNum);
+          console.log(UserAppointmentsArray);
+          for (var i = 0; i < UserAppointmentsArray.length; i++) {
+            if(UserAppointmentsArray[i].AppointmentSerNum == serNum)
+            {
+              console.log({NameEN:UserAppointmentsArray[i].AppointmentType_EN, NameFR: UserAppointmentsArray[i].AppointmentType_FR });
+              return {NameEN:UserAppointmentsArray[i].AppointmentType_EN, NameFR: UserAppointmentsArray[i].AppointmentType_FR };
+            }
+          }
+        },
+        readAppointmentBySerNum:function(serNum)
+        {
+          for (var i = 0; i < UserAppointmentsArray.length; i++) {
+            if(UserAppointmentsArray[i].AppointmentSerNum == serNum)
+            {
+              UserAppointmentsArray[i].ReadStatus = '1';
+              appointmentsLocalStorage[i].ReadStatus = '1';
+              RequestToServer.sendRequest('Read',{"Id":serNum, "Field": "Appointments"});
+              LocalStorage.WriteToLocalStorage('Appointments', appointmentsLocalStorage);
+            }
+          }
+        },
         checkAndAddAppointmentsToCalendar:function(){
           var r=$q.defer();
           if(UserAppointmentsArray.length>0)
@@ -400,6 +460,80 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
             r.resolve('No appointments');
           }
           return r.promise;
+        },
+        getAppointmentUrl:function(serNum)
+        {
+          return './views/personal/appointments/individual-appointment.html';
+        },
+        //Getting radiotherapy treatment appointments
+        getTreatmentAppointments:function()
+        {
+          var array = [];
+          var number = 0;
+          var completedBoolean = false;
+          var currentAppointment = {};
+          var Index = 0;
+          var todayTime = (new Date()).getTime();
+          for (var i = 0; i < UserAppointmentsArray.length; i++) {
+            if(UserAppointmentsArray[i].AliasSerNum =='6'||UserAppointmentsArray[i].AliasSerNum=='7'||UserAppointmentsArray[i].AliasSerNum=='9')
+            {
+              number++;
+              if(UserAppointmentsArray[i].ScheduledStartTime.getTime() > todayTime)
+              {
+                  if(!completedBoolean)
+                  {
+                      UserAppointmentsArray[i].TimeStatus = 'Next';
+                      currentAppointment = UserAppointmentsArray[i];
+                      Index = number;
+                      console.log(UserAppointmentsArray[i]);
+                      completedBoolean = true;
+                  }else{
+                    UserAppointmentsArray[i].TimeStatus = 'Future';
+                  }
+              }else{
+                UserAppointmentsArray[i].TimeStatus = 'Past';
+              }
+              array.push(UserAppointmentsArray[i]);
+            }
+          }
+          return {Total: number, CurrentAppointment:{ Index: Index, Appointment: currentAppointment}, AppointmentList:array, Completed: !completedBoolean};
+        },
+        //Get number of unread news
+        getNumberUnreadAppointments:function()
+        {
+          var array = [];
+          var number = 0;
+          for (var i = 0; i < UserAppointmentsArray.length; i++) {
+            if(UserAppointmentsArray[i].ReadStatus == '0')
+            {
+              number++;
+            }
+          }
+          return number;
+        },
+        //Input array or string sets the language of the appointments for controllers to use
+        setAppointmentsLanguage:function(array)
+        {
+          var language = UserPreferences.getLanguage();
+          //Check if array
+          if (Object.prototype.toString.call( array ) === '[object Array]') {
+            for (var i = 0; i < array.length; i++) {
+              //set language
+              if(!array[i].hasOwnProperty('Title')||!array[i].hasOwnProperty('Description'))
+              {
+                array[i].Title = (language=='EN')? array[i].AppointmentType_EN : array[i].AppointmentType_FR;
+                array[i].Description = (language == 'EN')? array[i].AppointmentDescription_EN : array[i].AppointmentDescription_FR;
+              }
+            }
+          }else{
+            //set language if string
+            if(!array.hasOwnProperty('Title')||!array.hasOwnProperty('Description'))
+            {
+              array.Title = (language=='EN')? array.AppointmentType_EN : array.AppointmentType_FR;
+              array.Description = (language == 'EN')? array.AppointmentDescription_EN: array.AppointmentDescription_FR;
+            }
+          }
+          return array;
         }
     };
 }]);

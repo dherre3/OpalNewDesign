@@ -1,7 +1,7 @@
 <ons-navigator title="NavigatorForms" var="navigatorForms">
     <ons-page style="background-color:white;width:100vw;height100vh">
         <ons-toolbar>
-            <div class="center">Login</div>
+            <div class="center">{{"HEADER_MESSAGE_LOGIN"|translate}}</div>
         </ons-toolbar>
         <div align="center">
             <img src="./img/ceadarsLogo.png" style="width:90vw;height:auto;max-width:800px">
@@ -32,14 +32,19 @@
   <br/><br/>
 </span>
                         <div style="max-width:400px">
-                            <button class="button button--large" type="submit" id="submit">Login</button>
+                            <button class="button button--large" type="submit" id="submit">{{"HEADER_MESSAGE_LOGIN"|translate}}</button>
                         </div>
-                        <uib-alert ng-show="alert.type" type="{{alert.type}}">{{alert.content}}</uib-alert>
-                        <!--<a class="left" role="button" href  style="font-size:11px;color:#0066FF" ng-click="$state.go('forgotPassword');">Forgot Password?</a>-->
+                        <uib-alert ng-show="alert.type" type="{{alert.type}}" translate = "{{alert.content}}"></uib-alert>
                     </div>
                 </form>
                 <div style="text-align:center;">
-                    <button class="button button--large--quiet" ng-click="navigatorForms.pushPage('./views/login/forgot-password.html',{})">Forgot Password?</button>
+                    <button class="button button--large--quiet" ng-click="navigatorForms.pushPage('./views/login/forgot-password.html',{})">{{"FORGOTPASSWORD"|translate}}?</button>
+                    <div ><span class ="button--quiet" style="display:inline-block">EN</span>
+                      <label class="switch">
+                        <input type="checkbox" ng-model="languageSwitch" ng-change="changeLanguage(languageSwitch)" ng-true-value="1" ng-false-value="0" class="switch__input">
+                        <div class="switch__toggle"></div>
+                      </label>
+                      <span class ="button--quiet" style="display:inline-block">FR</span></div>
                 </div>
                 <br>
             </div>

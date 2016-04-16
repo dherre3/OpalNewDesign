@@ -1,5 +1,5 @@
 var myApp=angular.module('MUHCApp');
-myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizationInfo){
+myApp.service('LocalStorage',['UserAuthorizationInfo', 'EncryptionService',function(UserAuthorizationInfo,EncryptionService){
 	function readLocalStorage(section)
 	{
 		if(section=='All')
@@ -7,12 +7,18 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 			 var user=window.localStorage.getItem('UserAuthorizationInfo');
 			 user=JSON.parse(user);
 			 storage=window.localStorage.getItem(user.UserName);
-			 return JSON.parse(storage);
+
+			 storage = JSON.parse(storage);
+			 console.log(storage);
+			 EncryptionService.decryptData(storage);
+			 console.log('asdas');
+			 return storage;
 		}else{
 			var user=window.localStorage.getItem('UserAuthorizationInfo');
 			user=JSON.parse(user);
 			storage=window.localStorage.getItem(user.UserName);
 			storage=JSON.parse(storage);
+			EncryptionService.decryptData(storage);
 			return storage[section];
 		}
 	}
@@ -20,10 +26,14 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 	return {
 		WriteToLocalStorage:function(section, data)
 		{
+			temp = angular.copy(data);
+			temp = JSON.stringify(temp);
+
+			temp = JSON.parse(temp);
+			temp = EncryptionService.encryptData(temp);
 			if(section=='All')
 			{
-				console.log(data);
-				 window.localStorage.setItem(UserAuthorizationInfo.UserName, JSON.stringify(data));
+				 window.localStorage.setItem(UserAuthorizationInfo.UserName, JSON.stringify(temp));
 			}else{
 				var storage=window.localStorage.getItem(UserAuthorizationInfo.UserName);
 				storage=JSON.parse(storage);
@@ -31,13 +41,11 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 				if(!storage)
 				{
 					var object={};
-					object[section]=data;
-					console.log(object);
+					object[section]=temp;
 					window.localStorage.setItem(UserAuthorizationInfo.UserName,JSON.stringify({object}));
-					console.log(	window.localStorage.getItem(UserAuthorizationInfo.UserName));
 
 				}else{
-					storage[section]=data;
+					storage[section]=temp;
 					window.localStorage.setItem(UserAuthorizationInfo.UserName,JSON.stringify(storage));
 				}
 			}
@@ -60,6 +68,7 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', function(UserAuthorizatio
 		{
 			window.localStorage.removeItem('UserAuthorizationInfo');
 			window.localStorage.removeItem(UserAuthorizationInfo.UserName);
+			window.localStorage.removeItem(UserAuthorizationInfo.UserName+'/Timestamps');
 		}
 
 

@@ -246,6 +246,11 @@ img
   line-height: 1.00;
   border-radius: 50px;
 }
+.checkin-button{
+  width:150px;
+  height:150px;
+  border-radius: 50%;
+}
 /*Onsen's carouse;*/
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 /*onsen notificatins page*/
@@ -1082,7 +1087,7 @@ p{
 .iconHomeView{
   margin-top:5px;
   margin-left: 10px;
-  font-size:24px;
+  font-size:28px;
   font-weight: 600;
   color: #2B6197;
   text-align: center;
@@ -1675,6 +1680,20 @@ Button appointments
      padding: 10px 0 0px 10px;
      margin-bottom: -4px;
  }
+ .image-profile-wrapper-home
+ {
+   height: 100px;
+   width:100px;
+   border-radius: 50%;
+   border:1px dashed darkgreen;
+
+ }
+ .image-profile-home{
+   margin:5px 5px 5px 5px;
+   height: 90px;
+   width:90px;
+   border-radius: 50%;
+ }
  .image-profile-wrapper
  {
    height: 80px;
@@ -1907,7 +1926,6 @@ a .action-col{
 /*
 *Map controller
 */
-
 .progress-circular {
   -webkit-animation: progress__rotate 2s linear infinite;
   -moz-animation: progress__rotate 2s linear infinite;
@@ -2194,107 +2212,4 @@ a .action-col{
   -ms-transform: scale(0);
   -o-transform: scale(0);
   transform: scale(0);
-}
-/*
-* Questionnaires
-*/
-.rotateDiv{
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);
-}
-.range {
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: none;
-  line-height: normal;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  vertical-align: top;
-  outline: none;
-  line-height: 1;
-  -webkit-appearance: none;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  border: none;
-  height: 2px;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(red), to(red));
-  background-image: -webkit-linear-gradient(red, red);
-  background-image: -moz-linear-gradient(red, red);
-  background-image: -o-linear-gradient(red, red);
-  background-image: linear-gradient(red, red);
-  background-position: left center;
-  -webkit-background-size: 100% 2px;
-  background-size: 100% 2px;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  height: 31px;
-}
-.range::-moz-range-track {
-  position: relative;
-  border: none;
-  background-color: #ddd;
-  height: 2px;
-  border-radius: 30px;
-  box-shadow: none;
-  top: 0;
-  margin: 0;
-  padding: 0;
-}
-.range::-webkit-slider-thumb {
-  cursor: pointer;
-  -webkit-appearance: none;
-  position: relative;
-  height: 29px;
-  width: 29px;
-  background-color: black;
-  border: 1px solid #ddd;
-  -webkit-border-radius: 30px;
-  border-radius: 30px;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  top: 0;
-  margin: 0;
-  padding: 0;
-}
-.range::-moz-range-thumb {
-  cursor: pointer;
-  position: relative;
-  height: 29px;
-  width: 29px;
-  background-color: black;
-  border: 1px solid #ddd;
-  border-radius: 30px;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-}
-.range::-webkit-slider-thumb:before {
-  position: absolute;
-  top: 13px;
-  right: 0px;
-  left: -1024px;
-  width: 1024px;
-  height: 2px;
-  background-color: rgba(24,103,194,0.81);
-  content: '';
-  margin: 0;
-  padding: 0;
-}
-.range:disabled {
-  opacity: 0.3;
-  cursor: default;
-  pointer-events: none;
 }

@@ -15,7 +15,7 @@ myApp.controller('ForgotPasswordController', ['$scope', 'FirebaseService','$stat
                   console.log("The specified user account does not exist.");
                   $timeout(function(){
                     $scope.alert.type="danger";
-                    $scope.alert.content="The specified user account does not exist.";
+                    $scope.alert.content="INVALID_USER";
                   });
 
                   break;
@@ -23,14 +23,14 @@ myApp.controller('ForgotPasswordController', ['$scope', 'FirebaseService','$stat
                   console.log(error);
                   $timeout(function(){
                     $scope.alert.type="danger";
-                    $scope.alert.content="Enter a valid email address";
+                    $scope.alert.content="INVALID_EMAIL";
                   });
               }
             } else {
               console.log("Password reset email sent successfully!");
               $timeout(function(){
                 $scope.alert.type="success";
-                $scope.alert.content="Password has been reset sucessfully, check your email for your temporary password!";
+                $scope.alert.content="EMAILPASSWORDSENT";
               });
             }
           });
@@ -38,7 +38,7 @@ myApp.controller('ForgotPasswordController', ['$scope', 'FirebaseService','$stat
           console.log(err);
           $timeout(function(){
             $scope.alert.type="danger";
-            $scope.alert.content="Enter a valid email address";
+            $scope.alert.content="INVALID_EMAIL";
           });
         }
 

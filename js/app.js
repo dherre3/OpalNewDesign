@@ -139,7 +139,7 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
     })
         .state('Home', {
         url: '/Home',
-        templateUrl: 'views/tabs.html',
+        templateUrl: 'views/tabs/tabs.html',
         controller: 'TabsController',
            resolve: {
       // controller will not be loaded until $waitForAuth resolves
@@ -156,7 +156,6 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
         templateUrl: 'views/logOut.html',
         controller: 'logOutController'
   });
-    $translatePartialLoaderProvider.addPart('home');
     $translateProvider.useLoader('$translatePartialLoader', {
       urlTemplate: './Languages/appTranslationTablesViews/{part}/{lang}.json'
     });
@@ -173,6 +172,10 @@ function($compileProvider)
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile):|data:image\//);
   }
 ]);
+
+myApp.config(function ($translateProvider) {
+    $translateProvider.useMissingTranslationHandlerLog();
+})
 /**
 *@ngdoc service
 *@name MUHCApp.run

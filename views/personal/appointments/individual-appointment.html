@@ -8,12 +8,43 @@
       <ons-list-item class="item">
         <div style="line-height:1" align="left">
           <header>
-              <span class="item-title" ng-class="fontSizeTitle">{{app.AppointmentType_EN}}</span>
-
+              <span class="item-title" ng-class="fontSizeTitle">{{app.Title}}</span>
           </header>
           <p class="item-desc" ng-class="fontSizeDesc">{{app.ScheduledStartTime|formatDateAppointmentTask}}</p>
           <p class="item-desc" ng-class="fontSizeDesc">{{app.ResourceName}}</p>
         </div>
+      </ons-list-item>
+    </ons-list>
+    <ons-list class="settings-list" ng-show="showCheckin">
+      <ons-list-item class="item" ng-click="openDocument()">
+            <div ng-show="loading" align="center">
+              <svg class="progress-circular">
+                <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+              </svg>
+            </div>
+            <div align="center" ng-show="!loading&&!showLiveUpdate">
+              <p class="item-desc" ng-class="fontSizeTitle">{{checkInMessage}}</p><br>
+              <button class="button checkin-button" ng-click="checkinToAppointment()" ng-disabled="!enableCheckinButton">
+                <span style="font-size:20px"><i class="iconHomeView ion-android-checkbox" style="color:white"></i><br> Check-in<span>
+            </button>
+            </div>
+            <div align="center" style="height:310px" ng-show="!loading&&showLiveUpdate">
+            <p class="item-desc" ng-class="fontSizeDesc" style="font-size:20px"><img ng-src="./img/checkedbox.png" width="20px" height="20px"> {{checkInMessage}}</p>
+              <div style="width:200px" >
+              <div id = "statusBarCheckin"></div>
+            </div>
+              <div style="margin-top:-170px;height:160px;overflow-y:hidden;width:200px;padding:0">
+              <p class="item-title" ng-class="fontSizeTitle"></p><br>
+              <p class="item-title"   ng-class="fontSizeTitle">Estimated Wait</p>
+              <p class="item-title" style='font-size:30px'>{{checkinEstimate}}</p>
+              <p class="item-title"   ng-class="fontSizeTitle">Minutes</p>
+            </div>
+            <div align="center" style="margin-top:10px">
+              <p class="item-title"  ng-class="fontSizeTitle">{{precedingPatientsLabel}}</p>
+              <p class="item-title"   ng-class="fontSizeTitle"> {{scheduleAhead}}</p>
+            </div>
+            </div>
+
       </ons-list-item>
     </ons-list>
     <ons-list class="settings-list" >
@@ -25,3 +56,16 @@
     </ons-list>
   </div>
   </ons-page>
+
+
+//Bigger font
+//You are checked in!
+
+Inside circle
+
+//Estimated Wait
+  20 - 30 minutes
+
+
+//2 patients ahead of you...
+//Approximately 10 minutes ahead of schedule

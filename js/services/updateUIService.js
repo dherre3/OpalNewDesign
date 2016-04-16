@@ -34,18 +34,18 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
       init:Messages.setUserMessages,
       update:Messages.updateUserMessages
     },
-    'Notifications':
-    {
-      init:Notifications.setUserNotifications,
-      update:Notifications.updateUserNotifications
-    },
     'LabTests': {
       init:LabResults.setTestResults,
       update:LabResults.updateTestResults
     },
     'MapLocation':
     {
-      update:MapLocation.updateMapLocation
+      update:MapLocation.updateMapLocation,
+      live:true
+    },
+    'Checkin':
+    {
+      live:true
     },
     'Diagnosis':
     {
@@ -66,6 +66,11 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
     {
       init:EducationalMaterial.setEducationalMaterial,
       update:EducationalMaterial.updateEducationalMaterial
+    },
+    'Notifications':
+    {
+      init:Notifications.setUserNotifications,
+      update:Notifications.updateUserNotifications
     }
   };
   function initLocalStorage()
@@ -104,7 +109,6 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
       }
       $q.all(promises).then(function(){
         Messages.setUserMessages(dataUserObject.Messages);
-        Notifications.setUserNotifications(dataUserObject.Notifications);
         UserPlanWorkflow.setTreatmentPlan(dataUserObject.Tasks, dataUserObject.Appointments);
         var plan={
             '1':{'Name':'CT for Radiotherapy Planning','Date':'2015-10-19T09:00:00Z','Description':' CT simulation includes a CT scan of the area of your body to be treated with radiation. The CT images acquired during your scan will be reconstructed and used to design the best and most precise treatment plan for you.','Type': 'Appointment'},
@@ -123,6 +127,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
           valAdded+=2;
           plan[key].Date=$filter('formatDateToFirebaseString')(tmp);
         }
+          EducationalMaterial.setEducationalMaterial(dataUserObject.EducationalMaterial);
           TxTeamMessages.setTxTeamMessages(dataUserObject.TxTeamMessages);
           Announcements.setAnnouncements(dataUserObject.Announcements);
           Diagnoses.setDiagnoses(dataUserObject.Diagnosis);
@@ -132,7 +137,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
           UserPreferences.getFontSize();
           Appointments.setUserAppointments(dataUserObject.Appointments);
           Notes.setNotes(dataUserObject.Notes);
-          EducationalMaterial.setEducationalMaterial(dataUserObject.EduationalMaterial)
+          Notifications.setUserNotifications(dataUserObject.Notifications);
           console.log(dataUserObject);
         /*if(mode=='Online')
           {
@@ -259,15 +264,19 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
               }else{
 
                 //Update individual fields e.g. 'Messages'
-                console.log(sections);
-                if(sections!=='MapLocation')
-                {
-                  RequestToServer.updateTimestamps(sections,time);
-                }
                 console.log('Im here');
                 console.log(data);
                 console.log(sections);
-                  sectionServiceMappings[sections]['update'](data[sections]);
+                  console.log(sections);
+                  if(!sectionServiceMappings[sections].hasOwnProperty('live'))
+                  {
+                    console.log('boom');
+                      RequestToServer.updateTimestamps(sections,time);
+                  }
+                  if(sectionServiceMappings[sections].hasOwnProperty('update'))
+                  {
+                      sectionServiceMappings[sections]['update'](data[sections]);
+                  }
                 }
               console.log(data);
               //Delete the data now that it has been proccessed, and dettaches the firebase ref.
@@ -276,6 +285,9 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
               //Resolve our promise to finish the loading and get the application going.
               r.resolve(data);
           }
+      },function(error){
+        console.log(error);
+        r.reject(error);
       });
       return r.promise;
     }
@@ -336,10 +348,26 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
       data=LocalStorage.ReadLocalStorage('All');
       console.log(data);
       sectionServiceMappings['All'].init(data, 'Offline');
-      updateSection('All').then(function()
-      {
+      var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+      if(app){
+          if($cordovaNetwork.isOnline()){
+            updateSection('All').then(function()
+            {
+              r.resolve(true);
+            }).catch(function(error){
+              console.log(error);
+              r.resolve(true);
+            });
+          }else{
+            r.resolve(true);
+          }
+      }else{
         r.resolve(true);
-      });
+      }
+      $timeout(function(){
+        r.resolve(true);
+      },5000)
+
       return r.promise;
     }
 
@@ -480,14 +508,14 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
               });
                   this.internetConnection=false;
                   console.log('Initiating services offline');
-                  return initServicesOffline();
+                  return initServicesFromLocalStorage();
                   }
           }else{
               //Computer check if online
               if(navigator.onLine){
                   console.log('online website');
                   this.internetConnection=true;
-                  return initServicesOnline();
+                  return initServicesFromLocalStorage();
               }else{
                   this.internetConnection=false;
                   console.log('offline website');

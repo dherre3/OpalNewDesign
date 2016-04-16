@@ -1,0 +1,36 @@
+{
+	"HEADER_MESSAGE_LOGIN":"Connexion",
+	"FORGOTPASSWORD":"Mot de passe oublié",
+	"INVALID_USER":"L'utilisateur n'existe pas!",
+	"INVALID_PASSWORD":"Mot de passe incorrect!",
+	"INVALID_EMAIL":"Email invalide!",
+	"INTERNETERROR":"Erreur de serveur, s'il vous plaît vérifier votre connexion Internet!",
+	"EMAILPASSWORDSENT":"Mot de passe a été réinitialisé avec succès, vérifiez votre email et votre mot de passe temporaire!",
+	"ENTEREMAIL":"Entrez votre adresse email:",
+	"CANCERCENTER":"Cancer des Cedrés",
+	"RESETPASSWORD":"Réinitialiser le mot de Passe",
+	"LOADING":"Chargement",
+	"NEWPASSWORD":"Mot de passe",
+	"SETPASSWORDLABEL":"Définir nouveau mot de passe",
+	"SETPASSWORDBUTTON":"Mot De Passe",
+	"SETPASSWORDPLACEHOLDER":"Définir mot de passe...",
+	"BACKTOLOGIN":"Retour connexion",
+	"ENTERSSNLABEL":"Enter your SSN Health Care ID:",
+	"ENTERSSNPLACEHOLDER":"Enter SSN...",
+	"CONTINUE":"Continué",
+	"SECURITYQUESTION":"Security Question",
+	"ENTERANSWERPLACEHOLDER":"Enter your answer...",
+	"ERRORENTERSSNNUMBER":"Enter an SSN number!",
+	"ERRORENTERVALIDSSN":"Enter Valid SSN!",
+	"ERRORINCORRECTSSN":"The SSN enter does not much our records, try again",
+	"ENTERANANSWER":"Enter an answer",
+	"ERRORANSWERNOTMATCH":"Answer does not match our records",
+	"CONTACTHOSPITAL":"Contact the hospital for assitance",
+	"ENTERVALIDPASSWORD":"Enter a valid password",
+	"SERVERPROBLEM":"Server problem, contact the hospital",
+	"PASSWORDSUCCESSRESET":"Password has been successfully changed, redirecting to login"
+
+
+
+
+}

@@ -1,8 +1,10 @@
 var myApp=angular.module('MUHCApp')
-myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$scope','$timeout','UpdateUI', 'RequestToServer','$timeout', function (Patient, UserPreferences, $scope, $timeout,UpdateUI, RequestToServer,$timeout) {
+myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$scope','$timeout','UpdateUI', 'RequestToServer','$timeout','$translatePartialLoader', '$filter',function (Patient, UserPreferences, $scope, $timeout,UpdateUI, RequestToServer,$timeout,$translatePartialLoader,$filter) {
     //Patient.setData($rootScope.FirstName, $rootScope.LastName, $rootScope.Pictures, $rootScope.TelNum, $rootScope.Email);
     //console.log(Patient.getFirstName());
     //var setNameFunction= Patient.setFirstName('as');
+    $translatePartialLoader.addPart('settings');
+
     $scope.closeAlert = function () {
 
         $rootScope.showAlert=false;
@@ -56,11 +58,11 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
             var message=''
             if(option==='EnableSMS'){
                 if($scope.checkboxModel===1){
-                    message='Would you like to enable your SMS messaging notifications?';
+                    message=$filter('translate')("ENABLESMSNOTIFICATIONQUESTION");
                 }else{
-                    message='Would you like to disable your SMS messaging notifications?';
+                    message=$filter('translate')("DISABLESMSNOTIFICATIONQUESTION");
                 }
-                navigator.notification.confirm(message, confirmCallbackSMS, 'Language Setting', ['Continue', 'Cancel'] );
+                navigator.notification.confirm(message, confirmCallbackSMS, $filter('translate')("CONFIRMALERTSMSLABEL"), [$filter('translate')("CONTINUE"), $filter('translate')("CANCEL")] );
                 function confirmCallbackSMS(index){
                     console.log(index);
                     if(index==1){
@@ -79,11 +81,11 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
                 }
             }else if(option==='Calendar'){
                 if($scope.checkboxModelCalendar===1){
-                    message='Would you like save your appointment schedule in your phone calendar?';
+                    message = $filter('translate')("ENABLECALENDARACCESSQUESTION");
                 }else{
-                    message='Would you like to disable your SMS messaging notifications?';
+                    message=$filter('translate')("DISABLECALENDARACCESSQUESTION");
                 }
-                navigator.notification.confirm(message, confirmCallbackCalendar, 'Calendar Setting', ['Continue', 'Cancel'] );
+                navigator.notification.confirm(message, confirmCallbackCalendar, $filter('translate')("CONFIRMALERTCALENDARLABEL"), [$filter('translate')("CONTINUE"),$filter('translate')("CANCEL")] );
                 function confirmCallbackCalendar(index){
                     console.log(index);
                     if(index==1){
@@ -111,44 +113,47 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
 
 
 
-myApp.controller('ChangingSettingController',function($rootScope,FirebaseService, tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
+myApp.controller('ChangingSettingController',function($filter,$rootScope,FirebaseService, tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
   console.log(UserAuthorizationInfo);
 
     accountChangeSetUp();
-
     function accountChangeSetUp(){
+    var fieldsMappings = {"Font-size":"FONTSIZE","Language":"LANGUAGE","Tel. Number" :"PHONENUMBER","Password":"PASSWORD","Email":"EMAIL","Alias":"ALIAS"};
     var page = settingsNavigator.getCurrentPage();
     var parameters=page.options.param;
     $scope.alertClass="bg-success updateMessage-success";
     $scope.value=parameters;
+    console.log(fieldsMappings);
+    $scope.valueLabel = $filter('translate')(fieldsMappings[parameters]);
     $scope.personal=true;
     $scope.type1='text';
-    $scope.updateMessage='Your '+ $scope.value+' has been updated!';
+    $scope.updateMessage="HASBEENUPDATED";
     if(parameters==='Alias'){
         $scope.newValue=Patient.getAlias();
-        $scope.instruction='Enter your new alias:'
+        $scope.instruction="ENTERYOURALIAS";
     }else if(parameters==='Last Name'){
         $scope.newValue=Patient.getLastName();
-        $scope.instruction='Enter your new last name:'
+        $scope.instruction="ENTERYOURLASTNAME"
     }else if(parameters==='Tel. Number'){
         $scope.newValue=Patient.getTelNum();
-        $scope.instruction='Enter your new telephone number:'
+        $scope.instruction="ENTERNEWTELEPHONE";
     }else if(parameters==='Email'){
         $scope.type1='email';
         $scope.type2='password';
         $scope.newValue='';
         $scope.oldValue='';
-        $scope.placeHolder='Enter your Password';
-        $scope.instruction='Enter your new email address:'
-        $scope.instructionOld='Enter your password:'
+        $scope.placeHolder=$filter('translate')("ENTERPASSWORD");
+        $scope.instruction="ENTEREMAILADDRESS";
+        $scope.instructionOld="ENTERPASSWORD";
     }else if(parameters==='Password'){
         $scope.type1='password';
         $scope.type2='password';
         $scope.newValue='';
         $scope.oldValue='';
-        $scope.placeHolder='Enter your old '+$scope.value;
-        $scope.instruction='Enter your new password:'
-        $scope.instructionOld='Enter your old password:'
+        var label = $filter('translate')('ENTEROLD')
+        $scope.placeHolder=label +$scope.valueLabel;
+        $scope.instruction="ENTERNEWPASSWORD";
+        $scope.instructionOld="ENTEROLDPASSWORD";
     }else if(parameters==='Language'){
         var value=UserPreferences.getLanguage();
         $scope.instruction='Select language';
@@ -162,7 +167,7 @@ myApp.controller('ChangingSettingController',function($rootScope,FirebaseService
         var value=UserPreferences.getFontSize();
          $scope.firstOption='medium';
         $scope.secondOption='large';
-        $scope.instruction='Select font size';
+        $scope.instruction="SELECTFONTSIZE";
         $scope.personal=false;
         $scope.fontUpdated=true;
         $scope.pickFont=value;

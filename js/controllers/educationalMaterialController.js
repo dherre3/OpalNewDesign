@@ -1,11 +1,54 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('EducationalMaterialController',function($scope, $timeout, $cordovaFileOpener2,$cordovaDevice,$cordovaDatePicker){
+myApp.controller('EducationalMaterialController',function(NavigatorParameters, $scope, $timeout, $cordovaFileOpener2,$cordovaDevice,$cordovaDatePicker, FileManagerService, EducationalMaterial, UserPreferences){
 
-	$scope.educationDeviceBackButton=function()
-  {
-    console.log('device button pressed do nothing');
+//Android device backbutton
+$scope.educationDeviceBackButton=function()
+{
+  console.log('device button pressed do nothing');
 
-  }
+}
+init();
+//Init function
+function init()
+{
+	//Obtaining materials from service
+	var materials = EducationalMaterial.getEducationalMaterial();
+	console.log(materials);
+	//Setting the language for view
+	materials = EducationalMaterial.setLanguageEduationalMaterial(materials);
+	//Attaching to scope
+	$scope.edumaterials = materials;
+}
+
+//Function to decide whether or not to show the header
+$scope.showHeader = function(index)
+{
+	if(index == 0)
+	{
+		return true;
+	}else if($scope.edumaterials[index-1].PhaseInTreatment !== $scope.edumaterials[index].PhaseInTreatment)
+	{
+		return true;
+	}
+	return false;
+}
+
+$scope.goToEducationalMaterial = function (edumaterial)
+{
+	if(edumaterial.ReadStatus == '0')
+	{
+		edumaterial.ReadStatus ='1';
+		EducationalMaterial.readEducationalMaterial(edumaterial.EducationalMaterialSerNum);
+	}
+	var result = EducationalMaterial.openEducationalMaterial(edumaterial);
+	console.log(result);
+	if(result !== -1)
+	{
+		NavigatorParameters.setParameters({'Navigator':'educationNavigator','Post':edumaterial});
+		educationNavigator.pushPage(result.Url);
+	}
+}
+
 
 $scope.open=function(type){
 
@@ -63,30 +106,46 @@ $scope.openVideo=function(){
 };
 
 });
-myApp.controller('IndividualEduMaterialController',['$scope','$timeout','$sce','NavigatorParameters',function($scope,$timeout,$sce,NavigatorParameters){
-	var page=educationNavigator.getCurrentPage();
-	var url=page.options.param;
-	console.log(url);
+myApp.controller('EducationalMaterialTOCController',['$scope','$timeout','NavigatorParameters','UserPreferences','EducationalMaterial', function($scope,$timeout,NavigatorParameters,UserPreferences,EducationalMaterial){
+	var param = NavigatorParameters.getParameters();
+	var navigatorPage = param.Navigator;
+	$scope.edumaterial= param.Post;
+	console.log(param);
+	console.log(	$scope.edumaterial);
+	$scope.tableOfContents = $scope.edumaterial['TableContents'];
+	console.log($scope.tableOfContents);
+	$scope.tableOfContents = EducationalMaterial.setLanguageEduationalMaterial($scope.tableOfContents);
+
+		$scope.goToDetails=function()
+		{
+			NavigatorParameters.setParameters({'Navigator':navigatorPage,'Post':$scope.edumaterial});
+		}
+		$scope.goToEducationalMaterial=function(edumaterial)
+		{
+			NavigatorParameters.setParameters({'Navigator':navigatorPage,'Post':edumaterial});
+			var url = './views/education/individual-material.html';
+			window[navigatorPage].pushPage(url);
+		}
+}]);
+
+myApp.controller('IndividualEduMaterialController',['$scope','$timeout','NavigatorParameters','EducationalMaterial', function($scope,$timeout,NavigatorParameters,EducationalMaterial){
+	var parameters = NavigatorParameters.getParameters();
+	var material = parameters.Post;
+	var navigatorName = parameters.Navigator;
 	$scope.notLoaded=true;
+	material = EducationalMaterial.setLanguageEduationalMaterial(material);
 	$scope.goToOptions=function()
 	{
 		NavigatorParameters.setParameters({'view':'Educational'});
 	}
-	$.get(url, function(res) {
+	console.log(material);
+	$.get(material.Url, function(res) {
 
-			 console.log("index.html", res.replace(/(\r\n|\n|\r)/gm, " "));
+		 console.log("res", res.replace(/(\r\n|\n|\r)/gm, " "));
 			 $timeout(function(){
 				 $scope.notLoaded=false;
 				 $scope.htmlBind=res;
 			 });
 
 	 });
-
-	//$scope.url=$sce.trustAsResourceUrl(url);
-	/*var frame=document.getElementById('frameEducational');
-	var heightTreatment=document.documentElement.clientHeight-95;
-	frame.style.height=heightTreatment+'px';
-*/
-
-
-  }]);
+}]);

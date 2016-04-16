@@ -1,84 +1,55 @@
 var myApp = angular.module('MUHCApp');
-myApp.controller('NotificationsController', ['RequestToServer','Notifications', 'UpdateUI', '$scope', '$timeout','$rootScope', 'UserPreferences', 'Appointments', 'Documents','Notes', function (RequestToServer, Notifications, UpdateUI, $scope,$timeout,$rootScope, UserPreferences, Appointments, Documents, Notes) {
-    //Clear Number of Notifications in menu once inside the notification center.
+myApp.controller('NotificationsController', ['RequestToServer','Notifications', 'UpdateUI', '$scope', '$timeout','$rootScope', 'UserPreferences', 'Appointments', 'Documents','NavigatorParameters', function (RequestToServer, Notifications, UpdateUI, $scope,$timeout,$rootScope, UserPreferences, Appointments, Documents, NavigatorParameters) {
+  init();
 
-    /*
-    *   Refreshing pull down hook functionality for the notification center
-    */
-        setViewNotifications();
-       function loadInfo(){
-                var UserData=UpdateUI.UpdateSection('Notifications');
-                UserData.then(function(){
-                            setViewNotifications()
-                });
-        };
-         $scope.load = function($done) {
-           RequestToServer.sendRequest('Refresh','Notifications');
-          $timeout(function() {
-            loadInfo();
-                $done();
+  function init()
+  {
+     $scope.noNotifications = true;
+    var notifications = Notifications.getUserNotifications();
+    if (notifications.length > 0)  $scope.noNotifications = false;
+    notifications = Notifications.setNotificationsLanguage(notifications);
+    $scope.notifications = notifications;
+    console.log($scope.notifications);
+  }
 
-          }, 3000);
-        };
-    /*
-    *   Notification Center Display View.
-    */
-    function setViewNotifications(){
-      $rootScope.showAlert=false;
-      $rootScope.Notifications='';
-      $rootScope.TotalNumberOfNews='';
 
-      $scope.NotificationsArray=[];
-        var Language=UserPreferences.getLanguage();
-        var notificationsArray=Notifications.getUserNotifications();
-        console.log(notificationsArray);
-        if(notificationsArray.length===0){
-            $scope.noNotifications=true;
-            return;
-        }
-
-        $scope.noNotifications=false;
-        if(Language==='EN'){
-            for (var i = 0; i < notificationsArray.length; i++) {
-                notificationsArray[i].Name=notificationsArray[i].AliasName_EN;
-                notificationsArray[i].Content=notificationsArray[i].AliasDescription_EN;
-            }
-        }else{
-            for (var i = 0; i < notificationsArray.length; i++) {
-                notificationsArray[i].Name=notificationsArray[i].AliasName_FR;
-                notificationsArray[i].Content=notificationsArray[i].AliasDescription_FR;
-            }
-        }
-        $timeout(function(){
-          $scope.NotificationsArray=notificationsArray;
-        });
-
+  //Show header function helper
+  $scope.showHeader=function(index)
+  {
+    if(index==0)
+    {
+      return true;
+    }else{
+      var previous = (new Date($scope.notifications[index-1].DateAdded)).setHours(0,0,0,0);
+      var current = (new Date($scope.notifications[index].DateAdded)).setHours(0,0,0,0);
+      return (previous == current) ?  false : true;
     }
-
+  }
     $scope.goToNotification=function(index,notification){
-        console.log(notification.Type);
+      console.log(notification);
+      console.log(index);
         if(notification.ReadStatus==='0'){
-            RequestToServer.sendRequest('NotificationRead',{NotificationSerNum:notification.NotificationSerNum});
-            Notifications.setNotificationReadStatus(index);
+            RequestToServer.sendRequest('Read',{"Id":notification.NotificationSerNum, "Field":"Notifications"});
+            Notifications.readNotification(index,notification);
         }
-        generalNavigator.pushPage('./views/general/announcements/individual-notification.html',{param:notification},{ animation : 'slide' } );
-
+        var post = (notification.hasOwnProperty('Post')) ? notification.Post : Notifications.getPost(notification);
+        if(notification.hasOwnProperty('PageUrl'))
+        {
+          NavigatorParameters.setParameters({'Navigator':'generalNavigator', 'Post':post});
+          generalNavigator.pushPage(notification.PageUrl);
+        }else{
+            var result = Notifications.goToPost(notification.NotificationType, post);
+          if(result !== -1  )
+          {
+            NavigatorParameters.setParameters({'Navigator':'generalNavigator', 'Post':post});
+            generalNavigator.pushPage(result.Url);
+          }
+        }
     }
+
 }]);
 
 myApp.controller('IndividualNotificationController',['$scope','Notifications','NavigatorParameters',function($scope,Notifications,NavigatorParameters){
+  console.log(NavigatorParameters.getParameters());
 
-  if(typeof generalNavigator!=='undefined'&&typeof generalNavigator.getCurrentPage()!=='undefined'&&typeof generalNavigator.getCurrentPage().options.param !=='undefined')
-  {
-      var page=generalNavigator.getCurrentPage();
-      var parameters=page.options.param;
-      delete page.options.param;
-      $scope.notification=parameters;
-      $scope.showTab=false;
-  }else{
-    var param= NavigatorParameters.getParameters();
-    console.log(param);
-      $scope.notification=param.Type;
-      $scope.notification=param.Value;
-  }
 }]);

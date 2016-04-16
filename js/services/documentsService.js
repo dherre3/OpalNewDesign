@@ -3,7 +3,6 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 	//Array photos contains all the documents for the patient
 	var photos=[];
 	var documentsNoFiles=[];
-	var unreadDocuments=[];
 	//Check document, if its an update delete it from photos
 	function searchDocumentsAndDelete(documents)
 	{
@@ -62,6 +61,7 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 								documents[i].CDVfilePath=" cdvfile://localhost/sdcard/Documents/"+documents[i].NameFileSystem;
 						}else if(platform==='iOS'){
 							targetPath = cordova.file.documentsDirectory+ 'Documents/docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
+							console.log('IOS', targetPath);
 							documents[i].NameFileSystem='docMUHC'+documents[i].DocumentSerNum+"."+documents[i].DocumentType;
 							console.log(documents[i].NameFileSystem);
 							documents[i].CDVfilePath="cdvfile://localhost/persistent/Documents/"+documents[i].NameFileSystem;
@@ -78,7 +78,6 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 					//Add to localStorage array
 					documentsNoFiles.push(documents[i]);
 				}
-
 				var imageToPhotoObject={};
 				var url = documents[i].Content;
 				imageToPhotoObject=copyObject(documents[i]);
@@ -88,8 +87,7 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 				imageToPhotoObject.DateAdded=$filter('formatDate')(imageToPhotoObject.DateAdded);
 				console.log('boom');
 				photos.push(imageToPhotoObject);
-
-				//Update Local Storage
+				photos=$filter('orderBy')(photos,'DateAdded',false);
 			};
 			console.log(photos);
 			LocalStorage.WriteToLocalStorage('Documents',documentsNoFiles);
@@ -119,15 +117,19 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 			console.log(documents);
 			var r=$q.defer();
 			photos=[];
+			documentsNoFiles = [];
 			if(!documents) return;
 			//var promises=[];
 			for (var i = 0; i < documents.length; i++) {
+				var temp = angular.copy(documents);
+				documentsNoFiles.push(temp);
 				var imageToPhotoObject={};
 				documents[i].DateAdded=$filter('formatDate')(documents[i].DateAdded);
 				//promises.push(FileManagerService.getFileUrl(documents[i].PathFileSystem));
 				documents[i].Content=documents[i].CDVfilePath;
 				photos.push(documents[i]);
 			}
+			console.log(photos);
 			console.log(photos);
 			console.log(documents);
 			r.resolve(documents);
@@ -160,14 +162,36 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 			array=$filter('orderBy')(array,'DateAdded');
 			return array;
 		},
+		//Get number of unread news
+		getNumberUnreadDocuments:function()
+		{
+			var number = 0;
+			for (var i = 0; i < photos.length; i++) {
+				if(photos[i].ReadStatus == '0')
+				{
+					number++;
+				}
+			}
+			return number;
+		},
 		readDocument:function(serNum)
 		{
 			for (var i = 0; i < photos.length; i++) {
 				if(photos[i].DocumentSerNum==serNum){
 					photos[i].ReadStatus='1';
-					RequestToServer.sendRequest('ReadDocument',{DocumentSerNum:serNum});
+					documentsNoFiles[i].ReadStatus = '1';
+					LocalStorage.WriteToLocalStorage('Documents', documentsNoFiles);
+					RequestToServer.sendRequest('Read',{'Field':'Documents', Id:serNum});
 				}
 			}
+		},
+		getDocumentNames:function(serNum)
+		{
+			for (var i = 0; i < photos.length; i++) {
+				if(photos[i].DocumentSerNum==serNum){
+					return {NameEN: photos[i].AliasName_EN, NameFR:photos[i].AliasName_FR};
+				}
+			};
 		},
 		getDocumentBySerNum:function(serNum)
 		{
@@ -176,6 +200,30 @@ myApp.service('Documents',['UserPreferences', '$cordovaDevice','$cordovaNetwork'
 					return photos[i];
 				}
 			};
+		},
+		getDocumentUrl:function(serNum)
+		{
+			return './views/personal/my-chart/individual-document.html';
+		},
+		//array can be string or array
+		setDocumentsLanguage:function(array)
+		{
+			//Get language
+			var language = UserPreferences.getLanguage();
+
+			//Check if array
+			if (Object.prototype.toString.call( array ) === '[object Array]') {
+				for (var i = 0; i < array.length; i++) {
+					//set language
+						array[i].Title = (language=='EN')? array[i].AliasName_EN : array[i].AliasName_FR;
+						array[i].Description = (language == 'EN')? array[i].AliasDescription_EN : array[i].AliasDescription_FR;
+				}
+			}else{
+				//set language if string
+				array.Description = (language == 'EN')? array.AliasDescription_EN : array.AliasDescription_FR;
+				array.Title = (language=='EN')? array.AliasName_EN : array.AliasName_FR;
+			}
+			return array;
 		}
 
 	};

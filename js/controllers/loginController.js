@@ -18,8 +18,20 @@ var myApp=angular.module('MUHCApp')
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage',function ($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage) {
+myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale',function ($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale) {
   console.log(FirebaseService);
+  $translatePartialLoader.addPart('login');
+  $scope.changeLanguage = function(value)
+  {
+    if(value == 0)
+    {
+      tmhDynamicLocale.set('en');
+      $translate.use('en');
+    }else{
+      tmhDynamicLocale.set('fr');
+      $translate.use('fr');
+    }
+  }
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());
   //demoSignIn();
   /*checkForSessionEnd=function()
@@ -90,6 +102,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
         }
       }
   });
+  //demoSignIn();
   //Creating reference to firebase link
   function demoSignIn()
   {
@@ -115,11 +128,11 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
       if(typeof email=='undefined'||email=='')
       {
           $scope.alert.type='danger';
-          $scope.alert.content="Enter a valid email address!";
+          $scope.alert.content="INVALID_EMAIL";
       }else if(typeof password=='undefined'||password=='')
       {
           $scope.alert.type='danger';
-          $scope.alert.content="Invalid Password!";
+          $scope.alert.content="INVALID_PASSWORD";
       }else{
         myDataRef.authWithPassword({
             email: username,
@@ -134,31 +147,28 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
     $rootScope.activeLogin='true';
     if (error) {
         console.log("Login Failed!", error);
+        $scope.alert.type='danger';
         switch (error.code) {
           case "INVALID_EMAIL":
             console.log("The specified user account email is invalid.");
             $timeout(function(){
-              $scope.alert.type='danger';
-              $scope.alert.content="Enter a valid email address!";
+              $scope.alert.content="INVALID_EMAIL";
             });
             break;
           case "INVALID_PASSWORD":
           $timeout(function(){
-            $scope.alert.type='danger';
-            $scope.alert.content="Invalid Password!";
+            $scope.alert.content="INVALID_PASSWORD";
           });
             break;
           case "INVALID_USER":
             $timeout(function(){
-              $scope.alert.type='danger';
-              $scope.alert.content="User does not exist!";
+              $scope.alert.content="INVALID_USER";
             });
             break;
           default:
             console.log("Error logging user in:", error);
             $timeout(function(){
-              $scope.alert.type='danger';
-              $scope.alert.content="Server error, check your internet connection!";
+              $scope.alert.content="INTERNETERROR";
             });
         }
     } else {
@@ -199,4 +209,5 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
 
     }
 }
+
 }]);

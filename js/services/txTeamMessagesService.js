@@ -1,6 +1,6 @@
 var myApp=angular.module('MUHCApp');
 //Service that deals with the treatment team message information
-myApp.service('TxTeamMessages', ['$filter','RequestToServer','LocalStorage', function($filter,RequestToServer, LocalStorage){
+myApp.service('TxTeamMessages', ['$filter','RequestToServer','LocalStorage', 'UserPreferences', function($filter,RequestToServer, LocalStorage,UserPreferences){
   //Initializing array that represents all the informations for TxTeamMessages
   var txTeamMessagesArray=[];
 
@@ -9,7 +9,7 @@ myApp.service('TxTeamMessages', ['$filter','RequestToServer','LocalStorage', fun
   {
     for (var i = 0; i < messages.length; i++) {
       for (var j = 0; j < txTeamMessagesArray.length; j++) {
-        if(txTeamMessagesArray[j].RecordSerNum==messages[i].RecordSerNum)
+        if(txTeamMessagesArray[j].TxTeamMessageSerNum==messages[i].TxTeamMessageSerNum)
         {
           txTeamMessagesArray.splice(j,1);
         }
@@ -69,26 +69,83 @@ myApp.service('TxTeamMessages', ['$filter','RequestToServer','LocalStorage', fun
         }
         return array;
     },
+    //Get number of unread news
+    getNumberUnreadTxTeamMessages:function()
+    {
+      var number = 0;
+      for (var i = 0; i < txTeamMessagesArray.length; i++) {
+        if(txTeamMessagesArray[i].ReadStatus == '0')
+        {
+          number++;
+        }
+      }
+      return number;
+    },
     //Obtain a team message by ser num
     getTxTeamMessageBySerNum:function(serNum)
     {
       for (var i = 0; i < txTeamMessagesArray.length; i++) {
-        if(txTeamMessagesArray[i].RecordSerNum==serNum)
+        if(txTeamMessagesArray[i].TxTeamMessageSerNum==serNum)
         {
           return angular.copy(txTeamMessagesArray[i]);
         }
       }
     },
     //Reads the treatment team message and sends it to backend for processing
-    readTxTeamMessage:function(serNum)
+    readTxTeamMessageBySerNum:function(serNum)
     {
       for (var i = 0; i < txTeamMessagesArray.length; i++) {
-        if(txTeamMessagesArray[i].RecordSerNum==serNum)
+        if(txTeamMessagesArray[i].TxTeamMessageSerNum==serNum)
         {
-          txTeamMessagesArray[i]='1';
+          txTeamMessagesArray[i].ReadStatus='1';
           RequestToServer.sendRequest('Read',{'Id':serNum, 'Field':'TxTeamMessages'});
         }
       }
+    },
+    readTxTeamMessage:function(serNum)
+    {
+      for (var i = 0; i < txTeamMessagesArray.length; i++) {
+        if(serNum == txTeamMessagesArray[i].TxTeamMessageSerNum)
+        {
+          txTeamMessagesArray[i].ReadStatus = '1';
+          LocalStorage.WriteToLocalStorage('TxTeamMessages',txTeamMessagesArray);
+          RequestToServer.sendRequest('Read',{'Id':serNum, 'Field':'TxTeamMessages'});
+          break;
+        }
+      }
+    },
+    getTxTeamMessageName:function(serNum)
+    {
+      console.log(txTeamMessagesArray);
+      for (var i = 0; i < txTeamMessagesArray.length; i++) {
+        if(txTeamMessagesArray[i].TxTeamMessageSerNum==serNum)
+        {
+          console.log({ NameEN: txTeamMessagesArray[i].PostName_EN, NameFR:txTeamMessagesArray[i].PostName_FR});
+          return { NameEN: txTeamMessagesArray[i].PostName_EN, NameFR:txTeamMessagesArray[i].PostName_FR};
+        }
+      }
+    },
+    getTxTeamMessageUrl:function(serNum)
+    {
+      return './views/personal/treatment-team-messages/individual-team-message.html';
+    },
+    setLanguageTxTeamMessages :function(array)
+    {
+      var language = UserPreferences.getLanguage();
+      //Check if array
+      if (Object.prototype.toString.call( array ) === '[object Array]') {
+        for (var i = 0; i < array.length; i++) {
+          //set language
+            array[i].Title = (language=='EN')? array[i].PostName_EN : array[i].PostName_FR;
+            array[i].Body = (language == 'EN')? array[i].Body_EN : array[i].Body_FR;
+        }
+      }else{
+        //set language if string
+        array.Title = (language=='EN')? array.PostName_EN : array.PostName_FR;
+        array.Body = (language == 'EN')? array.Body_EN: array.Body_FR;
+      }
+      return array;
     }
+
   };
   }]);

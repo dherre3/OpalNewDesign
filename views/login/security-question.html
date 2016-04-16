@@ -3,19 +3,19 @@
 		<div class="left">
 			<ons-back-button>Back</ons-back-button>
 		</div>
-		<div class="center">Security Question</div>
+		<div class="center">{{"SECURITYQUESTION"|translate}}</div>
 	</ons-toolbar>
 	<div class="container" align="center" style="margin-top:5vh">
 		<img src="./img/muhc-logo-text.png">
-		<h5 style="color:#2E8AE6">Cedars Cancer Center</h5>
+		<h5 style="color:#2E8AE6">{{"CANCERCENTER"|translate}}</h5>
 			<img ng-src="./img/opal.png" style="width:50px">
 			<form name="formPassword"  novalidate>
 				<div class="form-group" align="center"  >
         <label name="text">{{Question}}</label><br/>
-				<uib-alert ng-show="alert.type" type="{{alert.type}}">{{alert.content}}</uib-alert>
-				<input class="text-input" type="text" name="text" ng-model="answer" placeholder="Enter your answer" />
+				<uib-alert ng-show="alert.type" type="{{alert.type}}" translate = "{{alert.content}}"></uib-alert>
+				<input class="text-input" type="text" name="text" ng-model="answer" placeholder="{{'ENTERANSWERPLACEHOLDER'|translate}}" />
 				<br/><br/>
-				<button class="button button--large" type="submit" value="Save" ng-disabled="threeTries" ng-click="submitAnswer(answer)">Continue</button>
+				<button class="button button--large" type="submit" value="Save" ng-disabled="threeTries" ng-click="submitAnswer(answer)">{{"CONTINUE"|translate}}</button>
 				</div>
 			</form>
 		</div>
