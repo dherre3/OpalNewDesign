@@ -262,7 +262,7 @@ myApp.service('Notifications',['$rootScope','$filter','RequestToServer','LocalSt
                 Notifications[i].Number = 1;
                 array.push(Notifications[i]);
               }else{
-                readNotification(i, Notifications[i].NotificationSerNum);
+                readNotification(i, Notifications[i]);
               }
             }
           }

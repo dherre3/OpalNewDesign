@@ -1,5 +1,20 @@
 var myApp = angular.module('MUHCApp');
 myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$scope', '$timeout', 'UserPreferences', 'RequestToServer', '$cordovaFile','UserAuthorizationInfo','$q','$filter','NavigatorParameters',function(Patient, Documents, UpdateUI, $scope, $timeout, UserPreferences, RequestToServer,$cordovaFile,UserAuthorizationInfo,$q,$filter,NavigatorParameters) {
+  var urlMedia = cordova.file.applicationDirectory+'www/sounds/chime.wav';
+  window.resolveLocalFileSystemURL(urlMedia,function(file){
+    var filePath = file.toInternalURL();
+    console.log(filePath);
+    var media = new Media(filePath,function(success){
+      media.play();
+      console.log(success);
+    },function(error){
+      console.log(error);
+    });
+    media.play();
+  },function(error){
+    console.log(error);
+  });
+
   documentsInit();
   function documentsInit() {
     $scope.documents = Documents.getDocuments();

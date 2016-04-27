@@ -12,7 +12,7 @@ myApp.controller('ScanMapLocationController',['$timeout','$scope','RequestToServ
 		console.log(data);
 		$scope.showLoadingScreen=false;
 		$timeout(function(){
-				$scope.map=MapLocation.getMapLocation();
+				$scope.map = data;
 				console.log($scope.map);
 				if(typeof $scope.map !=='undefined')
 				{

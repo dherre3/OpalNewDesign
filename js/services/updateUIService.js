@@ -47,6 +47,14 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
     {
       live:true
     },
+    'CheckinUpdate':
+    {
+      live:true
+    },
+    'CheckCheckin':
+    {
+      live:true
+    },
     'Diagnosis':
     {
       init:Diagnoses.setDiagnoses,
@@ -205,7 +213,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
           }, 7000);
         return r.promise;
     }*/
-    function updateSection(sections,parameters)
+    function updateSection(sections, parameters)
     {
 
       //Start promise
@@ -222,7 +230,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
       }else if(sections=='ArrayFields'){
         pathToSection=username+'/'+deviceId+'/ArrayFields';
       }else{
-        pathToSection=username+'/'+deviceId+'/Field';
+        pathToSection=username+'/'+deviceId+'/Field/'+sections;
         /*if(sections!=='UserPreferences'){
 
         }else{
@@ -234,12 +242,10 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
           var data=snapshot.val();
           //Only if data is defined as firebase also calls value first time when data is undefined
           if(data&&typeof data!=='undefined'){
-              console.log(data);
               //Decrypts incoming data
               var time=(new Date()).getTime();
-              console.log(time);
               data=EncryptionService.decryptData(data);
-              console.log(data);
+              console.log(sections, data);
               if(data.Response=='No Results')
               {
                 console.log('Deleting response');
@@ -262,27 +268,23 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
                   sectionServiceMappings[paramaters[i]]['update'](data[paramaters[i]],'Online');
                 }
               }else{
-
-                //Update individual fields e.g. 'Messages'
-                console.log('Im here');
-                console.log(data);
-                console.log(sections);
-                  console.log(sections);
                   if(!sectionServiceMappings[sections].hasOwnProperty('live'))
                   {
-                    console.log('boom');
                       RequestToServer.updateTimestamps(sections,time);
                   }
                   if(sectionServiceMappings[sections].hasOwnProperty('update'))
                   {
-                      sectionServiceMappings[sections]['update'](data[sections]);
+                      sectionServiceMappings[sections]['update'](data);
                   }
                 }
-              console.log(data);
               //Delete the data now that it has been proccessed, and dettaches the firebase ref.
-              ref.child(pathToSection).set(null);
+              console.log(pathToSection);
+              ref.child(pathToSection).set(null,function(as){
+                console.log(as);
+              });
               ref.child(pathToSection).off();
               //Resolve our promise to finish the loading and get the application going.
+              console.log('About to return',sections, data);
               r.resolve(data);
           }
       },function(error){
@@ -515,7 +517,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
               if(navigator.onLine){
                   console.log('online website');
                   this.internetConnection=true;
-                  return initServicesFromLocalStorage();
+                  return initServicesOnline();
               }else{
                   this.internetConnection=false;
                   console.log('offline website');

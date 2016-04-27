@@ -35,15 +35,32 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
 
       }
     }
+    function findClosestAppointmentForCheckin(todayAppointments)
+    {
+      var todayTime = (new Date()).getTime();
+      var min = todayAppointments[0];
+      var minDifference = Infinity;
+      for (var i = 1; i < todayAppointments.length; i++) {
+        var difference = Math.abs((todayAppointments[i].ScheduledStartTime).getTime() - todayTime);
+        if(difference<minDifference)
+        {
+          minDifference = difference;
+          min = todayAppointments[i];
+        }
+      }
+      return min;
+    }
     function getCheckinAppointment()
     {
-      var futureAppointment = getAppointmentsInPeriod('Future');
-      if(futureAppointment.length >0)
+      var todayAppointments = getAppointmentsInPeriod('Today');
+      console.log(todayAppointments);
+      todayAppointments = todayAppointments.filter(function(appointment){
+        if(appointment.hasOwnProperty('StatusClose')) return false;
+        else return true;
+      });
+      if(todayAppointments.length >0)
       {
-        futureAppointment = futureAppointment[0];
-        console.log(futureAppointment);
-        if ((new Date()).setHours(0,0,0,0)==(new Date(futureAppointment.ScheduledStartTime)).setHours(0,0,0,0))return futureAppointment;
-        else return null;
+        return findClosestAppointmentForCheckin(todayAppointments);
       }else{
         return null;
       }
@@ -63,7 +80,7 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
       for (var i = 0; i < UserAppointmentsArray.length; i++) {
         var date=UserAppointmentsArray[i].ScheduledStartTime;
         //If appointment is the same date add it to the array
-          if(period=='Today'&&date.getDate()==day&&date.getFullYear().year&&date.getMonth()==month)
+          if(period=='Today'&&date.getDate() == day && date.getFullYear() == year && date.getMonth() == month)
           {
             array.push(UserAppointmentsArray[i]);
             //If appointment is in the future add it to the array
@@ -406,6 +423,18 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
         getCheckinAppointment:function()
         {
           return getCheckinAppointment();
+        },
+        setCheckinAppointmentAsClosed:function(serNum)
+        {
+          for (var i = 0; i < UserAppointmentsArray.length; i++)
+          {
+            if(UserAppointmentsArray[i].AppointmentSerNum == serNum)
+            {
+              UserAppointmentsArray[i].StatusClose = true;
+              appointmentsLocalStorage[i].StatusClose = true;
+            }
+            LocalStorage.WriteToLocalStorage('Appointments', appointmentsLocalStorage);
+          }
         },
         isCheckinAppointment:function(appointment)
         {

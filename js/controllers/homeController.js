@@ -3,7 +3,8 @@
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
 var myApp = angular.module('MUHCApp');
-myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters','NativeNotification',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters,NativeNotification) {
+myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters','NativeNotification',
+'NewsBanner',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters,NativeNotification,NewsBanner) {
       $translatePartialLoader.addPart('home');
         $scope.homeDeviceBackButton=function()
         {
@@ -86,13 +87,17 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       NavigatorParameters.setParameters({'Navigator':'homeNavigator'})
       homeNavigator.pushPage('views/home/status/status.html')
     }
+
     //Set notifications function
     function setNotifications()
     {
       //Obtaining new documents and setting the number and value for last document, obtains unread notifications every time it reads
       $scope.notifications = Notifications.getUnreadNotifications();
+      if($scope.notifications.length>0)
+      {
+        NewsBanner.showAlert('notifications');
+      }
       console.log($scope.notifications);
-
       //Sets language for the notification
       $scope.notifications = Notifications.setNotificationsLanguage($scope.notifications);
     }
@@ -174,23 +179,44 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
 
     function setUpCheckin()
     {
+      //Get checkin appointment for the day, gets the closest appointment to right now
       var checkInAppointment = Appointments.getCheckinAppointment();
       console.log(checkInAppointment);
       if(checkInAppointment)
       {
+        //If there is an appointment shows checkin tab on home page otherwise it does not
         $scope.showCheckin = true;
         $scope.checkInAppointment = checkInAppointment;
+        //Case 1:Appointment checkin is 0, not checked-in
         if(checkInAppointment.Checkin == '0')
         {
+          //Checkin message before appointment gets set and is changed only if appointment was checked into already from Aria
           $rootScope.checkInMessage = "CHECKIN_MESSAGE_BEFORE";
           $rootScope.showHomeScreenUpdate = false;
+
+          //Queries the server to find out whether or not an appointment was checked into
+          CheckinService.checkCheckinServer(checkInAppointment).then(function(data)
+          {
+            //If it has, then it simply changes the message to checkedin and queries to get an update
+            if(data=='success')
+            {
+              console.log('Returning home');
+              $timeout(function()
+              {
+                $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
+                $rootScope.showHomeScreenUpdate = true;
+                CheckinService.getCheckinUpdates(checkInAppointment);
+              })
+            }
+          });
         }else{
+          //Case:2 Appointment already checked-in show the message for 'you are checked in...' and query for estimate
           $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
           $rootScope.showHomeScreenUpdate = true;
           CheckinService.getCheckinUpdates(checkInAppointment);
         }
-        console.log(checkInAppointment);
       }else{
+        //Case where there are no appointments that day
         $scope.showCheckin = false;
       }
     }

@@ -621,54 +621,100 @@ myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$sco
           NavigatorParameters.setParameters($scope.app);
           window[navigatorName].pushPage('./views/general/maps/individual-map.html');
         }
+
+        //Function to checkin for appointment after pressing checked in inside invidivual appointment
         $scope.checkinToAppointment = function()
         {
-          CheckinService.checkinToAppointment($scope.app);
-          $scope.loading = false;
-          $rootScope.showHomeScreenUpdate = true;
-          $scope.checkInMessage = 'You have checked in!';
-          $scope.showLiveUpdate = true;
-          $rootScope.checkInMessage = 'You have checked in!';
+          //set the loading to true
+          $scope.loading = true;
+          //Try checking in,
+          CheckinService.checkinToAppointment($scope.app).then(function(response)
+          {
+            //If successfully checked in set loading to false, show live update, send live update request.
+            $timeout(function(){
+                $scope.loading = false;
+                $rootScope.showHomeScreenUpdate = true;
+                $scope.showLiveUpdate = true;
+                $scope.checkInMessage = 'You have checked in!';
+                $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
+                ProgressBarStatus('#statusBarCheckin', 100,'#006400','#006400',200);
+            });
+          }).catch(function(error){
+            $timeout(function(){
+              //Else an error occure, check in at the cacner center
+              $scope.loading = false;
+              $rootScope.showHomeScreenUpdate = false;
+              $scope.enableCheckinButton = false;
+              $scope.checkInMessage = 'Error occurred, check-in at the cancer center';
+            });
+          })
+
         }
+        //Sets up checkin
         function setUpCheckin()
         {
+          //Do not show checkin, unless otherwise later specified
           $scope.showCheckin = false;
+          //Check if the current appointment is the check-in appointment
           if(Appointments.isCheckinAppointment($scope.app))
           {
+            //If it is, show checkin, as in show checkin div, go into loading do not show live udpates and disable the checkin button
             var checkInAppointment = $scope.app
             $scope.showCheckin = true;
             $scope.enableCheckinButton = false;
             $scope.loading = true;
             $scope.showLiveUpdate = false;
-
             $scope.checkInAppointment = checkInAppointment;
+
+            //If the checkin is not done yet
             if(checkInAppointment.Checkin == '0')
             {
               console.log('inside checkin = 0');
-              CheckinService.isAllowedToCheckin().then(
-                function(success){
+              //Check in server if checked in to Aria
+              CheckinService.checkCheckinServer(checkInAppointment).then(function(data)
+              {
+                //If they have checked in to Aria, set loading to false, update chackin message in both
+                //Home screen and individual-appointment page, activate the live updates
+                if(data == 'success')
+                {
                   $scope.loading = false;
-                  $scope.enableCheckinButton = true;
-                  $scope.checkInMessage = success;
-                  $rootScope.showHomeScreenUpdate = false;
+                  $scope.checkInMessage = 'You have checked in!';
+                  $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
+                  $scope.showLiveUpdate = true;
+                  $rootScope.showHomeScreenUpdate = true;
                   ProgressBarStatus('#statusBarCheckin', 100,'#006400','#006400',200);
                   CheckinService.getCheckinUpdates(checkInAppointment);
-                },function(failure){
-                  $scope.loading = false;
-                  $scope.enableCheckinButton = true;
-                  $scope.checkInMessage = success;
-                  $rootScope.showHomeScreenUpdate = false;
-
-
-                });
+                }else{
+                  //Check if the user is allowed to check in geographically
+                  CheckinService.isAllowedToCheckin().then(
+                    function(success){
+                      //If allowed, set loading to false, Give them the checkin message and enable button
+                      $timeout(function()
+                      {
+                        $scope.loading = false;
+                        $scope.enableCheckinButton = true;
+                        $scope.checkInMessage = success;
+                        $rootScope.showHomeScreenUpdate = false;
+                      });
+                    },function(failure){
+                      //If not allowed, loading to false, give them the message to "Checkin in vecinity of..."
+                      $timeout(function()
+                      {
+                        $scope.loading = false;
+                        $scope.checkInMessage = failure;
+                        $rootScope.showHomeScreenUpdate = false;
+                      });
+                    });
+                }
+              });
             }else{
-
+              //Case where the user is already checked in, ask for an update, set bar.
+              CheckinService.getCheckinUpdates(checkInAppointment);
               $scope.loading = false;
               $scope.checkInMessage = 'You have checked in!';
               $scope.showLiveUpdate = true;
               $rootScope.showHomeScreenUpdate = true;
               ProgressBarStatus('#statusBarCheckin', 100,'#006400','#006400',200);
-              CheckinService.getCheckinUpdates(checkInAppointment);
             }
             console.log(checkInAppointment);
           }else{
