@@ -1,7 +1,7 @@
 <ons-page ng-controller="TxTeamMessagesController">
   <ons-toolbar>
-    <div class="left"><ons-back-button>Back</ons-back-button></div>
-    <div class="center">Team Messages</div>
+    <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+    <div class="center">{{"TEAMMESSAGES"|translate}}</div>
   </ons-toolbar>
 <div ng-hide="noMessages">
   <ons-list  ng-repeat="message in txTeamMessages" ng-click="goToTeamMessage(message)">
@@ -24,6 +24,6 @@
 </ons-list>
 </div>
 <div class="container" align="center">
-  <p style="margin-top:25vh;color:grey" ng-show="noMessages">No team messages</p>
+  <p style="margin-top:25vh;color:grey" ng-show="noMessages">{{"NOTEAMMESSAGES"|translate}}</p>
 </div>
 </ons-page>

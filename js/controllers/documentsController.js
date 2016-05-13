@@ -1,25 +1,11 @@
 var myApp = angular.module('MUHCApp');
-myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$scope', '$timeout', 'UserPreferences', 'RequestToServer', '$cordovaFile','UserAuthorizationInfo','$q','$filter','NavigatorParameters',function(Patient, Documents, UpdateUI, $scope, $timeout, UserPreferences, RequestToServer,$cordovaFile,UserAuthorizationInfo,$q,$filter,NavigatorParameters) {
-  var urlMedia = cordova.file.applicationDirectory+'www/sounds/chime.wav';
-  window.resolveLocalFileSystemURL(urlMedia,function(file){
-    var filePath = file.toInternalURL();
-    console.log(filePath);
-    var media = new Media(filePath,function(success){
-      media.play();
-      console.log(success);
-    },function(error){
-      console.log(error);
-    });
-    media.play();
-  },function(error){
-    console.log(error);
-  });
-
+myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$scope', '$timeout', 'UserPreferences', 'RequestToServer', '$cordovaFile','UserAuthorizationInfo','$q','$filter','NavigatorParameters',function(Patient, Documents, UpdateUI, $scope, $timeout, UserPreferences, RequestToServer,$cordovaFile,UserAuthorizationInfo,$q,$filter,NavigatorParameters){
+  
   documentsInit();
   function documentsInit() {
     $scope.documents = Documents.getDocuments();
     $scope.documents = Documents.setDocumentsLanguage($scope.documents);
-    if($scope.documents.length==0) $scope.noDocuments=true;
+    if($scope.documents.length === 0) $scope.noDocuments=true;
       for (var i = 0; i < $scope.documents.length; i++) {
         if($scope.documents[i].DocumentType=='pdf')
         {
@@ -38,7 +24,7 @@ myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$s
     }
     NavigatorParameters.setParameters({'navigatorName':'personalNavigator', 'Post':doc});
     personalNavigator.pushPage('./views/personal/my-chart/individual-document.html');
-  }
+  };
   $scope.refreshDocuments = function($done) {
     RequestToServer.sendRequest('Refresh', 'Documents');
     var UserData = UpdateUI.update('Documents');
@@ -53,6 +39,7 @@ myApp.controller('DocumentsController', ['Patient', 'Documents', 'UpdateUI', '$s
 }]);
 
 myApp.controller('SingleDocumentController', ['NavigatorParameters','Documents', '$timeout', '$scope', '$cordovaEmailComposer','$cordovaFileOpener2','FileManagerService','Patient',function(NavigatorParameters, Documents, $timeout, $scope,$cordovaEmailComposer,$cordovaFileOpener2, FileManagerService,Patient) {
+  
   console.log('Simgle Document Controller');
   var parameters = NavigatorParameters.getParameters();
   var image = Documents.setDocumentsLanguage(parameters.Post);
@@ -124,7 +111,7 @@ console.log(image);
     } else {
       window.open(image.Content);
     }
-  }
+  };
 
 
   $scope.printDocument=function()
@@ -155,7 +142,7 @@ console.log(image);
             page.replace(/"/g, '\'');
             console.log(page);
             cordova.plugins.printer.print(page, 'Document.html', function () {
-                alert('printing finished or canceled')
+                alert('printing finished or canceled');
             });
           }
         );
@@ -167,6 +154,7 @@ console.log(image);
         window.plugins.PrintPDF.print(options);
     }
   };
+  console.log(FileManagerService);
   $scope.openDocument = function() {
       var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
       if (app) {
@@ -194,41 +182,56 @@ console.log(image);
       } else {
         window.open(image.Content);
       }
-    }
+    };
     /*var gesturableImg = new ImgTouchCanvas({
             canvas: document.getElementById('mycanvas2'),
             path: "./img/D-RC_ODC_16June2015_en_FNL.png"
         });*/
 }]);
+
+
 myApp.service('FileManagerService',function($q, $cordovaFileOpener2 ){
-var file='';
-function readDataUrl(file,response) {
-  var r=$q.defer();
-    var reader = new FileReader();
-    var img='';
-    reader.onloadend = function(evt) {
-        console.log("Read as data URL");
-        r.resolve(response(evt.target.result));
-    };
-   reader.readAsDataURL(file);
-   return r.promise;
-}
-function callback(fileURL)
-{
-  var r=$q.defer();
-  file=fileURL;
-  r.resolve(fileURL);
-  return r.promise;
-}
-function gotFile(file){
+  var file='';
+  function readDataUrl(file,response) {
     var r=$q.defer();
-    r.resolve(readDataUrl(file,callback));
+      var reader = new FileReader();
+      var img='';
+      reader.onloadend = function(evt) {
+          console.log("Read as data URL");
+          r.resolve(response(evt.target.result));
+      };
+    reader.readAsDataURL(file);
     return r.promise;
-}
-return{
+  }
+  function callback(fileURL)
+  {
+    var r=$q.defer();
+    file=fileURL;
+    r.resolve(fileURL);
+    return r.promise;
+  }
+  function gotFile(file){
+      var r=$q.defer();
+      r.resolve(readDataUrl(file,callback));
+      return r.promise;
+  }
+return {
+  downloadFileIntoStorage:function(url,targetPath)
+  {
+    var r=$q.defer();
+    var fileTransfer = new FileTransfer();
+    fileTransfer.download(url, targetPath,
+      function(entry) {
+        console.log(entry);
+        r.resolve(entry);
+      },
+      function(err) {
+        console.log(err);
+        r.reject(err);
+      });
+  },
   getFileUrl:function(filePath)
   {
-
     var r=$q.defer();
     console.log(filePath);
     window.resolveLocalFileSystemURL(filePath, function(fileEntry){
@@ -246,20 +249,6 @@ return{
     });
     return r.promise;
   },
-  downloadFileIntoStorage:function(url,targetPath)
-  {
-    var r=$q.defer();
-    var fileTransfer = new FileTransfer();
-    fileTransfer.download(url, targetPath,
-      function(entry) {
-        console.log(entry);
-        r.resolve(entry);
-      },
-      function(err) {
-        console.log(err);
-        r.reject(err);
-      });
-    },
     openPDF:function(url)
     {
       var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
@@ -291,6 +280,5 @@ return{
         window.open(url);
       }
     }
-
   };
 });

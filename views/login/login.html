@@ -34,17 +34,17 @@
                         <div style="max-width:400px">
                             <button class="button button--large" type="submit" id="submit">{{"HEADER_MESSAGE_LOGIN"|translate}}</button>
                         </div>
-                        <uib-alert ng-show="alert.type" type="{{alert.type}}" translate = "{{alert.content}}"></uib-alert>
+                        <uib-alert ng-show="alert.type" type="{{alert.type}}">{{alert.content|translate}}</uib-alert>
                     </div>
                 </form>
                 <div style="text-align:center;">
                     <button class="button button--large--quiet" ng-click="navigatorForms.pushPage('./views/login/forgot-password.html',{})">{{"FORGOTPASSWORD"|translate}}?</button>
-                    <div ><span class ="button--quiet" style="display:inline-block">EN</span>
+                    <div ><span class ="button--quiet" style="display:inline-block">FR</span>
                       <label class="switch">
                         <input type="checkbox" ng-model="languageSwitch" ng-change="changeLanguage(languageSwitch)" ng-true-value="1" ng-false-value="0" class="switch__input">
                         <div class="switch__toggle"></div>
                       </label>
-                      <span class ="button--quiet" style="display:inline-block">FR</span></div>
+                      <span class ="button--quiet" style="display:inline-block">EN</span></div>
                 </div>
                 <br>
             </div>

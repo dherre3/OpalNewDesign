@@ -3,7 +3,7 @@
 *Github: dherre3
 *Email:davidfherrerar@gmail.com
 */
-var myApp=angular.module('MUHCApp')
+var myApp=angular.module('MUHCApp');
 
     /**
 *@ngdoc controller
@@ -18,20 +18,21 @@ var myApp=angular.module('MUHCApp')
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale',function ($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale) {
+myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale','DeviceIdentifiers',function LoginController($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale,DeviceIdentifiers) {
   console.log(FirebaseService);
   $translatePartialLoader.addPart('login');
+  $scope.languageSwitch = 1;
   $scope.changeLanguage = function(value)
   {
-    if(value == 0)
+    if(value === 0)
     {
-      tmhDynamicLocale.set('en');
-      $translate.use('en');
-    }else{
       tmhDynamicLocale.set('fr');
       $translate.use('fr');
+    }else{
+      tmhDynamicLocale.set('en');
+      $translate.use('en');
     }
-  }
+  };
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());
   //demoSignIn();
   /*checkForSessionEnd=function()
@@ -73,7 +74,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
                     Expires:authData.expires,
                     Email:authData.password.email,
                     Token:authData.token
-            }
+            };
             $rootScope.refresh=true;
             window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
             console.log(UserAuthorizationInfo.getUserAuthData());
@@ -82,7 +83,8 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
               RequestToServer.sendRequest('Refresh','All');
             }else{
               //RequestToServer.sendRequest('Refresh','All');
-              RequestToServer.sendRequest('Resume');
+              console.log(DeviceIdentifiers.getDeviceIdentifiers());
+              RequestToServer.sendRequest('Resume', DeviceIdentifiers.getDeviceIdentifiers());
             }
             $state.go('loading');
         }
@@ -119,17 +121,17 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
     signin(email, password);
   };
 
-  function signin(email, password){
+  function signin(email, mypassword){
 
       var username = email;
-      var password = password;
+      var password = mypassword;
       $scope.email=email;
       $scope.password=password;
-      if(typeof email=='undefined'||email=='')
+      if(typeof email=='undefined'||email ==='')
       {
           $scope.alert.type='danger';
           $scope.alert.content="INVALID_EMAIL";
-      }else if(typeof password=='undefined'||password=='')
+      }else if(typeof password=='undefined'||password ==='')
       {
           $scope.alert.type='danger';
           $scope.alert.content="INVALID_PASSWORD";
@@ -177,7 +179,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
         console.log(temporary);
         if(temporary){
             ResetPassword.setUsername(authData.auth.uid);
-            ResetPassword.setToken(authData.token)
+            ResetPassword.setToken(authData.token);
             ResetPassword.setEmail($scope.email);
             ResetPassword.setTemporaryPassword($scope.password);
             navigatorForms.pushPage('views/login/verify-ssn.html');
@@ -197,7 +199,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
                   Expires:authData.expires,
                   Email:$scope.email,
                   Token:authData.token
-          }
+          };
           $rootScope.refresh=true;
           window.localStorage.setItem('UserAuthorizationInfo', JSON.stringify(authenticationToLocalStorage));
           console.log(UserAuthorizationInfo.getUserAuthData());

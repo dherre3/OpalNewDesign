@@ -84,7 +84,7 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
                 Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':timestamp });
               }else{
                 //If offline notify the patient and ask to connect to the internet
-                navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
+                //navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
               }
           }else{
             //If its not an app just try sending the request

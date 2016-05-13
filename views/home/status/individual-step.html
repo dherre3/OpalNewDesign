@@ -1,7 +1,7 @@
 <ons-page ng-controller="IndividualStepController">
   <ons-toolbar >
-    <div class="left"><ons-back-button>Back</ons-back-button></div>
-    <div class="center">Treatment Stage</div>
+    <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+    <div class="center">{{"TREATMENTSTAGE"|translate}}</div>
   </ons-toolbar>
   <!--<div class="container jumbotron" style="text-align: left;padding:5% 2% 5% 2%">-->
   <div style="margin-top:5vh">
@@ -15,13 +15,13 @@
                       <ons-icon icon="fa-calendar " style="color:#2B6197;" ng-class="fontSizeDesc"></ons-icon>&nbsp;{{stage.Date|formatDateAppointmentTask}}
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Past'">
-                  <strong><i class="ion-compose iconHomeView" ng-class="fontSizeDesc" ></i>&nbsp;Stage completed: </strong>{{stage.Date|formatDateAppointmentTask}}
+                  <strong><i class="ion-compose iconHomeView" ng-class="fontSizeDesc" ></i>&nbsp;{{"STAGECOMPLETED"|translate}}: </strong>{{stage.Date|formatDateAppointmentTask}}
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Future'">
-                  <strong>Pending </strong>
+                  <strong>{{"PENDING"|translate}}</strong>
                   </div>
                   <div ng-show="stage.Type=='Task'&&stage.Status=='Next'">
-                  <strong><i class="ion-loop iconHomeView" ng-class="fontSizeDesc"></i>&nbsp;In progress...</strong>
+                  <strong><i class="ion-loop iconHomeView" ng-class="fontSizeDesc"></i>&nbsp;{{INPROGRESS}}</strong>
                   </div>
               </div>
           </header>

@@ -42,7 +42,7 @@ myApp.service('LocalStorage',['UserAuthorizationInfo', 'EncryptionService',funct
 				{
 					var object={};
 					object[section]=temp;
-					window.localStorage.setItem(UserAuthorizationInfo.UserName,JSON.stringify({object}));
+					window.localStorage.setItem(UserAuthorizationInfo.UserName,JSON.stringify(object));
 
 				}else{
 					storage[section]=temp;

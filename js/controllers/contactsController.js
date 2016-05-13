@@ -7,7 +7,7 @@
 * the {@link MUHCApp.controller:HomeController HomeController} view.
 *
 **/
-myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI', 'RequestToServer', function($scope,Doctors,$timeout,UpdateUI,RequestToServer){
+myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI', 'RequestToServer', 'NavigatorParameters', function($scope,Doctors,$timeout,UpdateUI,RequestToServer,NavigatorParameters){
     doctorsInit();
     function doctorsInit(){
       $scope.oncologists=Doctors.getOncologists();
@@ -30,6 +30,8 @@ myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI',
        });
    }
     $scope.goDoctorContact=function(doctor){
+      
+      NavigatorParameters.setParameters({Navigator:'generalNavigator',Data:doctor});
         generalNavigator.pushPage('views/general/contacts/individual-contact.html', {param:doctor},{ animation : 'slide' } );
     };
 }]);
@@ -42,8 +44,12 @@ myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI',
 * the {@link MUHCApp.controller:HomeController HomeController} view.
 *
 **/
-myApp.controller('ContactIndividualDoctorController',['$scope','$q',function($scope,$q){
-  if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPage()!=='undefined'&&typeof personalNavigator.getCurrentPage().options.param!=='undefined')
+myApp.controller('ContactIndividualDoctorController',['$scope','$q','NavigatorParameters', function($scope,$q,NavigatorParameters){
+  
+  var params = NavigatorParameters.getParameters();
+  $scope.doctor = params.Data;
+  $scope.inContacts = (params.Navigator == 'generalNavigator')?true:false;
+  /*if(typeof personalNavigator!=='undefined'&&typeof personalNavigator.getCurrentPage()!=='undefined'&&typeof personalNavigator.getCurrentPage().options.param!=='undefined')
   {
     var page = personalNavigator.getCurrentPage();
     var parameters=page.options.param;
@@ -60,7 +66,7 @@ myApp.controller('ContactIndividualDoctorController',['$scope','$q',function($sc
     console.log(parameters);
     $scope.doctor=parameters;
     $scope.inContacts=true;
-  }
+  }*/
   if($scope.doctor.PrimaryFlag===1){
      $scope.header='Primary Physician';
   }else if($scope.doctor.OncologistFlag===1){

@@ -16,7 +16,7 @@ myApp.controller('NotificationsController', ['RequestToServer','Notifications', 
   //Show header function helper
   $scope.showHeader=function(index)
   {
-    if(index==0)
+    if(index ===0)
     {
       return true;
     }else{

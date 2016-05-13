@@ -2,22 +2,15 @@
 <ons-page ng-controller="ContactsController" style="background-color:white">
     <ons-toolbar>
     <div class="left">
-        <ons-back-button>Back</ons-back-button>
+        <ons-back-button>{{"BACK"|translate}}</ons-back-button>
     </div>
-    <div class="center">Contacts</div>
+    <div class="center">{{"CONTACTS"|translate}}</div>
   </ons-toolbar>
-      <ons-pull-hook ng-action="load($done)" var="loader" height="100px">
-        <span ng-switch="loader.getCurrentState()">
-          <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> Pull down to refresh</span>
-          <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon> Release to refresh</span>
-          <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
-        </span>
-      </ons-pull-hook>
     <ons-list >
         <!--<ons-list class="person-list">-->
 
 
-      <ons-list-header class="person-list-header" ng-show="primaryPhysician.length>0" ng-class="fontSizeTitle">Primary Doctor</ons-list-header>
+      <ons-list-header class="person-list-header" ng-show="primaryPhysician.length>0" ng-class="fontSizeTitle">{{"PRIMARYDOCTOR"|translate}}</ons-list-header>
 
       <ons-list-item modifier="chevron" ng-repeat="doctor in primaryPhysician" ng-click="goDoctorContact(doctor)">
         <ons-row>
@@ -32,7 +25,7 @@
             <div style="padding:4px;line-height:1">
               <div class="item-title" ng-class="fontSizeTitle">{{doctor.FirstName}} {{doctor.LastName}}
               </div>
-              <span class="item-desc" ng-class="fontSizeDesc">Doctor</span>
+              <span class="item-desc" ng-class="fontSizeDesc">{{"DOCTOR"|translate}}</span>
             </div>
           </ons-col>
         </ons-row>
@@ -50,7 +43,7 @@
       </ons-row>
       </ons-list-item>-->
 
-      <ons-list-header class="person-list-header" ng-show="oncologists.length>0" ng-class="fontSizeTitle">Oncologists</ons-list-header>
+      <ons-list-header class="person-list-header" ng-show="oncologists.length>0" ng-class="fontSizeTitle">{{"ONCOLOGIST"|translate}}</ons-list-header>
       <ons-list-item modifier="chevron" ng-repeat="doctor in oncologists" ng-click="goDoctorContact(doctor)" >
         <ons-row>
           <ons-col width="5px">
@@ -64,7 +57,7 @@
             <div style="padding:4px;line-height:1">
               <div class="item-title" ng-class="fontSizeTitle">{{doctor.FirstName}} {{doctor.LastName}}
               </div>
-              <span class="item-desc" ng-class="fontSizeDesc">Doctor</span>
+              <span class="item-desc" ng-class="fontSizeDesc">{{"DOCTOR"|translate}}</span>
             </div>
           </ons-col>
         </ons-row>
@@ -80,7 +73,7 @@
         </ons-row>
       </ons-list-item>-->
 
-      <ons-list-header class="person-list-header" ng-show="otherDoctors.length>0" ng-class="fontSizeTitle">Other</ons-list-header>
+      <ons-list-header class="person-list-header" ng-show="otherDoctors.length>0" ng-class="fontSizeTitle">{{"OTHER"|translate}}</ons-list-header>
         <ons-list-item modifier="chevron" ng-repeat="doctor in otherDoctors" ng-click="goDoctorContact(doctor)">
           <ons-row>
             <ons-col width="5px">
@@ -94,7 +87,7 @@
               <div style="padding:4px;line-height:1">
                 <div class="item-title" ng-class="fontSizeTitle">{{doctor.FirstName}} {{doctor.LastName}}
                 </div>
-                <span class="item-desc" ng-class="fontSizeDesc">Doctor</span>
+                <span class="item-desc" ng-class="fontSizeDesc">{{"DOCTOR"|translate}}</span>
               </div>
             </ons-col>
           </ons-row>

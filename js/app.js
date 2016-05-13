@@ -156,6 +156,7 @@ var myApp = angular.module('MUHCApp', ['tmh.dynamicLocale','pascalprecht.transla
         templateUrl: 'views/logOut.html',
         controller: 'logOutController'
   });
+    $translateProvider.useSanitizeValueStrategy('sanitizeParameters');
     $translateProvider.useLoader('$translatePartialLoader', {
       urlTemplate: './Languages/appTranslationTablesViews/{part}/{lang}.json'
     });
@@ -182,7 +183,7 @@ myApp.config(function ($translateProvider) {
 *@description Service is in charge of checking that the user is authorized at every state change by checking the parameters stored
 in the Firebase localstorage,  Check run service on angular {{link}}
 **/
-myApp.run(function ($rootScope, $state, $stateParams,$q, $rootScope,$translate) {
+myApp.run(function ($state, $stateParams,$q, $rootScope,$translate) {
 
     $rootScope.$on('$translatePartialLoaderStructureChanged', function () {
       $translate.refresh();

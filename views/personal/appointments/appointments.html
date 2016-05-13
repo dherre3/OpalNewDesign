@@ -1,10 +1,10 @@
 <ons-page ng-controller="CalendarController" >
   <ons-toolbar>
     <div class="left">
-      <ons-back-button ng-show="!showCalendarButton">Back</ons-back-button>
+      <ons-back-button ng-show="!showCalendarButton">{{"BACK"|translate}}</ons-back-button>
     </div>
-    <div class="center">Appointments</div>
-    <div class="right"><ons-toolbar-button ng-click="goToCalendarOptions()">Options</ons-toolbar-button></div>
+    <div class="center">{{"APPOINTMENTS"|translate}}</div>
+    <div class="right"><ons-toolbar-button ng-click="goToCalendarOptions()">{{"OPTIONS"|translate}}</ons-toolbar-button></div>
   </ons-toolbar>
     <div align="center" class="calendar--appointments" style="margin-top:5px;position:relative;z-index:1" height-element>
      <div class="calendar-list">

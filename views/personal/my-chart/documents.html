@@ -1,26 +1,16 @@
 <ons-page ng-controller="DocumentsController">
   <ons-toolbar>
     <div class="left">
-      <ons-back-button>Back</ons-back-button>
+      <ons-back-button>{{"BACK"|translate}}</ons-back-button>
     </div>
-    <div class="center">Patient Documents</div>
+    <div class="center">{{"PATIENTDOCUMENTS"|translate}}</div>
   </ons-toolbar>
-  <ons-pull-hook ng-action="refreshDocuments($done)" var="loader">
-    <span ng-switch="loader.getCurrentState()">
-      <span ng-switch-when="initial">
-        <ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> Pull down to refresh</span>
-      <span ng-switch-when="preaction">
-        <ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon> Release to refresh</span>
-      <span ng-switch-when="action">
-        <ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
-    </span>
-  </ons-pull-hook>
   <div>
     <div style="color:grey" ng-show="noDocuments" align="center" ng-class="fontSizeTitle">
-      No patient documents available!
+      {{"NOPATIENTDOCUMENTSAVAILABLE"|translate}}
     </div>
     <ons-list ng-repeat="document in documents">
-      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">{{document.DateAdded|formatDateAppointmentTask}}<span class="pull-right" ng-show= "document.ReadStatus =='0'">unread</span></ons-list-header>
+      <ons-list-header class="person-list-header" ng-class="fontSizeTitle">{{document.DateAdded|formatDateAppointmentTask}}<span class="pull-right" ng-show= "document.ReadStatus =='0'">{{"UNREAD"|translate}}</span></ons-list-header>
       <ons-list-item modifier="chevron" ng-click="goToDocument(document)">
         <ons-row>
           <ons-col width="6px">

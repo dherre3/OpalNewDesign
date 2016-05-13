@@ -174,6 +174,7 @@ $scope.goToAppointment=function(appointment)
         var endColor='#3399ff';
         $scope.showTreatments = false;
         $scope.sessionList = sessions.AppointmentList;
+        $scope.endingDate = $scope.sessionList[$scope.sessionList.length-1].ScheduledStartTime;
         console.log($scope.sessionList);
         if($scope.sessionList.length > 0)
         {

@@ -1,4 +1,4 @@
-<ons-navigator var="settingsNavigator">
+<ons-navigator var="settingsNavigator" ng-cloak>
 <ons-page ng-controller="accountSettingController" ng-device-backbutton="accountDeviceBackButton()">
 
     <ons-toolbar>
@@ -6,9 +6,9 @@
     </ons-toolbar>
   <ons-pull-hook ng-action="load2($done)" var="loader">
           <span ng-switch="loader.getCurrentState()">
-            <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> Pull down to refresh</span>
-            <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon> Release to refresh</span>
-            <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
+            <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> {{"PULLDOWNTOREFRESH"|translate}}</span>
+            <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon>{{"RELEASETOREFRESH"|translate}}</span>
+            <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> {{"LOADINGDATA"|translate}}...</span>
           </span>
   </ons-pull-hook>
   <div class="container">

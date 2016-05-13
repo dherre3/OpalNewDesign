@@ -1,9 +1,8 @@
 var myApp=angular.module('MUHCApp');
-myApp.controller('TabsController',['$scope','$timeout','$translate', '$translatePartialLoader',function($scope,$timeout,$translate, $translatePartialLoader){
+myApp.controller('TabsController',['$scope','$timeout','$translate','$translatePartialLoader',function($scope,$timeout,$translate,$translatePartialLoader){
   //Enter code here!!
   console.log('inside tabs controller');
-  $translatePartialLoader.addPart('tabs');
-
+  $translatePartialLoader.addPart('all-views');
 
 
   }]);

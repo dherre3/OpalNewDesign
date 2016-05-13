@@ -1,19 +1,22 @@
-angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','FirebaseService','NewsBanner','NativeNotification',function ($state,$rootScope,FirebaseService,NewsBanner,NativeNotification) {
+angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','FirebaseService','NewsBanner','NativeNotification','DeviceIdentifiers','$translatePartialLoader', function ($state,$rootScope,FirebaseService,NewsBanner,NativeNotification,DeviceIdentifiers,$translatePartialLoader) {
+    $translatePartialLoader.addPart('top-view');
     $state.transitionTo('logIn');
-
+    
     var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
     if(app)
     {
-      setTimeout(function()
-      {
         var push = PushNotification.init({
             ios: {
                 alert: "true",
                 badge: true,
                 sound: 'true',
                 clearBadge:'true'
+            },
+             android: {
+                senderID: "840430637971"
             }
         });
+        //dX5oUernHF4:APA91bEWkdACR0Ra81mAECXn5rPNyoUYx3ijC9UdzJ_26MqjYa0OBaQRzD2n7VCk_PCcsnvsZz7bEA5Aq1pSV9iABRxSPCjFlBJh7ogiqWs8Ex4COf7H2xWHrz_16CJMlNKljffpNf8q
         push.on('notification', function(data) {
           NativeNotification.showNotificationAlert(data.message);
             var urlMedia = 'sounds/'+data.sound;
@@ -42,9 +45,8 @@ angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','F
         });
         push.on('registration', function(data) {
             console.log(data.registrationId);
+            DeviceIdentifiers.setDeviceIdentifiers(data.registrationId);
         });
-      },3000)
-
       document.addEventListener("offline", function(){
         NewsBanner.showAlert('nointernet');
         console.log('offline');
@@ -56,11 +58,11 @@ angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','F
     }else{
       window.addEventListener('online',  function(){
         console.log('online');
-        NewsBanner.showAlert('connected');
+        NewsBanner.setAlert('connected');
       });
       window.addEventListener('offline', function(){
         console.log('offline');
-        NewsBanner.showAlert('nointernet');
+        NewsBanner.setAlert('nointernet');
       });
     }
 

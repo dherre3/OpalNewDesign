@@ -4,7 +4,7 @@
 *
 **/
 var myApp=angular.module('MUHCApp');
-myApp.controller('MessagesController',function(UpdateUI, RequestToServer, $filter, $rootScope, UserAuthorizationInfo,$location,$anchorScroll,$timeout,$scope,Messages, Patient,$rootScope,Doctors){
+myApp.controller('MessagesController',function(UpdateUI, RequestToServer, $filter, $rootScope, UserAuthorizationInfo,$location,$anchorScroll,$timeout,$scope,Messages, Patient, Doctors){
   $rootScope.NumberOfNewMessages='';
   $scope.sendButtonDisabled=true;
   $scope.newMessage='';
@@ -18,7 +18,7 @@ myApp.controller('MessagesController',function(UpdateUI, RequestToServer, $filte
                 },10);
 }, function(error){console.log(error);});
 
-        };
+        }
          $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','Messages');
           $timeout(function() {
@@ -38,12 +38,12 @@ $scope.personClicked=function(index){
       $scope.glue=false;
       $scope.person.selected='';
       $scope.selectedIndex=index;
-       if($scope.messages[$scope.selectedIndex].ReadStatus==0){
+       if($scope.messages[$scope.selectedIndex].ReadStatus === 0){
         for (var i = 0; i < conversation.length; i++) {
             console.log($scope.messages[index].Messages[i].MessageSerNum);
-            RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
+            RequestToServer.sendRequest('Read',{Id:$scope.messages[index].Messages[i].MessageSerNum,Field:'Messages'});
             $scope.messages[index].Messages[i].ReadStatus=1;
-        };
+        }
     }
       $scope.messages[$scope.selectedIndex].ReadStatus=1;
       $scope.conversation=conversation;
@@ -62,12 +62,12 @@ $scope.$watch('person.selected', function(){
       {
         $scope.selectedIndex=index;
         var conversation=$scope.messages[$scope.selectedIndex].Messages;
-        if($scope.messages[$scope.selectedIndex].ReadStatus==0){
+        if($scope.messages[$scope.selectedIndex].ReadStatus === 0){
             for (var i = 0; i < $scope.messages[$scope.selectedIndex].Messages.length; i++) {
                 console.log($scope.messages[index].Messages[i].MessageSerNum);
-                RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
+                RequestToServer.sendRequest('Read',{Id:$scope.messages[index].Messages[i].MessageSerNum, Field:'Messages'});
                 $scope.messages[index].Messages[i].ReadStatus=1;
-            };
+            }
         Messages.changeConversationReadStatus($scope.selectedIndex);
         $scope.messages[$scope.selectedIndex].ReadStatus=1;
         }
@@ -76,12 +76,12 @@ $scope.$watch('person.selected', function(){
       }else{
         if(!Messages.isEmpty()&&!Doctors.isEmpty())
         {
-          if($scope.messages[$scope.selectedIndex].ReadStatus==0){
+          if($scope.messages[$scope.selectedIndex].ReadStatus === 0){
             for (var i = 0; i < $scope.messages[$scope.selectedIndex].Messages.length; i++) {
               console.log($scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum);
-                RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum});
+                RequestToServer.sendRequest('Read',{Id:$scope.messages[$scope.selectedIndex].Messages[i].MessageSerNum, Field:'Messages'});
                 $scope.messages[$scope.selectedIndex].Messages[i].ReadStatus=1;
-            };
+            }
             Messages.changeConversationReadStatus($scope.selectedIndex);
             $scope.messages[$scope.selectedIndex].ReadStatus=1;
           }
@@ -128,11 +128,11 @@ $scope.$watch('upload.Document',function(){
     if(!$scope.upload.Document){
    $timeout(function(){
         $scope.showAttachment=false;
-      })
+      });
     }else{
        $timeout(function(){
         $scope.showAttachment=true;
-      })
+      });
     }
 }else{
   $timeout(function(){
@@ -185,7 +185,7 @@ $scope.$watchGroup(['newMessage','upload'],function(){
     $scope.newMessage='';
     $scope.glue=true;
     $scope.messages=Messages.getUserMessages();
-  }
+  };
 
   $scope.getStyle=function(index){
 
@@ -203,11 +203,11 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
      $rootScope.openSearchMask=function(){
       console.log('open');
       $rootScope.searchingMask=true;
-     }
+     };
      $rootScope.closeSearchMask=function(){
       console.log('close');
       $rootScope.searchingMask=false;
-     }
+     };
 
      $scope.refreshInfo=function(val){
         if(val.length>0){
@@ -239,7 +239,7 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
 
      //if request comes from contact page.
     $scope.messages=messages;
-    if(param!=null){
+    if(param !== null){
       for(var i=0;i<messages.length;i++)
       {
         if(messages[i].UserSerNum==param.DoctorSerNum){
@@ -255,27 +255,27 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
           $timeout(function(){
             $rootScope.searchingMask=false;
             var index=$scope.person.selected.index;
-            if($scope.messages[index].ReadStatus==0){
+            if($scope.messages[index].ReadStatus === 0){
               for (var i = 0; i < $scope.messages[index].Messages.length; i++) {
-                  RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
+                  RequestToServer.sendRequest('Read',{Id:$scope.messages[index].Messages[i].MessageSerNum, Field:'Messages'});
                   $scope.messages[index].Messages[i].ReadStatus=1;
-              };
+              }
             }
             $scope.messages[$scope.selectedIndex].ReadStatus=1;
             Messages.changeConversationReadStatus($scope.selectedIndex);
             personalNavigator.pushPage("views/personal/messages/individual-conversation.html", { param: index });
             $scope.person.selected=undefined;
-          })
+          });
         }
     });
 
      function goToConversation(index){
        $rootScope.searchingMask=false;
         $scope.person.selected=undefined;
-        if($scope.messages[index].ReadStatus==0){
+        if($scope.messages[index].ReadStatus === 0){
           for (var i = 0; i < $scope.messages[index].Messages.length; i++) {
               console.log($scope.messages[index].Messages[i]);
-              RequestToServer.sendRequest('MessageRead',{MessageSerNum:$scope.messages[index].Messages[i].MessageSerNum});
+              RequestToServer.sendRequest('Read',{Id:$scope.messages[index].Messages[i].MessageSerNum, Field:'Messages'});
               $scope.messages[index].Messages[i].ReadStatus=1;
           };
         }
@@ -296,7 +296,7 @@ myApp.controller('ListOfConversationMobileController',['RequestToServer','Update
   }]);
 
 
-myApp.controller('MessagePageController',function(RequestToServer,$filter, Patient,Messages,UpdateUI,$timeout,$scope,Doctors){
+myApp.controller('MessagePageController',function(NavigatorParameters,RequestToServer,$filter, Patient,Messages,UpdateUI,$timeout,$scope,Doctors){
 
  $scope.getStyle=function(index){
 
@@ -442,6 +442,7 @@ $scope.submitMessage=function(){
 $scope.goToContact=function(){
   var doctor=Doctors.getDoctorBySerNum($scope.messages[$scope.selectedIndex].UserSerNum);
   console.log(doctor);
-  personalNavigator.pushPage('./views/general/contacts/individual-contact.html',{param:doctor});
+  NavigatorParameters.setParameters({Navigator:'personalNavigator', Data:doctor})
+  personalNavigator.pushPage('./views/general/contacts/individual-contact.html');
 };
 });

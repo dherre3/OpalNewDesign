@@ -1,6 +1,6 @@
-<ons-page ng-controller="ChangingSettingController">
+<ons-page ng-controller="ChangingSettingController" ng-cloak>
   <ons-toolbar>
-    <div class="left"><ons-back-button>Back</ons-back-button></div>
+    <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
     <div class="center" >{{valueLabel}}</div>
   </ons-toolbar>
 
@@ -35,34 +35,38 @@
   <div ng-hide="personal">
     <ul class="list" style="margin-top:10vh">
 <li class="list__header" translate ="{{instruction}}"></li>
-<li ng-hide="fontUpdated" class="list__item list__item--tappable" >
+<div  ng-hide="fontUpdated">
+<li class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
     <input ng-change="changeLanguage('EN')" ng-model="pickLanguage" type="radio" value="{{firstOption}}" name="b" >
     <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescMedium"></div>
       EN
   </label>
 </li>
-<li ng-hide="fontUpdated" class="list__item list__item--tappable" >
+<li  class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
     <input ng-change="changeLanguage('FR')" ng-model="pickLanguage" type="radio" value="{{secondOption}}" name="b">
     <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescLarge"></div>
       FR
   </label>
 </li>
-<li ng-show="fontUpdated" class="list__item list__item--tappable" >
+</div>
+<div ng-show="fontUpdated">
+<li  class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
     <input ng-change="changeFont('medium')" ng-model="pickFont" type="radio" value="{{firstOption}}" name="b" >
     <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescMedium"></div>
       <span class="fontDescMedium">{{"FONTSIZE"|translate}}</span>
   </label>
 </li>
-<li ng-show="fontUpdated" class="list__item list__item--tappable" >
+<li class="list__item list__item--tappable" >
   <label  class="radio-button radio-button--list-item">
     <input ng-change="changeFont('large')" ng-model="pickFont" type="radio" value="{{secondOption}}" name="b">
     <div class="radio-button__checkmark radio-button--list-item__checkmark fontDescLarge"></div>
       <span class="fontDescLarge">{{"FONTSIZE"|translate}}</span >
   </label>
 </li>
+</div>
 </ul>
 </div>
 </ons-page>

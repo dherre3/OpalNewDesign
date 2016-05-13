@@ -8,52 +8,20 @@ myApp.service('NewsBanner',['$rootScope','$timeout',function($rootScope,$timeout
     'info':'#5bc0de'
   };
   var alertTypes = {
-    'notifications':{Color:colorMappings['info'],Icon:'ion-arrow-down-c', Message:{'EN':'New notifications','FR':'Nouevelle news'}},
-    'nointernet':{Color:colorMappings['dead'],Message:{'EN':'No internet connection','FR':'Parle france'}},
-    'connected':{Color:colorMappings['success'],Message:{'EN':'Connected','FR':'Parle france'}}
+    'notifications':{Type:'notifications',Color:colorMappings['info'],Icon:'ion-arrow-down-c', Message:{'EN':'New notifications','FR':'Nouevelle news'}},
+    'nointernet':{Type:'nointernet',Color:colorMappings['dead'],Message:{'EN':'No internet connection','FR':'Parle france'}},
+    'connected':{Type:'connected',Color:colorMappings['success'],Message:{'EN':'Connected','FR':'Parle france'}}
   }
   return {
-      showAlertCustom:function(message, number, color,duration)
+      setAlert:function(type,show)
       {
-        $rootScope.alertBanner = {
-          Color:color,
-          Message:message
-        };
-        $('#news').removeClass('inactive').addClass('active');
-        setTimeout(function () {
-
-          $('#news').removeClass('active').addClass('inactive');
-        }, duration);
+         alertTypes[type].show = true;
+         $rootScope.alertBanner = alertTypes[type];
+         console.log($rootScope.alertBanner);
       },
-      showAlert:function(type)
+      hideAlert:function()
       {
-        var element = $('#news');
-        if(element.hasClass("active"))
-        {
-          $('#news').removeClass('active').addClass('inactive');
-        }
-        $timeout(function()
-        {
-          $rootScope.alertBanner = alertTypes[type];
-          console.log($rootScope.alertBanner);
-          $('#news').removeClass('inactive').addClass('active');
-        },1000);
-
-        if(type!=='nointernet')
-        {
-          console.log('boom');
-          setTimeout(function () {
-            $('#news').removeClass('active').addClass('inactive');
-          }, 3000);
-        }
-
-      },
-      hideAlert()
-      {
-        $('#news').removeClass('inactive').addClass('active');
-        setTimeout(function () {
-          $('#news').removeClass('active').addClass('inactive');
-        }, 4000);
+        $rootScope.alertBanner.show = false;
       }
-  }
+  };
   }]);

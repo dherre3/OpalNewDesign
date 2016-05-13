@@ -1,7 +1,7 @@
   <ons-page ng-controller="IndividualAppointmentController">
     <ons-toolbar >
-      <div class="left"><ons-back-button>Back</ons-back-button></div>
-      <div class="center">Appointment</div>
+      <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+      <div class="center">{{"APPOINTMENT"|translate}}</div>
     </ons-toolbar>
     <div style="margin-top:5vh">
     <ons-list>
@@ -25,7 +25,7 @@
             <div align="center" ng-show="!loading&&!showLiveUpdate">
               <p class="item-desc" ng-class="fontSizeTitle">{{checkInMessage}}</p><br>
               <button class="button checkin-button" ng-click="checkinToAppointment()" ng-disabled="!enableCheckinButton">
-                <span style="font-size:20px"><i class="iconHomeView ion-android-checkbox" style="color:white"></i><br> Check-in<span>
+                <span style="font-size:20px"><i class="iconHomeView ion-android-checkbox" style="color:white"></i><br>{{"CHECKIN"|translate}}</span>
             </button>
             </div>
             <div align="center" style="height:310px" ng-show="!loading&&showLiveUpdate">
@@ -35,9 +35,9 @@
             </div>
               <div style="margin-top:-170px;height:160px;overflow-y:hidden;width:200px;padding:0">
               <p class="item-title" ng-class="fontSizeTitle"></p><br>
-              <p class="item-title"   ng-class="fontSizeTitle">Estimated Wait</p>
-              <p class="item-title" style='font-size:30px'>{{checkinEstimate}}</p>
-              <p class="item-title"   ng-class="fontSizeTitle">Minutes</p>
+              <p class="item-title"   ng-class="fontSizeTitle">{{"ESTIMATEDWAIT"|translate}}</p>
+              <p class="item-title" style="font-size:30px">{{checkinEstimate}}</p>
+              <p class="item-title"   ng-class="fontSizeTitle">{{"MINUTES"|translate}}</p>
             </div>
             <div align="center" style="margin-top:10px">
               <p class="item-title"  ng-class="fontSizeTitle">{{precedingPatientsLabel}}</p>
@@ -50,22 +50,9 @@
     <ons-list class="settings-list" >
       <ons-list-item modifier="tappable" ng-click="goToMap()">
         <div class="text-center" style="color:grey" ng-class="fontSizeDesc">
-            <i class="ion-location iconHomeView"></i>  Location &raquo;
+            <i class="ion-location iconHomeView"></i>  {{"LOCATION"|translate}} &raquo;
         </div>
        </ons-list-item>
     </ons-list>
   </div>
   </ons-page>
-
-
-//Bigger font
-//You are checked in!
-
-Inside circle
-
-//Estimated Wait
-  20 - 30 minutes
-
-
-//2 patients ahead of you...
-//Approximately 10 minutes ahead of schedule

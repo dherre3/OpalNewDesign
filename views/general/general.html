@@ -1,14 +1,14 @@
 <ons-navigator var="generalNavigator" >
 <ons-page ng-controller="generalTabController" ng-device-backbutton="generalDeviceBackButton()">
   <ons-toolbar>
-    <div class="left"><ons-back-button>Back</ons-back-button></div>
-      <div class="center">General</div>
+    <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+      <div class="center">{{"GENERAL"|translate}}</div>
       <div class="right"><ons-toolbar-button ng-click="generalNavigator.pushPage('./views/tabs/info-page-tabs.html')"><ons-icon icon="ion-ios-information-outline"></ons-icon></ons-toolbar-button></div>
 
   </ons-toolbar>
   <ons-list>
 <ons-list style="margin: 0px 0">
-  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/maps/maps.html')">
+  <!--<ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/maps/maps.html')">
       <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
@@ -22,7 +22,7 @@
               <p class="item-desc"></p>
           </ons-col>
       </ons-row>
-  </ons-list-item>
+  </ons-list-item>-->
   <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/notifications/notifications.html')">
       <ons-row align="center" >
           <ons-col width="60px" >
@@ -32,7 +32,7 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">Notifications</span>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"NOTIFICATIONS"|translate}}</span>
               </header>
               <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>
@@ -47,7 +47,7 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">General Announcements</span>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"GENERALANNOUNCEMENTS"|translate}}</span>
               </header>
               <p class="item-desc" ng-class="fontSizeDesc"></p>
           </ons-col>
@@ -62,7 +62,7 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">Parking</span>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"PARKING"|translate}}</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>
@@ -77,7 +77,7 @@
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">Contacts</span>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"CONTACTS"|translate}}</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>

@@ -460,7 +460,7 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
         },
         //Function to update fields in the app, it does not initialize them, it only updates the new fields.
         //Parameter only defined when its a particular array of values.
-        update(section,parameters)
+        update:function(section,parameters)
         {
           var r=$q.defer();
           var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
@@ -524,7 +524,6 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
                   return initServicesOffline();
               }
            }
-          return r.promise;
         },
         UpdateSection:function(section,onDemand)
         {

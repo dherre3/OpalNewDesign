@@ -108,6 +108,7 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
       appointmentsLocalStorage=appointmentsLocalStorage.concat(appointments);
       LocalStorage.WriteToLocalStorage('Appointments',appointmentsLocalStorage);
       for (var i = 0; i < appointments.length; i++) {
+          appointments[i].ResourceName = (appointments[i].Resource.hasOwnProperty('Machine')) ? '':appointments[i].Resource.Doctor;
           appointments[i].ScheduledStartTime = $filter('formatDate')(appointments[i].ScheduledStartTime);
           appointments[i].ScheduledEndTime =  $filter('formatDate')(appointments[i].ScheduledEndTime);
           UserAppointmentsArray[i] = appointments[i];
@@ -119,10 +120,10 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
       //Sort Appointments chronologically most recent first
       UserAppointmentsArray = $filter('orderBy')(UserAppointmentsArray, 'ScheduledStartTime', false);
       var sessionNumber = 1;
-      for (var i = 0; i < UserAppointmentsArray.length; i++) {
-        if(UserAppointmentsArray[i].AppointmentType_EN=='Daily Radiotherapy Treatment'||UserAppointmentsArray[i].AppointmentType_EN=='Final Radiotherapy Treatment Session'||UserAppointmentsArray[i].AppointmentType_EN=='First Radiotherapy Treatment Session')
+      for (var j = 0; j < UserAppointmentsArray.length; j++) {
+        if(UserAppointmentsArray[j].AppointmentType_EN=='Daily Radiotherapy Treatment'||UserAppointmentsArray[j].AppointmentType_EN=='Final Radiotherapy Treatment Session'||UserAppointmentsArray[j].AppointmentType_EN=='First Radiotherapy Treatment Session')
         {
-          UserAppointmentsArray[i].sessionNumber="Session "+sessionNumber+ " of "+ numberOfSessions;
+          UserAppointmentsArray[j].sessionNumber="Session "+sessionNumber+ " of "+ numberOfSessions;
           sessionNumber++;
         }
       }
@@ -400,13 +401,13 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
         **/
         getLastAppointmentCompleted:function(){
           var pastApp= getAppointmentsInPeriod('Past');
-          if(pastApp.length==0) return -1;
+          if(pastApp.length === 0) return -1;
           return pastApp[0];
         },
         getUpcomingAppointment:function()
         {
           var FutureAppointments=getAppointmentsInPeriod('Future');
-          if(FutureAppointments.length==0) return -1;
+          if(FutureAppointments.length ===0) return -1;
           return FutureAppointments[0];
         },
         getUserCalendar:function(){
@@ -419,6 +420,10 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
                     UserAppointmentsArray[i].ChangeRequest=value;
                 }
             }
+        },
+        getAppointmentsToday:function()
+        {
+           return getAppointmentsInPeriod('Today');
         },
         getCheckinAppointment:function()
         {
@@ -548,8 +553,16 @@ myApp.service('Appointments', ['$q', 'RequestToServer','$cordovaCalendar','UserA
           if (Object.prototype.toString.call( array ) === '[object Array]') {
             for (var i = 0; i < array.length; i++) {
               //set language
-              if(!array[i].hasOwnProperty('Title')||!array[i].hasOwnProperty('Description'))
+              if(!array[i].hasOwnProperty('Title')||!array[i].hasOwnProperty('Description')||!array[i].hasOwnProperty('ResourceName'))
               {
+                if( array[i].Resource.hasOwnProperty('Machine')||Object.keys(array[i].Resource).length == 0)
+                {
+                  array[i].ResourceName = (language =='EN')? array[i].MapName_EN : array[i].MapName_FR;
+                }else if(array[i].Resource.hasOwnProperty('Doctor')){
+                  array[i].ResourceName = (language =='EN')? array[i].Resource.Doctor : array[i].Resource.Doctor;
+                }else{
+                  array[i].ResourceName = (language =='EN')? array[i].MapName_EN : array[i].MapName_FR;
+                }
                 array[i].Title = (language=='EN')? array[i].AppointmentType_EN : array[i].AppointmentType_FR;
                 array[i].Description = (language == 'EN')? array[i].AppointmentDescription_EN : array[i].AppointmentDescription_FR;
               }

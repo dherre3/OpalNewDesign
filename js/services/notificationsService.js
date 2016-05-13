@@ -148,6 +148,7 @@ myApp.service('Notifications',['$rootScope','$filter','RequestToServer','LocalSt
           temp[i].Color = notificationTypes[temp[i].NotificationType].color;
           if(!notificationTypes[temp[i].NotificationType].hasOwnProperty('openFunction')) temp[i].PageUrl = notificationTypes[temp[i].NotificationType].PageUrl(temp[i].RefTableRowSerNum);
           temp[i].Content = notificationTypes[temp[i].NotificationType].namesFunction(temp[i].RefTableRowSerNum);
+          console.log(temp[i].Content);
           temp[i].DateAdded=$filter('formatDate')(temp[i].DateAdded);
           console.log(temp[i]);
           Notifications.push(temp[i]);

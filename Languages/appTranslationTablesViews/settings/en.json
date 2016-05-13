@@ -1,5 +1,5 @@
 {
-  "_COMMENT":"Settings page and subviews",
+  "_COMMENT":"Settings page and subviews english",
   "PATIENTID":"Patient ID:",
   "PERSONAL":"Personal",
   "ALIAS":"Alias",
@@ -11,24 +11,5 @@
   "FONTSIZE":"Font size",
   "ENABLESMS":"Enable SMS",
   "CALENDARACCESS":"Calendar Access",
-  "SIGNOUT":"Sign out",
-  "ENTERNEW":"Enter new",
-  "UPDATE":"Update",
-  "HASBEENUPDATED":"has been updated!",
-  "ENTERYOURALIAS":"Enter your new alias",
-  "ENTERYOURLASTNAME":"Enter your new last name",
-  "ENABLESMSNOTIFICATIONQUESTION":"Would you like to enable your SMS messaging notifications?",
-  "DISABLESMSNOTIFICATIONQUESTION":"Would you like to disable your SMS messaging notifications?",
-  "ENABLECALENDARACCESSQUESTION":"Would you like save your appointment schedule in your phone calendar?",
-  "DISABLECALENDARACCESSQUESTION":"Would you like to saving your appointments to your phone calendar?",
-  "CONFIRMALERTCALENDARLABEL":"Calendar Setting",
-  "CONFIRMALERTSMSLABEL":"SMS settings",
-  "CONTINUE":"Continue",
-  "CANCEL":"Cancel",
-  "ENTERNEWTELEPHONE":"Enter your new telephone number:",
-  "ENTERPASSWORD":"Enter your Password",
-  "ENTEREMAILADDRESS":"Enter your new email address:",
-  "ENTEROLDPASSWORD":"Enter your old password",
-  "ENTERNEWPASSWORD":"Enter your new password:",
-  "SELECTFONTSIZE":"Select font size"
+  "SIGNOUT":"Sign out"
 }

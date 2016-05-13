@@ -1,9 +1,8 @@
 var myApp=angular.module('MUHCApp')
-myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$scope','$timeout','UpdateUI', 'RequestToServer','$timeout','$translatePartialLoader', '$filter',function (Patient, UserPreferences, $scope, $timeout,UpdateUI, RequestToServer,$timeout,$translatePartialLoader,$filter) {
+myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$scope','$timeout','UpdateUI', 'RequestToServer', '$filter',function (Patient, UserPreferences, $scope, $timeout,UpdateUI, RequestToServer,$filter) {
     //Patient.setData($rootScope.FirstName, $rootScope.LastName, $rootScope.Pictures, $rootScope.TelNum, $rootScope.Email);
     //console.log(Patient.getFirstName());
     //var setNameFunction= Patient.setFirstName('as');
-    $translatePartialLoader.addPart('settings');
 
     $scope.closeAlert = function () {
 
@@ -115,7 +114,6 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
 
 myApp.controller('ChangingSettingController',function($filter,$rootScope,FirebaseService, tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
   console.log(UserAuthorizationInfo);
-
     accountChangeSetUp();
     function accountChangeSetUp(){
     var fieldsMappings = {"Font-size":"FONTSIZE","Language":"LANGUAGE","Tel. Number" :"PHONENUMBER","Password":"PASSWORD","Email":"EMAIL","Alias":"ALIAS"};
@@ -156,7 +154,7 @@ myApp.controller('ChangingSettingController',function($filter,$rootScope,Firebas
         $scope.instructionOld="ENTEROLDPASSWORD";
     }else if(parameters==='Language'){
         var value=UserPreferences.getLanguage();
-        $scope.instruction='Select language';
+        $scope.instruction='SELECTLANGUAGE';
         $scope.personal=false;
         $scope.fontUpdated=false;
         $scope.pickLanguage=value;

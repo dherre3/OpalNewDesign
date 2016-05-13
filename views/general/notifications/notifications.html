@@ -1,7 +1,7 @@
 <ons-page ng-controller="NotificationsController">
   <ons-toolbar>
-    <div class="left"><ons-back-button>Back</ons-back-button></div>
-    <div class="center">Notifications</div>
+    <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+    <div class="center">{{"NOTIFICATIONS"|translate}}</div>
   </ons-toolbar>
   <!--<ons-pull-hook ng-action="load($done)" var="loader">
         <span ng-switch="loader.getCurrentState()">
@@ -31,6 +31,6 @@
 </ons-list>
 </div>
 <div class="container" align="center">
-  <p style="margin-top:25vh;color:grey" ng-show="noNotifications">No notifications</p>
+  <p style="margin-top:25vh;color:grey" ng-show="noNotifications">{{"NONOTIFICATIONS"|translate}}!</p>
 </div>
 </ons-page>

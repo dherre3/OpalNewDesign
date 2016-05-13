@@ -1,6 +1,6 @@
-<ons-page ng-controller="ContactIndividualDoctorController">
+<ons-page ng-controller="ContactIndividualDoctorController" ng-cloak>
     <ons-toolbar>
-      <div class="left"><ons-back-button>Back</ons-back-button></div>
+      <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
       <div class="center">{{header}}</div>
     </ons-toolbar>
      <div class="profile-cardContact">
@@ -12,23 +12,26 @@
 
       </div>
 
-        <ons-list style="margin-top: 12px;">
-          <ons-list-item modifier="chevron" ng-show="doctor.Address" >
+        <ons-list style="margin-top: 12px;"  >
+          <div ng-show="doctor.Address">
+          <ons-list-item   modifier="chevron">
             <div class="prop-desc">
               <i class="fa fa-map-marker iconHomeView" style="margin:0"></i>
               <span style="color:black" ng-class="fontSizeDesc">{{doctor.Address}}</span>
             </div>
           </ons-list-item>
-
-          <ons-list-item ng-show="doctor.Phone" modifier="chevron">
+          </div>
+          <div ng-show="doctor.Phone" >
+          <ons-list-item modifier="chevron">
              <a href="tel:{{doctor.Phone}}" style="text-decoration:none"><div class="prop-desc">
               <i class="fa fa-mobile iconHomeView" style="margin:0"></i>
 
                <span style="color:black" ng-class="fontSizeDesc">{{doctor.Phone|FormatPhoneNumber}}</span>
             </div></a>
           </ons-list-item>
-
-          <ons-list-item ng-show="doctor.Email" modifier="chevron">
+          </div>
+          <div ng-show="doctor.Email">
+          <ons-list-item  modifier="chevron">
           <a href="mailto:{{doctor.Email}}">
             <div class="prop-desc">
               <i class="fa fa-envelope-o iconHomeView" style="margin:0"></i>
@@ -36,7 +39,9 @@
             </div>
             </a>
           </ons-list-item>
-        <ons-list-item modifier="chevron" ng-show="inContacts">
+          </div>
+          <!--<div  ng-show="inContacts">
+        <ons-list-item modifier="chevron">
           <a ng-click="generalNavigator.pushPage('views/personal/messages/individual-conversation.html',{param: doctor})">
             <div class="prop-desc">
               <i class="ion-ios-chatbubble-outline iconHomeView" style="margin:0"></i>
@@ -44,5 +49,7 @@
             </div>
             </a>
           </ons-list-item>
+           </div>-->
         </ons-list>
+       
   </ons-page>

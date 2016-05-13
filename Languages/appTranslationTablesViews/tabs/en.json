@@ -1,4 +1,8 @@
 {
+  "BACK":"Back",
+  "LOADINGDATA":"Loading Data",
+  "RELEASETOREFRESH":"Release to refresh",
+  "PULLDOWNTOREFRESH":"Pull down to refresh",
   "HOME":"Home",
   "MYCHART":"My Chart",
   "GENERAL":"General",

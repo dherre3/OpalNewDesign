@@ -3,9 +3,15 @@
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
 var myApp = angular.module('MUHCApp');
-myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate', '$translatePartialLoader','RequestToServer', '$location','Documents','UserPreferences','Notifications','NavigatorParameters','NativeNotification',
-'NewsBanner',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate, $translatePartialLoader,RequestToServer,$location,Documents,UserPreferences,Notifications,NavigatorParameters,NativeNotification,NewsBanner) {
-      $translatePartialLoader.addPart('home');
+myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate','RequestToServer', '$location','Documents','Notifications','NavigatorParameters','NativeNotification',
+'NewsBanner','DeviceIdentifiers',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate,RequestToServer,$location,Documents,Notifications,NavigatorParameters,NativeNotification,NewsBanner,DeviceIdentifiers) {
+  
+      //Check if device identifier has been sent, if not sent, send it to backend.
+      var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+      if(app) DeviceIdentifiers.checkSendStatus();
+      
+      
+      
         $scope.homeDeviceBackButton=function()
         {
           console.log('device button pressed do nothing');
@@ -16,9 +22,9 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
             }
           },function(){
             console.log('cancel exit');
-          })
+          });
           console.log(homeNavigator.getDeviceBackButtonHandler());
-        }
+        };
         homeNavigator.on('postpop',function(){
           $timeout(function()
           {
@@ -58,7 +64,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
           //start by initilizing variables
           setNotifications();
           //setUpCheckin();
-          setUpCheckin()
+          setUpCheckin();
         }
     $scope.goToView=function(param)
     {
@@ -81,12 +87,12 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
 
         }
       }
-    }
+    };
     $scope.goToStatus = function()
     {
-      NavigatorParameters.setParameters({'Navigator':'homeNavigator'})
-      homeNavigator.pushPage('views/home/status/status.html')
-    }
+      NavigatorParameters.setParameters({'Navigator':'homeNavigator'});
+      homeNavigator.pushPage('views/home/status/status.html');
+    };
 
     //Set notifications function
     function setNotifications()
@@ -95,7 +101,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       $scope.notifications = Notifications.getUnreadNotifications();
       if($scope.notifications.length>0)
       {
-        NewsBanner.showAlert('notifications');
+        NewsBanner.setAlert('notifications');
       }
       console.log($scope.notifications);
       //Sets language for the notification
@@ -206,7 +212,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
                 $rootScope.checkInMessage = "CHECKIN_MESSAGE_AFTER";
                 $rootScope.showHomeScreenUpdate = true;
                 CheckinService.getCheckinUpdates(checkInAppointment);
-              })
+              });
             }
           });
         }else{

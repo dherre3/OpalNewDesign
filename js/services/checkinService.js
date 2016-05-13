@@ -1,4 +1,6 @@
 var myApp=angular.module('MUHCApp');
+
+
 myApp.factory('CheckinService', ['$q', 'RequestToServer', 'Appointments', '$timeout','FirebaseService','EncryptionService', '$rootScope','UserPreferences','UpdateUI',function ($q, RequestToServer, Appointments,$timeout,FirebaseService,EncryptionService,$rootScope,UserPreferences,UpdateUI) {
 
     var positionCheckinAppointment = {};
@@ -98,34 +100,6 @@ myApp.factory('CheckinService', ['$q', 'RequestToServer', 'Appointments', '$time
    function deg2rad(deg) {
        return deg * (Math.PI / 180);
    }
-    //Checks if there are appointments today
-    function haveNextAppointmentToday(){
-      //Checks if the user has appointments
-      if(Appointments.isThereAppointments())
-      {
-          if(Appointments.isThereNextAppointment())
-          {
-            var today = new Date();
-            var nextAppointment=Appointments.getUpcomingAppointment();
-            var nextAppointmentDate=nextAppointment.ScheduledStartTime;
-            if(today.getDate()==nextAppointmentDate.getDate()&&today.getFullYear()==nextAppointmentDate.getFullYear()&&today.getMonth()==nextAppointmentDate.getMonth())
-            {
-              return true;
-            }else{
-              return false;
-            }
-          }else{
-            return false;
-          }
-      }else{
-        return false;
-      }
-      var noFutureAppointments=false;
-
-      var nextAppointment=Appointments.getNextAppointment().Object;
-    };
-
-
     return {
       /*Function determines geographically whether user is allow to check-in. works under the
       * assumption that all the checks to see if an appointment is already done, have been done!
@@ -206,10 +180,6 @@ myApp.factory('CheckinService', ['$q', 'RequestToServer', 'Appointments', '$time
       {
         liveCheckinUpdates(nextappointment);
       }
-
-
-
-
     };
 
 

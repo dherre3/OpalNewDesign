@@ -1,8 +1,15 @@
 {
-  "HOME":"Accueil",
-  "MYCHART":"Mes documents",
-  "GENERAL":"Général",
-  "EDUCATION":"Éducation",
-  "SETTINGS":"Paramètres"
-
+  "_COMMENT":"Settings page and subviews french",
+  "PATIENTID":"Patient ID:",
+  "PERSONAL":"Personal",
+  "ALIAS":"Alias",
+  "EMAIL":"Email",
+  "PASSWORD":"Password",
+  "PHONENUMBER":"Phone Number",
+  "PREFERENCES":"Preferences",
+  "LANGUAGE":"Language",
+  "FONTSIZE":"Font size",
+  "ENABLESMS":"Enable SMS",
+  "CALENDARACCESS":"Calendar Access",
+  "SIGNOUT":"Sign out"
 }

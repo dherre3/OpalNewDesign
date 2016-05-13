@@ -1,7 +1,7 @@
   <ons-page ng-controller="SingleDocumentController">
     <ons-toolbar >
-      <div class="left"><ons-back-button>Back</ons-back-button></div>
-      <div class="center">Document</div>
+      <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+      <div class="center">{{"DOCUMENT"|translate}}</div>
     </ons-toolbar>
     <div style="margin-top:5vh">
     <ons-list>
@@ -32,14 +32,14 @@
     <ons-list class="settings-list">
        <ons-list-item >
          <div class="text-center">
-           <a ng-click="shareViaEmail()" style="font-size:18px"><i class="ion-share"></i> Share via email</a>
+           <a ng-click="shareViaEmail()" style="font-size:18px"><i class="ion-share"></i> {{"SHAREVIAEMAIL"|translate}}</a>
          </div>
         </ons-list-item>
     </ons-list>
     <ons-list class="settings-list">
        <ons-list-item >
          <div class="text-center">
-           <a ng-click="printDocument()" style="font-size:18px"><i class="ion-printer"></i> Print Document</a>
+           <a ng-click="printDocument()" style="font-size:18px"><i class="ion-printer"></i> {{"PRINTDOCUMENT"|translate}}</a>
          </div>
         </ons-list-item>
     </ons-list>
