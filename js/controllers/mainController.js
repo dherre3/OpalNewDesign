@@ -1,4 +1,4 @@
-angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','FirebaseService','NewsBanner','NativeNotification','DeviceIdentifiers','$translatePartialLoader', function ($state,$rootScope,FirebaseService,NewsBanner,NativeNotification,DeviceIdentifiers,$translatePartialLoader) {
+angular.module('MUHCApp').controller('MainController', ["$state",'$timeout', '$rootScope','FirebaseService','NativeNotification','DeviceIdentifiers','$translatePartialLoader', function ($state,$timeout,$rootScope,FirebaseService,NativeNotification,DeviceIdentifiers,$translatePartialLoader) {
     $translatePartialLoader.addPart('top-view');
     $state.transitionTo('logIn');
     
@@ -58,11 +58,18 @@ angular.module('MUHCApp').controller('MainController', ["$state",'$rootScope','F
     }else{
       window.addEventListener('online',  function(){
         console.log('online');
-        NewsBanner.setAlert('connected');
+        $timeout(function()
+        {
+            $rootScope.alertBanner = 'connected';   
+        })
       });
       window.addEventListener('offline', function(){
         console.log('offline');
-        NewsBanner.setAlert('nointernet');
+        $timeout(function()
+        {
+            $rootScope.alertBanner = 'nointernet';   
+        })
+        
       });
     }
 

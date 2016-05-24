@@ -18,19 +18,18 @@ var myApp=angular.module('MUHCApp');
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale','DeviceIdentifiers',function LoginController($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale,DeviceIdentifiers) {
+myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale','DeviceIdentifiers','UserPreferences',function LoginController($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale,DeviceIdentifiers,UserPreferences) {
   console.log(FirebaseService);
   $translatePartialLoader.addPart('login');
-  $scope.languageSwitch = 1;
+  $scope.languageSwitch  = (UserPreferences.initializeLanguage()=='EN')?1:0;
+  
   $scope.changeLanguage = function(value)
   {
     if(value === 0)
     {
-      tmhDynamicLocale.set('fr');
-      $translate.use('fr');
+      UserPreferences.setLanguage('FR');
     }else{
-      tmhDynamicLocale.set('en');
-      $translate.use('en');
+      UserPreferences.setLanguage('EN');
     }
   };
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());

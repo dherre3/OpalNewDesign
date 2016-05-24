@@ -448,7 +448,6 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
         return r.promise;
     }*/
 
-    this.internetConnection=false;
     return {
         UpdateOffline:function(section)
         {
@@ -462,40 +461,13 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
         //Parameter only defined when its a particular array of values.
         update:function(section,parameters)
         {
-          var r=$q.defer();
-          var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-          if(app){
-              if($cordovaNetwork.isOnline()){
-                  this.internetConnection=true;
-                  return updateSection(section,parameters);
-              }else{
-                  this.internetConnection=false;
-
-                  NativeNotification.showNotificationAlert('Connect to the internet to fetch your most recent data');
-                  }
-          }else{
-              //Computer check if online
-              if(navigator.onLine){
-                  console.log('online website');
-                  this.internetConnection=true;
-                  return updateSection(section,parameters);
-              }else{
-                  this.internetConnection=false;
-                  NativeNotification.showNotificationAlert('Connect to the internet to fetch your most recent data');
-              }
-           }
-           return r.promise;
+           return updateSection(section,parameters);
         },
         init:function()
         {
-          $timeout(function(){
-            $rootScope.statusRoot='Inside init function';
-          });
           var r=$q.defer();
           var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
           if(app){
-              if($cordovaNetwork.isOnline()){
-                  this.internetConnection=true;
                   console.log(LocalStorage.isUserDataDefined());
                   if(LocalStorage.isUserDataDefined())
                   {
@@ -503,26 +475,9 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
                   }else{
                     return initServicesOnline();
                   }
-
-              }else{
-                $timeout(function(){
-                $rootScope.statusRoot="About to initiate services offline";
-              });
-                  this.internetConnection=false;
-                  console.log('Initiating services offline');
-                  return initServicesFromLocalStorage();
-                  }
           }else{
               //Computer check if online
-              if(navigator.onLine){
-                  console.log('online website');
-                  this.internetConnection=true;
-                  return initServicesOnline();
-              }else{
-                  this.internetConnection=false;
-                  console.log('offline website');
-                  return initServicesOffline();
-              }
+              return initServicesOnline();
            }
         },
         UpdateSection:function(section,onDemand)
@@ -531,10 +486,8 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
             var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
             if(app){
                 if($cordovaNetwork.isOnline()){
-                    this.internetConnection=true;
                     return UpdateSectionOnline(section);
                 }else{
-                    this.internetConnection=false;
                     if(onDemand)
                     {
                       r.reject('No internet connection');
@@ -546,21 +499,14 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
                 //Computer check if online
                 if(navigator.onLine){
                     console.log('online website');
-                    this.internetConnection=true;
                     return UpdateSectionOnline(section);
                 }else{
-                    this.internetConnection=false;
                     console.log('offline website');
                     return UpdateSectionOffline(section);
                 }
              }
             return r.promise;
-        },
-        getInternetConnection:function()
-        {
-          return this.internetConnection;
         }
-
     };
 
 }]);

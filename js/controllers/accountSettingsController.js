@@ -112,7 +112,7 @@ myApp.controller('accountSettingController', ['Patient', 'UserPreferences','$sco
 
 
 
-myApp.controller('ChangingSettingController',function($filter,$rootScope,FirebaseService, tmhDynamicLocale, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
+myApp.controller('ChangingSettingController',function($filter,$rootScope,FirebaseService, $translate, UserPreferences,Patient,RequestToServer,$scope,$timeout,UpdateUI, UserAuthorizationInfo){
   console.log(UserAuthorizationInfo);
     accountChangeSetUp();
     function accountChangeSetUp(){
@@ -190,11 +190,9 @@ myApp.controller('ChangingSettingController',function($filter,$rootScope,Firebas
 
             objectToSend.NewValue=$scope.newValue;
             RequestToServer.sendRequest('AccountChange',objectToSend);
-            $timeout(function(){
-                RequestToServer.sendRequest('Refresh','Patient');
-                $scope.newUpdate=true;
-                UpdateUI.UpdateSection('Patient');
-            },2000);
+            RequestToServer.sendRequest('Refresh','Patient');
+            $scope.newUpdate=true;
+            UpdateUI.update('Patient');
         }
     };
     $scope.changeFont=function(newVal)
@@ -208,13 +206,6 @@ myApp.controller('ChangingSettingController',function($filter,$rootScope,Firebas
         objectToSend.FieldToChange='Language';
         RequestToServer.sendRequest('AccountChange',objectToSend);
         UserPreferences.setLanguage(val);
-        if(val==='EN'){
-            tmhDynamicLocale.set('en');
-            $translate.use('en');
-        }else{
-            tmhDynamicLocale.set('fr');
-            $translate.use('fr');
-        }
         $scope.newUpdate=true;
 
     };

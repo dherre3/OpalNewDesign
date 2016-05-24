@@ -33,9 +33,8 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
         'Notifications':time,
         'EducationalMaterial':time
       };
-      window.localStorage.setItem(UserAuthorizationInfo.UserName+'/Timestamps',JSON.stringify(lastUpdateTimestamp))
-      console.log(lastUpdateTimestamp);
-  }
+      window.localStorage.setItem(UserAuthorizationInfo.UserName+'/Timestamps',JSON.stringify(lastUpdateTimestamp));
+    }
     function obtainTimestamp(content)
     {
       if(typeof content=='undefined')
@@ -80,12 +79,7 @@ myApp.service('RequestToServer',function(UserAuthorizationInfo, EncryptionServic
           content= EncryptionService.encryptData(content);
           if(app){
             //If online send request as normal
-              if($cordovaNetwork.isOnline()){
-                Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':timestamp });
-              }else{
-                //If offline notify the patient and ask to connect to the internet
-                //navigator.notification.alert('No changes will be reflected at the hospital. Connect to the internet to perform this action, ',function(){},'Internet Connectivity','Ok');
-              }
+            Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier, 'Token':token, 'UserID': userID, 'Parameters':content,'Timestamp':timestamp });
           }else{
             //If its not an app just try sending the request
             Ref.push({ 'Request' : encryptedRequestType,'DeviceId':identifier,'Token':token,  'UserID': userID, 'Parameters':content,'Timestamp':timestamp});

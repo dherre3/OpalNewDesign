@@ -1,12 +1,10 @@
 <ons-page ng-controller="IndividualEduMaterialController" ng-device-backbutton="educationDeviceBackButton()">
   <ons-toolbar>
       <div class="left">
-        <ons-back-button>Back</ons-back-button>
+        <ons-back-button>{{"BACK"|translate}}</ons-back-button>
       </div>
 
-    <div class="center">Education</div>
-    <div class="center" ng-click="goToOptions()">Options</div>
-
+    <div class="center">{{"EDUCATION"|translate}}</div>
   </ons-toolbar>
   <div style="margin-top:25vh" ng-show="notLoaded" align="center">
     <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>

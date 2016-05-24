@@ -11,7 +11,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       if(app) DeviceIdentifiers.checkSendStatus();
       
       
-      
+        
         $scope.homeDeviceBackButton=function()
         {
           console.log('device button pressed do nothing');
@@ -101,7 +101,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       $scope.notifications = Notifications.getUnreadNotifications();
       if($scope.notifications.length>0)
       {
-        NewsBanner.setAlert('notifications');
+        $rootScope.alertBanner = 'notifications';
       }
       console.log($scope.notifications);
       //Sets language for the notification

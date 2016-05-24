@@ -2216,18 +2216,25 @@ a .action-col{
 /*
 * News banner css
 */
-.element {
+.element-banner {
 opacity: 0.0;
-transform:translate(0,-50px);
-transition: transform 400ms ease, opacity 400ms ease;
+width:100vw;
+position:fixed;
+top:-7px;
+left:0px;
+transition: transform 500ms ease, opacity 400ms ease;
 }
 
-.element.active {
+.active-banner {
 opacity: 1.0;
-transform: translate(0,0);
+-ms-transform: translate(0px,50px);
+-webkit-transform:translate(0px,50px);
+transform: translate(0px,50px);
 }
 
-.element .inactive {
-opacity: 0.0;
-transform: translate(0,-50px);
+.inactive-banner {
+ opacity:0.0;
+-ms-transform: translate(0px,-50px);
+-webkit-transform:translate(0px,-50px);
+transform: translate(0px,-50px);
 }

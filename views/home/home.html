@@ -15,7 +15,7 @@
             <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
             </span>
         </ons-pull-hook>
-        <news-banner alert-parameters="alertBanner" ></news-banner>{{alertBanner}}
+        <news-banner type="alertBanner" ></news-banner>
         <!--<div class="container text-center" align="center" style="padding:0;margin:0 auto">
             <img src="img/muhc-logo-text.png" style="width:90vw;max-width:500px">
         </div>-->
@@ -84,7 +84,7 @@
                         <span class="item-title" ng-class="fontSizeTitle" translate = "{{checkInMessage}}"></span>
                     </header>
                     <p class="item-desc" ng-class="fontSizeDesc">{{checkInAppointment.ScheduledStartTime|formatDateAppointmentTask}} </p>
-                    <p class="item-desc" ng-class="fontSizeDesc" style="color:orange" ng-show ="checkinEstimate&&showHomeScreenUpdate"> Estimated wait: {{checkinEstimate}} minutes</p>
+                    <p class="item-desc" ng-class="fontSizeDesc" style="color:orange" ng-show ="checkinEstimate&&showHomeScreenUpdate">{{"ESTIMATEDWAIT"|translate}}: {{checkinEstimate}} minutes</p>
                 </ons-col>
             </ons-row>
         </ons-list-item>

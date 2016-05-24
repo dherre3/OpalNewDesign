@@ -1,6 +1,6 @@
 var myApp=angular.module('MUHCApp');
 //This service will have the user preferences for language and sent sms feature. To be used in account settings.
-myApp.service('UserPreferences',[ 'UserAuthorizationInfo','$rootScope',function(UserAuthorizationInfo,$rootScope){
+myApp.service('UserPreferences',[ 'UserAuthorizationInfo','$rootScope','tmhDynamicLocale','$translate', function(UserAuthorizationInfo,$rootScope,tmhDynamicLocale,$translate){
 
     return{
         setFontSize:function(size)
@@ -20,15 +20,15 @@ myApp.service('UserPreferences',[ 'UserAuthorizationInfo','$rootScope',function(
         getFontSize:function()
         {
             var username=UserAuthorizationInfo.UserName;
-            this.FontSize='medium';
-            $rootScope.fontSizeDesc='fontDescMedium';
-            $rootScope.fontSizeTitle='fontTitleMedium';
+            this.FontSize='large';
+            $rootScope.fontSizeDesc='fontDescLarge';
+            $rootScope.fontSizeTitle='fontTitleLarge';
             var fontSize=window.localStorage.getItem(username+'fontSize');
-            if(fontSize&&typeof fontSize!=='undefined'&&fontSize=='large')
+            if(fontSize&&typeof fontSize!=='undefined'&&fontSize=='medium')
             {
                 this.FontSize=fontSize;
-                $rootScope.fontSizeDesc='fontDescLarge';
-                $rootScope.fontSizeTitle='fontTitleLarge';
+                $rootScope.fontSizeDesc='fontDescMedium';
+                $rootScope.fontSizeTitle='fontTitleMedium';
             }
             return this.FontSize;
         },
@@ -40,8 +40,31 @@ myApp.service('UserPreferences',[ 'UserAuthorizationInfo','$rootScope',function(
         getNativeCalendarOption:function(){
             return this.calendarOption;
         },
+        initializeLanguage:function()
+        {
+           var lan =  window.localStorage.getItem('Language');
+            if(lan == 'EN')
+            {
+                tmhDynamicLocale.set('en');
+                $translate.use('en');
+            }else{
+                tmhDynamicLocale.set('fr');
+                $translate.use('fr');
+            }
+           this.Language = lan;
+           return lan;
+        },
         setLanguage:function(lan){
             console.log(lan);
+             if(lan == 'EN')
+            {
+                tmhDynamicLocale.set('en');
+                $translate.use('en');
+            }else{
+                tmhDynamicLocale.set('fr');
+                $translate.use('fr');
+            }
+            window.localStorage.setItem('Language', lan);
             this.Language=lan;
         },
         setEnableSMS:function(){

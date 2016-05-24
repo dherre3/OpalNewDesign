@@ -6,7 +6,7 @@ myApp.controller('TabsController',['$scope','$timeout','$translate','$translateP
 
 
   }]);
-myApp.controller('personalTabController',['$scope','$timeout','Appointments','UserPlanWorkflow','TxTeamMessages','Documents','$location','RequestToServer','UpdateUI','NavigatorParameters',function($scope,$timeout,Appointments,UserPlanWorkflow,TxTeamMessages,Documents,$location,RequestToServer,UpdateUI,NavigatorParameters){
+myApp.controller('personalTabController',['$scope','$timeout','Appointments','$translate','UserPlanWorkflow','TxTeamMessages','Documents','$location','RequestToServer','UpdateUI','NavigatorParameters',function($scope,$timeout,Appointments,$translate, UserPlanWorkflow,TxTeamMessages,Documents,$location,RequestToServer,UpdateUI,NavigatorParameters){
   personalNavigator.on('prepop',function(){
     setNewsNumbers();
   });
@@ -47,10 +47,10 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','Us
   //Setting up Appointments status
   if(Appointments.isThereNextAppointment())
   {
-    $scope.appointmentTitle="Upcoming Appointment:";
+    $scope.appointmentTitle="UPCOMINGAPPOINTMENT";
     $scope.appointment=Appointments.getUpcomingAppointment();
   }else{
-    $scope.appointmentTitle="Last Appointment:";
+    $scope.appointmentTitle= "LASTAPPOINTMENT"+":";
     $scope.appointment=Appointments.getLastAppointmentCompleted();
   }
 
@@ -58,10 +58,10 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','Us
   if(UserPlanWorkflow.isCompleted())
   {
     console.log('completed')
-    $scope.nameCurrentStage="Completed";
+    $scope.nameCurrentStage="COMPLETED";
   }else{
     var index=UserPlanWorkflow.getNextStageIndex();
-    $scope.outOf="Stage "+index+' of 6';
+    $scope.outOf={index:index};
   }
 
 

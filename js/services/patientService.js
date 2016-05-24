@@ -1,6 +1,6 @@
 var myApp=angular.module('MUHCApp');
 
-myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordovaDevice','FileManagerService','$filter','LocalStorage','UserPreferences',function(UserPreferences,$q, $cordovaFileTransfer, $cordovaDevice,FileManagerService,$filter,LocalStorage,UserPreferences){
+myApp.service('Patient',['$q','$cordovaFileTransfer','$cordovaDevice','FileManagerService','$filter','LocalStorage','UserPreferences',function($q, $cordovaFileTransfer, $cordovaDevice,FileManagerService,$filter,LocalStorage,UserPreferences){
     var ProfileImage='';
     var FirstName='';
     var LastName='';
@@ -16,6 +16,7 @@ myApp.service('Patient',['UserPreferences','$q','$cordovaFileTransfer','$cordova
         setUserFieldsOnline:function(patientFields){
             var r=$q.defer();
             patientFields=patientFields[0];
+            
             UserPreferences.setEnableSMS(patientFields.EnableSMS);
             UserPreferences.setLanguage(patientFields.Language);
             console.log(UserPreferences.getLanguage());
