@@ -317,11 +317,11 @@ myApp.service('UpdateUI', ['Announcements','TxTeamMessages','EncryptionService',
               //returning the promise of work done
               r.resolve(true);
             }
-            setTimeout(function(){
+            /*setTimeout(function(){
               ref.child(pathToSection).set(null);
               ref.child(pathToSection).off();
               r.resolve(true);
-            },40000)
+            },40000);*/
           });
         return r.promise;
     }

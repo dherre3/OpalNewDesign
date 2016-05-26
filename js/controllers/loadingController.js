@@ -2,18 +2,14 @@
 //  Created by David Herrera on 2015-05-04.
 //  Copyright (c) 2015 David Herrera. All rights reserved.
 //
-angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state', '$scope','UpdateUI', 'UserAuthorizationInfo','UserPreferences', '$q','Patient', 'Messages', '$timeout',function ($rootScope,$state, $scope, UpdateUI, UserAuthorizationInfo, UserPreferences, $q, Patient, Messages,$timeout) {
-		console.log('Im doing it');
+angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state', '$scope','UpdateUI', 'UserAuthorizationInfo','UserPreferences', '$q','Patient', 'Messages', '$timeout',function ($rootScope,$state, $scope, UpdateUI, UserAuthorizationInfo, UserPreferences, $q, Patient, Messages,$timeout){
 		modal.show();
-		console.log('starting upfatye');
-		$rootScope.statusRoot='About to go into updateUI';
+		console.log('Im doing it');
 		console.log('setting timeout');
 		setTimeout(function()
 		{
-			$rootScope.statusRoot='Time out over about to go into init function';
 			var updateUI=UpdateUI.init();
 			updateUI.then(function(){
-				$rootScope.statusRoot='Resolving init function';
 					$rootScope.refresh=true;
 						$state.go('Home');
 						modal.hide();
@@ -26,7 +22,10 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 
 
 		setTimeout(function(){
-			if(typeof Patient.getFirstName()=='undefined'){
+			console.log('hello');
+			console.log(typeof Patient.getFirstName());
+			if(typeof Patient.getFirstName()=='undefined'||Patient.getFirstName()==''){
+				console.log('we meet again');
 				var user=window.localStorage.getItem('UserAuthorizationInfo');
 				user=JSON.parse(user);
 				storage=window.localStorage.getItem(user.UserName);
@@ -39,25 +38,25 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 				if(storage){
 
 				    ons.notification.confirm({
-				      message: 'Problems with server, would you like to load your most recent saved data from the device?',
+				      message: 'Problems with server, could not fetch data, try again later',
 				      modifier: mod,
 				      callback: function(idx) {
 								console.log('I am in there?')
 				        switch (idx) {
 				          case 0:
-										$state.go('logOut');
+									$state.go('logOut');
 				            /*ons.notification.alert({
 				              message: 'You pressed "Cancel".',
 				              modifier: mod
 				            });*/
 				            break;
 				          case 1:
-									modal.show();
-									console.log('I am in there?')
-									UpdateUI.UpdateOffline('All').then(function(){
+									$state.go('logOut');
+									//modal.show();
+									/*UpdateUI.UpdateOffline('All').then(function(){
 										modal.hide();
 										$state.go('Home');
-									});
+									});*/
 				          break;
 				        }
 				      }
@@ -66,7 +65,7 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 
 			}else{
 				ons.notification.confirm({
-					message: 'Problems with server, could not fetch data, try again later?',
+					message: 'Problems with server, could not fetch data, try again later',
 					modifier: mod,
 					callback: function(idx) {
 						$state.go('logOut');

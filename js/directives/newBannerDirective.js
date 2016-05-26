@@ -5,7 +5,7 @@
  * @description
  * # newsBanner
  */
-angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout, UserPreferences, $q,$window,$cordovaNetwork) {
+angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout, $q,$window,$cordovaNetwork,$filter) {
     var colorMappings =
     {
       'success':'#5cb85c',
@@ -16,26 +16,27 @@ angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout,
     var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
     var stack = [];
     var alertTypes = {
-      'notifications':{Type:'notifications',Color:colorMappings.info,Icon:'ion-arrow-down-c', Message:{'EN':'New notifications','FR':'Nouevelle news'},Duration:'finite'},
-      'nointernet':{Type:'nointernet',Color:colorMappings.dead,Icon:'ion-alert-circled', Message:{'EN':'No internet connection','FR':'Parle france'},Duration:'infinite'},
-      'connected':{Type:'connected',Color:colorMappings.success,Icon:'ion-wifi', Message:{'EN':'Connected','FR':'Parle france'},Duration:'finite'}
+      'notifications':{Type:'notifications',Color:colorMappings.info,Icon:'ion-arrow-down-c', Message:"NEWNOTIFICATIONS",Duration:'finite'},
+      'nointernet':{Type:'nointernet',Color:colorMappings.dead,Icon:'ion-alert-circled', Message:"NOINTERNETCONNECTION",Duration:'infinite'},
+      'connected':{Type:'connected',Color:colorMappings.success,Icon:'', Message:"CONNECTED",Duration:'finite'}
     };
     return {
       template: "<div class=\"text-center element-banner\" align = \"center\" style=\"width:100vw;color:white;font-size:15px;background-color:DeepSkyBlue ;position: absolute;width:100vw;height:30px;top:0px;z-index:3\" ng-style=\"\"><p style=\"vertical-align:middle;\"><strong> <i style=\"font-size:20px\" ng-class=\"alertParameters.Icon\" ></i> <strong></strong></p></div>",
       restrict: 'E',
       scope:{
-        'type':'='
+        'type':'=',
+        'transition':'='
       },
       link: function postLink(scope, element, attrs) {
-        var language = UserPreferences.getLanguage();
         if(app){
-          if (!$cordovaNetwork.isOnline()) $rootScope.mainAlert = 'nointernet'; 
+          if (!$cordovaNetwork.isOnline()) $rootScope.alertBanner = 'nointernet'; 
         }else{
-          if (!navigator.onLine) $rootScope.mainAlert = 'nointernet'; 
+          if (!navigator.onLine) $rootScope.alertBanner = 'nointernet'; 
         }
         
         element.addClass('element-banner');
            scope.$watch('type', function() {
+             console.log(scope.type);
           if(typeof scope.type !== 'undefined')
           {
             if(stack.length>0) 
@@ -49,7 +50,15 @@ angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout,
             
           }
           });
-        
+        //Code to be used when the transition of the main page is happening, only removes alert momentarily
+       /* scope.$watch('transition',function(){
+          if(typeof scope.transition !== 'undefined'&& typeof $rootScope.alertBanner)
+          {
+            console.log('deleting transition');
+            removeAlert();
+            delete $rootScope.transitionBanner;
+          }
+        });*/
        function removeAlert()
        {
           var r = $q.defer();
@@ -57,7 +66,7 @@ angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout,
           var top = stack.pop();
           $timeout(function(){
             element.removeClass(top.Icon);
-            r.resolve();
+            r.resolve(true);
           },500);
           return r.promise;
        }
@@ -83,11 +92,11 @@ angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout,
           {
               $timeout(function(){
                 removeAlert();
-                delete $rootScope.mainAlert;
+                delete $rootScope.alertBanner;
               },1500);
           }
-          var message = (language === 'EN')?alertTypes[scope.type].Message.EN:alertTypes[scope.type].Message.FR;
-          message = " "+message;
+          var message = 
+          message = " "+ $filter('translate')(alertTypes[scope.type].Message);
           element.text(message);
         }
         element.on('$destroy', function() {

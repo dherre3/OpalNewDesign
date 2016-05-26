@@ -1,4 +1,4 @@
-<ons-navigator var="homeNavigator">
+<ons-navigator var="homeNavigator" >
     <ons-page ng-controller="HomeController" ng-device-backbutton="homeDeviceBackButton()">
         <ons-toolbar>
             <div class="center">{{"HEADER_MESSAGE_HOME"|translate}}</div>
@@ -8,6 +8,8 @@
                 </ons-toolbar-button>
             </div>
         </ons-toolbar>
+       <news-banner type="alertBanner" transition = "transitionBanner"></news-banner>
+
         <ons-pull-hook ng-action="load($done)" var="loader" height="100px">
             <span ng-switch="loader.getCurrentState()">
                       <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> Pull down to refresh</span>
@@ -15,7 +17,6 @@
             <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon> Loading data...</span>
             </span>
         </ons-pull-hook>
-        <news-banner type="alertBanner" ></news-banner>
         <!--<div class="container text-center" align="center" style="padding:0;margin:0 auto">
             <img src="img/muhc-logo-text.png" style="width:90vw;max-width:500px">
         </div>-->
@@ -48,7 +49,7 @@
         </div>-->
         <div style="position:relative;z-index:1">
         <img src="img/cedarCancer.jpg" style="max-width:100vw">
-        <div class="image-profile-wrapper-home text-center" align="center" style="margin-top:-160px;margin-left:auto;margin-right:auto;position:relative;z-index:4;">
+        <div class="image-profile-wrapper-home text-center" align="center" style="margin-top:-150px;margin-left:auto;margin-right:auto;position:relative;z-index:4;">
                  <img ng-src="{{ProfileImage}}" style="margin-left:auto;margin-right:auto;" class="image-profile-home">
        </div>
        <div style="margin-top:0px">

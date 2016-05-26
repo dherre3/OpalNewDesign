@@ -60,7 +60,7 @@ angular.module('MUHCApp').controller('MainController', ["$state",'$timeout', '$r
         console.log('online');
         $timeout(function()
         {
-            $rootScope.alertBanner = 'connected';   
+            $rootScope.alertBanner = 'connected';
         })
       });
       window.addEventListener('offline', function(){

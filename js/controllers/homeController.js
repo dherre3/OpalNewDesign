@@ -5,7 +5,7 @@
 var myApp = angular.module('MUHCApp');
 myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate','RequestToServer', '$location','Documents','Notifications','NavigatorParameters','NativeNotification',
 'NewsBanner','DeviceIdentifiers',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate,RequestToServer,$location,Documents,Notifications,NavigatorParameters,NativeNotification,NewsBanner,DeviceIdentifiers) {
-  
+
       //Check if device identifier has been sent, if not sent, send it to backend.
       var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
       if(app) DeviceIdentifiers.checkSendStatus();
@@ -25,12 +25,12 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
           });
           console.log(homeNavigator.getDeviceBackButtonHandler());
         };
-        homeNavigator.on('postpop',function(){
+        /*homeNavigator.on('postpop',function(){
           $timeout(function()
           {
             console.log('boom');
           });
-        });
+        });*/
         homePageInit();
         $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','All');

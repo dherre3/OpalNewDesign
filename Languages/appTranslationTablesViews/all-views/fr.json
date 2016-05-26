@@ -137,10 +137,15 @@
 	"STEP":"Étape",
 	"TREATMENTPLANCOMPLETEDON":"Plan de traitement complété",
 	"UPCOMING":"À venir",
+	"INFO":"Information",
 	"INPROGRESS":"En progrès",
 	"COMPLETED":"Complété",
 	"ESTIMATED":"Estimé",
 	"TREATMENTENDS":"La fin du traitement",
 	"NOGENERALANNOUNCEMENTS":"Pas d’annonces générales",
-	"TABLEOFCONTENTS":"Table des matières"
+	"TABLEOFCONTENTS":"Table des matières",
+	"NOINTERNETCONNECTION":"Pas de connexion Internet",
+	"CONNECTED":"Connecté",
+	"NEWNOTIFICATIONS":"Nouvelle Notifications",
+	"NOPDFPROBLEM":"Installez un programme qui ouvre les fichiers PDF afin de visualiser vos documents"
 }

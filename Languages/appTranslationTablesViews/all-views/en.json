@@ -107,12 +107,17 @@
 	"NOTREATMENTPLAN":"No treatment plan available",
 	"NOGENERALANNOUNCEMENTS":"No general annoucements",
 	"STEP":"Step",
+	"INFO":"Information",
 	"UPCOMING":"Upcoming",
 	"TREATMENTENDS":"Treatment Ends",
 	"STARTTREATMENT":"Starting Treatment",
 	"ESTIMATED":"Estimated",
 	"TREATMENTPLANCOMPLETEDON":"Completed On",
-	"COMPLETED":"Completed"
+	"COMPLETED":"Completed",
+	"NOINTERNETCONNECTION":"No internet connection",
+	"CONNECTED":"Connected",
+	"NEWNOTIFICATIONS":"New Notifications",
+	"NOPDFPROBLEM":"Install a program that opens PDF files in order to view your documents"
 
 	
 	

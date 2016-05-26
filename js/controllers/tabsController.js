@@ -61,7 +61,7 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','$t
     $scope.nameCurrentStage="COMPLETED";
   }else{
     var index=UserPlanWorkflow.getNextStageIndex();
-    $scope.outOf={index:index};
+    $scope.outOf={index:index, total:6};
   }
 
 
