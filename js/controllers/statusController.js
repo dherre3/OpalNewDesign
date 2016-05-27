@@ -3,10 +3,9 @@ myApp.controller('StatusController',['$rootScope','$scope','$timeout', 'UserPlan
 
   $scope.indexPage=0;
   $scope.numberPlans=2;
-  var param = NavigatorParameters.getParameters();
-  console.log(param.Navigator);
+  var param = NavigatorParameters.getParameters();  
   var boolStatus = (param.Navigator == 'homeNavigator')? true : false;
-
+  console.log(boolStatus);
   /*document.addEventListener('ons-carousel:init', function(e) {
   var mycarousel= e.component;
   mycarousel.on('postchange',function(event){
@@ -15,10 +14,16 @@ myApp.controller('StatusController',['$rootScope','$scope','$timeout', 'UserPlan
       });
   });
 });*/
-document.addEventListener('ons-carousel:init', function(ev) {
+listenerCarouselInit(boolStatus);
+function listenerCarouselInit(bool)
+{
+  
+  document.addEventListener('ons-carousel:init', function(ev) {
     $scope.carousel = ev.component;
-    setCarouselItems(boolStatus);
+    setCarouselItems(bool);
   });
+}
+
 function setCarouselItems(status)
 {
     $scope.carousel.setSwipeable(status);
@@ -35,7 +40,7 @@ function setStatusPage()
     initTreatmentPlanStatus(stages,nextStageIndex);
   if(appointmentsSession.AppointmentList.length == 0)
   {
-    setCarouselItems(false)
+    listenerCarouselInit(false);
   }else{
     console.log('Do not show!!!');
     appointmentsSession.AppointmentList = Appointments.setAppointmentsLanguage(appointmentsSession.AppointmentList);

@@ -102,6 +102,10 @@ myApp.service('EducationalMaterial',['$filter','LocalStorage','FileManagerServic
       educationalMaterialArray=[];
       addEducationalMaterial(edumaterial)
     },
+    isThereEducationalMaterial:function()
+    {
+      return educationalMaterialArray.length>0;
+    },
     //Update the announcements
     updateEducationalMaterial:function(edumaterial)
     {

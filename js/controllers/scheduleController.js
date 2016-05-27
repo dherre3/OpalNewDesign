@@ -20,6 +20,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$f
   console.log(document.documentElement.clientHeight-document.documentElement.clientHeight*0.35-154);
   divTreatment.style.height=heightTreatment+'px';
   $scope.appointments=Appointments.getUserAppointments();
+  $scope.noAppointments = !($scope.appointments>0);
   $scope.appointments = Appointments.setAppointmentsLanguage($scope.appointments);
   $scope.dt = new Date();
   $scope.todayDate=new Date();
@@ -67,63 +68,69 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$f
 
   function findClosestAnchor()
   {
-    var today=new Date($scope.dt);
-    today.setHours(0,0,0,0);
-    today=today.getTime();
-    var dateLast=new Date($scope.appointments[$scope.appointments.length-1].ScheduledStartTime.getTime());
-    dateLast.setHours(0,0,0,0);
-    dateLast=dateLast.getTime();
-    var dateFirst=new Date($scope.appointments[0].ScheduledStartTime.getTime());
-    dateFirst.setHours(0,0,0,0);
-    dateFirst=dateFirst.getTime();
-    if(dateLast<today)
+    if($scope.appointments.length>0)
     {
-      return 'lastAnchor';
-    }else if(dateFirst>=today)
-    {
-      return 'topListAnchor';
-    }else{
-      for (var i = 0; i < $scope.appointments.length; i++) {
-        var date=new Date($scope.appointments[i].ScheduledStartTime.getTime());
-        date.setHours(0,0,0,0);
-        date=date.getTime();
-        if(i>2&&i<$scope.appointments.length)
-        {
-          if(i==$scope.appointments.length-1)
+      var today=new Date($scope.dt);
+      today.setHours(0,0,0,0);
+      today=today.getTime();
+      var dateLast=new Date($scope.appointments[$scope.appointments.length-1].ScheduledStartTime.getTime());
+      dateLast.setHours(0,0,0,0);
+      dateLast=dateLast.getTime();
+      var dateFirst=new Date($scope.appointments[0].ScheduledStartTime.getTime());
+      dateFirst.setHours(0,0,0,0);
+      dateFirst=dateFirst.getTime();
+      if(dateLast<today)
+      {
+        return 'lastAnchor';
+      }else if(dateFirst>=today)
+      {
+        return 'topListAnchor';
+      }else{
+        for (var i = 0; i < $scope.appointments.length; i++) {
+          var date=new Date($scope.appointments[i].ScheduledStartTime.getTime());
+          date.setHours(0,0,0,0);
+          date=date.getTime();
+          if(i>2&&i<$scope.appointments.length)
           {
-            return "anchorAppointments"+($scope.appointments.length-2);
-          }else{
-            var date2=new Date($scope.appointments[i+1].ScheduledStartTime.getTime());
-            date2.setHours(0,0,0,0);
-            date2=date2.getTime();
-            if(date==today)
+            if(i==$scope.appointments.length-1)
             {
-              return 'anchorAppointments'+(i-1);
+              return "anchorAppointments"+($scope.appointments.length-2);
             }else{
-              if(today>date&&today<date2)
+              var date2=new Date($scope.appointments[i+1].ScheduledStartTime.getTime());
+              date2.setHours(0,0,0,0);
+              date2=date2.getTime();
+              if(date==today)
               {
                 return 'anchorAppointments'+(i-1);
+              }else{
+                if(today>date&&today<date2)
+                {
+                  return 'anchorAppointments'+(i-1);
+                }
+              }
+            }
+
+          }else if(i<3&&i>0){
+            if(date==today)
+            {
+              return 'anchorAppointments'+0;
+            }else{
+              var date2=new Date($scope.appointments[i+1].ScheduledStartTime.getTime());
+              date2.setHours(0,0,0,0);
+              date2=date2.getTime();
+              if(today>date&&today<date2)
+              {
+                return 'anchorAppointments'+0;
               }
             }
           }
-
-        }else if(i<3&&i>0){
-          if(date==today)
-          {
-            return 'anchorAppointments'+0;
-          }else{
-            var date2=new Date($scope.appointments[i+1].ScheduledStartTime.getTime());
-            date2.setHours(0,0,0,0);
-            date2=date2.getTime();
-            if(today>date&&today<date2)
-            {
-              return 'anchorAppointments'+0;
-            }
-          }
         }
-      }
-      return 'topListAnchor';
+        return 'topListAnchor';
+      } 
+    }else{
+       return 'topListAnchor';
     }
+   
 
 
   }
@@ -265,18 +272,24 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$f
     }
     $scope.pickLastHeader=function()
     {
-      var today=new Date($scope.dt);
-      today.setHours(0,0,0,0)
-      today=today.getTime();
-      var lastTime=new Date($scope.appointments[$scope.appointments.length-1].ScheduledStartTime.getTime());
-      lastTime.setHours(0,0,0,0);
-      lastTime=lastTime.getTime();
-      if(lastTime<today)
-      {
-        return true;
+        if($scope.appointments.length>0)
+        {
+          var today=new Date($scope.dt);
+        today.setHours(0,0,0,0)
+        today=today.getTime();
+        var lastTime=new Date($scope.appointments[$scope.appointments.length-1].ScheduledStartTime.getTime());
+        lastTime.setHours(0,0,0,0);
+        lastTime=lastTime.getTime();
+        if(lastTime<today)
+        {
+          return true;
+        }else{
+          return false;
+        }
       }else{
         return false;
       }
+      
     }
 
     $scope.setHeaderPickedDay=function(index)

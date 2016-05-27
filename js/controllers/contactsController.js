@@ -10,6 +10,8 @@
 myApp.controller('ContactsController',['$scope','Doctors','$timeout','UpdateUI', 'RequestToServer', 'NavigatorParameters', function($scope,Doctors,$timeout,UpdateUI,RequestToServer,NavigatorParameters){
     doctorsInit();
     function doctorsInit(){
+      $scope.noContacts = !Doctors.isThereDoctors();
+      console.log($scope.noContacts);
       $scope.oncologists=Doctors.getOncologists();
       $scope.primaryPhysician=Doctors.getPrimaryPhysician();
       $scope.otherDoctors=Doctors.getOtherDoctors();

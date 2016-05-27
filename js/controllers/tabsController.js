@@ -45,14 +45,18 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','$t
   };
 
   //Setting up Appointments status
-  if(Appointments.isThereNextAppointment())
+  if(Appointments.isThereAppointments())
   {
-    $scope.appointmentTitle="UPCOMINGAPPOINTMENT";
-    $scope.appointment=Appointments.getUpcomingAppointment();
-  }else{
-    $scope.appointmentTitle= "LASTAPPOINTMENT"+":";
-    $scope.appointment=Appointments.getLastAppointmentCompleted();
+    if(Appointments.isThereNextAppointment())
+    {
+      $scope.appointmentTitle="UPCOMINGAPPOINTMENT";
+      $scope.appointment=Appointments.getUpcomingAppointment();
+    }else{
+      $scope.appointmentTitle= "LASTAPPOINTMENT"+":";
+      $scope.appointment=Appointments.getLastAppointmentCompleted();
+    } 
   }
+  
 
   //Setting up status of treament plan
   if(UserPlanWorkflow.isCompleted())

@@ -7,6 +7,7 @@
 	"TREATINGTEAMNOTIFICATIONS":"Treating Team Notifications",
 	"QUESTIONNAIRES":"Questionnaires",
 	"UPCOMINGAPPOINTMENT":"Upcoming Appointment",
+	"NOAPPOINTMENTS":"No appointments",
 	"LASTAPPOINTMENT":"Last Appointment",
 	"TEAMMESSAGES":"Team Messages",
 	"PATIENTDOCUMENTS":"Patient Documents",
@@ -24,7 +25,7 @@
 	"TABLEOFCONTENTS":"Table of Contents",
 	"QUESTIONNAIRETOCOMPLETE":"Your treating team has sent you a questionnaire to complete while waiting for your appointment",
 	"NOTEAMMESSAGES":"No treatment team messages",
-	"NOPATIENTDOCUMENTSAVAILABLE":"No Patient Documents Available",
+	"NOPATIENTDOCUMENTSAVAILABLE":"No patient documents available",
 	"UNREAD":"Unread",
 	"DEAR":"Dear",
 	"_COMMENT":"Individual Page and Main Appointment Page",
@@ -41,9 +42,10 @@
 	"LABELS":"Labels",
 	"PHONECALENDARACCESS":"Phone Calendar Access",
 	"EDUCATION":"Education",
+	"NOEDUCATIONALMATERIAL":"No educational material",
 	"GENERAL":"General",
 	"NOTIFICATIONS":"Notifications",
-	"NONOTIFICATIONS":"No Notificaitons",
+	"NONOTIFICATIONS":"No notifications",
 	"GENERALANNOUNCEMENTS":"General Announcements",
 	"PARKING":"Parking",
 	"CONTACTS":"Contacts",
@@ -76,7 +78,7 @@
 	"SIGNOUT":"Sign out",
 	"ENTERNEW":"Enter new",
 	"UPDATE":"Update",
-	"HASBEENUPDATED":"has been updated!",
+	"HASBEENUPDATED":"has been updated",
 	"ENTERYOURALIAS":"Enter your new alias",
 	"ENTERYOURLASTNAME":"Enter your new last name",
 	"ENABLESMSNOTIFICATIONQUESTION":"Would you like to enable your SMS messaging notifications?",
@@ -117,7 +119,8 @@
 	"NOINTERNETCONNECTION":"No internet connection",
 	"CONNECTED":"Connected",
 	"NEWNOTIFICATIONS":"New Notifications",
-	"NOPDFPROBLEM":"Install a program that opens PDF files in order to view your documents"
+	"NOPDFPROBLEM":"Install a program that opens PDF files in order to view your documents",
+	"NOCONTACTSAVAILABLE":"No contacts available"
 
 	
 	

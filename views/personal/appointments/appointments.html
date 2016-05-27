@@ -18,6 +18,9 @@
 <div id="topListAnchor" style="height:5px;background-color:lightgrey;position:relative;z-index:1"></div>
 <ons-scroller id="scrollerAppointments" style="position:relative;z-index:1">
   <div id="firstAnchor"></div>
+    <div style="color:grey;margin-top:10vh" ng-show="noAppointments" align="center" ng-class="fontSizeTitle">
+      {{"NOAPPOINTMENTS"|translate}}
+    </div>
 <ons-list  ng-repeat="app in appointments" ng-click="goToAppointment(app)" >
   <ons-list-header  ng-if="setHeaderPickedDay($index)" style="color:red">{{dt|date:'EEE MMM dd yyyy'}}</ons-list-header>
     <ons-list-header class="person-list-header" ng-if="setHeader($index)" ng-class="fontSizeTitle">{{app.ScheduledStartTime|date:'EEE MMM dd yyyy'}}</ons-list-header>

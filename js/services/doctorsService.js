@@ -248,6 +248,10 @@ myApp.service('Doctors',['$q','LocalStorage','$filter','FileManagerService','$co
             return false;
           }
         },
+        isThereDoctors:function()
+        {
+          return (Doctors.length>0)?true:false;
+        },
         getContacts:function(){
             return Doctors;
         },

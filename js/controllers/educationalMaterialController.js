@@ -12,6 +12,7 @@ init();
 function init()
 {
 	//Obtaining materials from service
+	$scope.noMaterials = !EducationalMaterial.isThereEducationalMaterial()
 	var materials = EducationalMaterial.getEducationalMaterial();
 	console.log(materials);
 	//Setting the language for view
