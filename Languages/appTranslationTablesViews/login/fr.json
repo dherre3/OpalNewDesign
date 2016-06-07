@@ -29,10 +29,24 @@
 	"ENTERVALIDPASSWORD":"Entrer un mot de passe valide",
 	"SERVERPROBLEM":"Problème de serveur, contactez l'hôpital.",
 	"PASSWORDSUCCESSRESET":"Votre mot de passe a été changé avec succès, redirection vers la page de connexion.",
-	"LOADINGDATA":"Chargement..."
-
-
-
-
+	"LOADINGDATA":"Chargement...",
+	"OPALPROBLEMSUBJECT":"Trouvé un bug / problème en utilisant OPAL",
+	"REPORTISSUES":"Questions Rapport",
+	"SETTINGS":"Réglages",
+	"PARKING":"Stationnement",
+	"HOSPITALPARKING":"Stationnement",
+	"ONCOLOGYPARKING":"Stationnement Radiothérapie",
+	"PARKINGINFORMATION":"Informations Sur Le Stationnement",
+	"CLOSE":"Fermer",
+	"BACK":"Retour",
+	"ABOUT":"Sur",
+	"SENDFEEDBACK":"Envoyer Des Commentaires",
+	"RATETHISAPP":"Évaluer l'application",
+	"OPENDEVICESETTINGS":"Paramètres de l'appareil Ouvert",
+	"TERMSOFUSE":"Conditions d'utilisation",
+	"PRIVACYPOLICY":"Politique De Confidentialité",
+	"APPVERSION":"App Version",
+	"LANGUAGE":"Langage",
+	"SECUREYOURDEVICE":"Sécuriser Votre Appareil"
 
 }

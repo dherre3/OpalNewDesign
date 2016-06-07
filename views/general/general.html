@@ -23,18 +23,18 @@
           </ons-col>
       </ons-row>
   </ons-list-item>-->
-  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/notifications/notifications.html')">
-      <ons-row align="center" >
-          <ons-col width="60px" >
-              <div>
-                <i class="ion-android-notifications iconHomeView" style="color:DarkRed"></i><span class="notification" ng-show="notificationsUnreadNumber>0">{{notificationsUnreadNumber}}</span>
+    <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/contacts/contacts.html')">
+      <ons-row align="center"   >
+          <ons-col width="60px" align="center">
+              <div >
+                <i class="ion-person-stalker iconHomeView" style="color:Amethyst"></i>
               </div>
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">{{"NOTIFICATIONS"|translate}}</span>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"CONTACTS"|translate}}</span>
               </header>
-              <p class="item-desc" ng-class="fontSizeDesc"></p>
+              <p class="item-desc"></p>
           </ons-col>
       </ons-row>
   </ons-list-item>
@@ -53,7 +53,7 @@
           </ons-col>
       </ons-row>
   </ons-list-item>
-  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/parking.html')">
+  <ons-list-item modifier="chevron" class="item" ng-click="goToParking()">
       <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
@@ -68,16 +68,31 @@
           </ons-col>
       </ons-row>
   </ons-list-item>
-  <ons-list-item modifier="chevron" class="item" ng-click="generalNavigator.pushPage('views/general/contacts/contacts.html')">
+   <ons-list-item modifier="chevron" class="item" ng-click="reportIssuesMail()">
       <ons-row align="center"   >
           <ons-col width="60px" align="center">
               <div >
-                <i class="ion-person-stalker iconHomeView" style="color:Amethyst"></i>
+                <i class="ion-bug iconHomeView" style="color:purple"></i>
               </div>
           </ons-col>
           <ons-col>
               <header>
-                  <span class="item-title" ng-class="fontSizeTitle">{{"CONTACTS"|translate}}</span>
+                  <span class="item-title" ng-class="fontSizeTitle"> {{"REPORTISSUES"|translate}}</span>
+              </header>
+              <p class="item-desc"></p>
+          </ons-col>
+      </ons-row>
+  </ons-list-item>
+   <ons-list-item modifier="chevron" class="item" ng-click="secureYourDevice()">
+      <ons-row align="center"   >
+          <ons-col width="60px" align="center">
+              <div >
+                <i class="ion-locked iconHomeView" style="color:grey"></i>
+              </div>
+          </ons-col>
+          <ons-col>
+              <header>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"SECUREYOURDEVICE"|translate}}</span>
               </header>
               <p class="item-desc"></p>
           </ons-col>

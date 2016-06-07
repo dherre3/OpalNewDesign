@@ -120,7 +120,11 @@
 	"CONNECTED":"Connected",
 	"NEWNOTIFICATIONS":"New Notifications",
 	"NOPDFPROBLEM":"Install a program that opens PDF files in order to view your documents",
-	"NOCONTACTSAVAILABLE":"No contacts available"
+	"NOCONTACTSAVAILABLE":"No contacts available",
+	"THANKYOUFORFEEDBACK":"Thank you for your feedback!",
+	"RATETHISMATERIAL":"Rate this educational material!",
+	"SUBMIT":"Submit"
+	
 
 	
 	

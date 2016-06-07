@@ -8,7 +8,6 @@
                 </ons-toolbar-button>
             </div>
         </ons-toolbar>
-       <news-banner type="alertBanner" transition = "transitionBanner"></news-banner>
 
         <ons-pull-hook ng-action="load($done)" var="loader" height="100px">
             <span ng-switch="loader.getCurrentState()">
@@ -21,7 +20,6 @@
             <img src="img/muhc-logo-text.png" style="width:90vw;max-width:500px">
         </div>-->
         <div>
-
             <!--<div style="margin-left:2vw;margin-right: 2vw;margin-top:10px">
              <div >
                 <img src="img/cedarsCancerCenter.jpg" style="width:100%;border-top-left-radius:10px;border-top-right-radius:10px">
@@ -141,7 +139,9 @@
               </ons-row>
           </ons-list-item>
         </ons-list>
+        
       </div>
     </div>
+    <div id="bottomNotifications"></div>
     </ons-page>
 </ons-navigator>

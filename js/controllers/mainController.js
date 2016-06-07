@@ -1,7 +1,43 @@
-angular.module('MUHCApp').controller('MainController', ["$state",'$timeout', '$rootScope','FirebaseService','NativeNotification','DeviceIdentifiers','$translatePartialLoader', function ($state,$timeout,$rootScope,FirebaseService,NativeNotification,DeviceIdentifiers,$translatePartialLoader) {
-    $translatePartialLoader.addPart('top-view');
-    $state.transitionTo('logIn');
+angular.module('MUHCApp').controller('MainController', ["$state",'$timeout', '$rootScope','FirebaseService','NativeNotification','DeviceIdentifiers','$translatePartialLoader','NewsBanner', function ($state,$timeout,$rootScope,FirebaseService,NativeNotification,DeviceIdentifiers,$translatePartialLoader,NewsBanner) {
+//     var timeoutID;
+
+// function setup() {
+//     this.addEventListener('touchstart',resetTimer,false);
+//     this.addEventListener('touchend',resetTimer,false);
+//     this.addEventListener("mousemove", resetTimer, false);
+//     this.addEventListener("mousedown", resetTimer, false);
+
+//     startTimer();
+// }
+// setup();
+
+// function startTimer() {
     
+//     // wait 2 seconds before calling goInactive
+//     timeoutID = window.setTimeout(goInactive, 300000);
+// }
+
+// function resetTimer(e) {
+//     console.log(e.type);
+//     window.clearTimeout(timeoutID);
+
+//     goActive();
+// }
+
+// function goInactive() {
+//     //window.localStorage.removeItem('OpalAdminPanelPatient');
+//     //window.localStorage.removeItem('OpalAdminPanelUser');
+//     location.reload();
+// }
+
+// function goActive() {
+//     // do something
+
+//     startTimer();
+// }
+
+    $translatePartialLoader.addPart('top-view');
+    //$state.transitionTo('logIn');
     var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
     if(app)
     {

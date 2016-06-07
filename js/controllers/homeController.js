@@ -4,14 +4,11 @@
 //
 var myApp = angular.module('MUHCApp');
 myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$scope','Patient','UpdateUI', '$timeout','$filter','UserPreferences','UserPlanWorkflow','$rootScope', 'tmhDynamicLocale','$translate','RequestToServer', '$location','Documents','Notifications','NavigatorParameters','NativeNotification',
-'NewsBanner','DeviceIdentifiers',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate,RequestToServer,$location,Documents,Notifications,NavigatorParameters,NativeNotification,NewsBanner,DeviceIdentifiers) {
-
+'NewsBanner','DeviceIdentifiers','$anchorScroll',function ($state,Appointments,CheckinService, $scope, Patient,UpdateUI,$timeout,$filter,UserPreferences,UserPlanWorkflow, $rootScope,tmhDynamicLocale, $translate,RequestToServer,$location,Documents,Notifications,NavigatorParameters,NativeNotification,NewsBanner,DeviceIdentifiers,$anchorScroll) {
+      NewsBanner.setAlert();
       //Check if device identifier has been sent, if not sent, send it to backend.
       var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-      if(app) DeviceIdentifiers.checkSendStatus();
-      
-      
-        
+      if(app) DeviceIdentifiers.checkSendStatus();  
         $scope.homeDeviceBackButton=function()
         {
           console.log('device button pressed do nothing');
@@ -25,12 +22,7 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
           });
           console.log(homeNavigator.getDeviceBackButtonHandler());
         };
-        /*homeNavigator.on('postpop',function(){
-          $timeout(function()
-          {
-            console.log('boom');
-          });
-        });*/
+        
         homePageInit();
         $scope.load = function($done) {
           RequestToServer.sendRequest('Refresh','All');
@@ -101,7 +93,24 @@ myApp.controller('HomeController', ['$state','Appointments', 'CheckinService','$
       $scope.notifications = Notifications.getUnreadNotifications();
       if($scope.notifications.length>0)
       {
-        $rootScope.alertBanner = 'notifications';
+        NewsBanner.showNotificationAlert($scope.notifications.length,function(result){
+              if (result && result.event) {
+                console.log("The toast was tapped or got hidden, see the value of result.event");
+                console.log("Event: " + result.event); // "touch" when the toast was touched by the user or "hide" when the toast geot hidden
+                console.log("Message: " + result.message); // will be equal to the message you passed in
+                //console.log("data.foo: " + result.data.foo); // .. retrieve passed in data here
+
+                if (result.event === 'hide') {
+                  console.log("The toast has been shown");
+                } 
+                if(result.event == 'touch')
+                {
+                  console.log('going to the bottom');
+                  $location.hash("bottomNotifications");
+                  $anchorScroll();
+                }
+              }
+          });
       }
       console.log($scope.notifications);
       //Sets language for the notification

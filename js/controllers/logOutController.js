@@ -13,7 +13,7 @@ angular.module('MUHCApp').controller('logOutController',['FirebaseService','$roo
 			LocalStorage.resetUserLocalStorage();
 			FirebaseService.getAuthentication().$unauth();
 			var r=$q.defer();
-			$state.go('logIn')
+			$state.go('init')
 			r.resolve;
 			return r.promise;
 		}

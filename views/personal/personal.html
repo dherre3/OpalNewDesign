@@ -24,6 +24,21 @@
           </ons-col>
         </ons-row>
       </ons-list-item>-->
+ <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/general/notifications/notifications.html')">
+      <ons-row align="center" >
+          <ons-col width="60px" >
+              <div>
+                <i class="ion-android-notifications iconHomeView" style="color:DarkRed"></i><span class="notification" ng-show="notificationsUnreadNumber>0">{{notificationsUnreadNumber}}</span>
+              </div>
+          </ons-col>
+          <ons-col>
+              <header>
+                  <span class="item-title" ng-class="fontSizeTitle">{{"NOTIFICATIONS"|translate}}</span>
+              </header>
+              <p class="item-desc" ng-class="fontSizeDesc"></p>
+          </ons-col>
+      </ons-row>
+  </ons-list-item>
       <ons-list-item modifier="chevron" class="item" ng-click="personalNavigator.pushPage('views/personal/appointments/appointments.html')">
         <ons-row align="center">
           <ons-col width="60px">
@@ -35,7 +50,7 @@
             <header>
               <span class="item-title" ng-class="fontSizeTitle">{{"APPOINTMENTS"|translate}}</span>
             </header>
-            <p class="item-desc" ng-class="fontSizeDesc"><span translate= "{{appointmentTitle}}"></span> {{appointment.ScheduledStartTime|formatDateAppointmentTask}}</p>
+            <p class="item-desc" ng-class="fontSizeDesc" ng-show="appointmentTitle!=='undefined'"><span translate= "{{appointmentTitle}}"></span> {{appointment.ScheduledStartTime|formatDateAppointmentTask}}</p>
           </ons-col>
         </ons-row>
       </ons-list-item>

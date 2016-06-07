@@ -52,7 +52,7 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','$t
       $scope.appointmentTitle="UPCOMINGAPPOINTMENT";
       $scope.appointment=Appointments.getUpcomingAppointment();
     }else{
-      $scope.appointmentTitle= "LASTAPPOINTMENT"+":";
+      $scope.appointmentTitle= "LASTAPPOINTMENT";
       $scope.appointment=Appointments.getLastAppointmentCompleted();
     } 
   }
@@ -72,12 +72,42 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','$t
 
 
 }]);
-myApp.controller('generalTabController',['$scope','$timeout','Announcements','Notifications',function($scope,$timeout,Announcements,Notifications){
-//Enter code here!!
+myApp.controller('generalTabController',['$scope','$timeout','Announcements','Notifications','NavigatorParameters',function($scope,$timeout,Announcements,Notifications,NavigatorParameters){
+var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+
 setNewsNumbers();
 generalNavigator.on('prepop',function(){
   setNewsNumbers();
 });
+$scope.reportIssuesMail = function()
+{
+
+       if(app){
+           var email = {
+            to: 'muhc.app.mobile@gmail.com',
+            cc: '',
+            bcc: [],
+            subject: $filter("translate")("OPALPROBLEMSUBJECT"),
+            body: '',
+            isHtml: true
+          };
+          cordova.plugins.email.isAvailable(function(isAvailable){
+              if(isAvailable)
+              {
+                cordova.plugins.email.open(email,function(sent){
+                  console.log('email ' + (sent ? 'sent' : 'cancelled'));
+                },this);
+              }else{
+                console.log('is not available');
+              }
+          });
+       } 
+}
+$scope.goToParking = function()
+{
+  NavigatorParameters.setParameters('generalNavigator');
+  generalNavigator.pushPage('views/general/parking/parking.html')
+}
 function setNewsNumbers()
 {
   $scope.announcementsUnreadNumber = Announcements.getNumberUnreadAnnouncements();

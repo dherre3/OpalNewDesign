@@ -33,7 +33,6 @@ angular.module('MUHCApp').directive('newsBanner', function ($rootScope,$timeout,
         }else{
           if (!navigator.onLine) $rootScope.alertBanner = 'nointernet'; 
         }
-        
         element.addClass('element-banner');
            scope.$watch('type', function() {
              console.log(scope.type);

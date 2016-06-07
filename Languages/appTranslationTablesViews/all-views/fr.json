@@ -143,7 +143,6 @@
 	"INPROGRESS":"En progrès",
 	"COMPLETED":"Complété",
 	"ESTIMATED":"Estimé",
-	
 	"TREATMENTENDS":"La fin du traitement",
 	"NOGENERALANNOUNCEMENTS":"Pas d’annonces générales",
 	"TABLEOFCONTENTS":"Table des matières",
@@ -151,5 +150,14 @@
 	"CONNECTED":"Connecté",
 	"NEWNOTIFICATIONS":"Nouvelle Notifications",
 	"NOPDFPROBLEM":"Installez un programme qui ouvre les fichiers PDF afin de visualiser vos documents",
-	"NOCONTACTSAVAILABLE":"Pas de contacts disponibles"
+	"NOCONTACTSAVAILABLE":"Pas de contacts disponibles",
+	"HOSPITALPARKING":"Stationnement",
+	"ONCOLOGYPARKING":"Stationnement Radiothérapie",
+	"PARKINGINFORMATION":"Informations Sur Le Stationnement",
+	"CLOSE":"Fermer",
+	
+	"THANKYOUFORFEEDBACK":"Merci Pour Votre Avis!",
+	"RATETHISMATERIAL":"Noter ce matériel pédagogique!",
+	"SUBMIT":"Soumettre"
+
 }

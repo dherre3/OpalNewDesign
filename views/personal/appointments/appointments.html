@@ -21,8 +21,8 @@
     <div style="color:grey;margin-top:10vh" ng-show="noAppointments" align="center" ng-class="fontSizeTitle">
       {{"NOAPPOINTMENTS"|translate}}
     </div>
-<ons-list  ng-repeat="app in appointments" ng-click="goToAppointment(app)" >
-  <ons-list-header  ng-if="setHeaderPickedDay($index)" style="color:red">{{dt|date:'EEE MMM dd yyyy'}}</ons-list-header>
+<ons-list  ng-repeat="app in appointments" ng-click="goToAppointment(app)" class="gpu_efficiency">
+  <ons-list-header  ng-if="setHeaderPickedDay($index)" style="color:red" ng-class="fontSizeTitle">{{dt|date:'EEE MMM dd yyyy'}}</ons-list-header>
     <ons-list-header class="person-list-header" ng-if="setHeader($index)" ng-class="fontSizeTitle">{{app.ScheduledStartTime|date:'EEE MMM dd yyyy'}}</ons-list-header>
     <ons-list-item modifier="chevron">
   <ons-row id="anchorAppointments{{$index}}">

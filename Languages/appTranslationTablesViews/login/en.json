@@ -10,6 +10,7 @@
 	"CANCERCENTER":"Cedars Cancer Center",
 	"RESETPASSWORD":"Reset Password",
 	"LOADING":"Loading",
+	"LOADINGDATA":"Loading data",
 	"NEWPASSWORD":"Set Password",
 	"SETPASSWORDLABEL":"Set new password",
 	"SETPASSWORDBUTTON":"Set Password",
@@ -28,8 +29,27 @@
 	"CONTACTHOSPITAL":"Contact the hospital for assitance",
 	"ENTERVALIDPASSWORD":"Enter a valid password",
 	"SERVERPROBLEM":"Server problem, contact the hospital",
-	"PASSWORDSUCCESSRESET":"Password has been successfully changed, redirecting to login"
-
+	"PASSWORDSUCCESSRESET":"Password has been successfully changed, redirecting to login",
+	"HOSPITALPARKING":"Hospital Parking",
+	"ONCOLOGYPARKING":"Oncology Parking",
+	"PARKINGINFORMATION":"Parking Information",
+	"CLOSE":"Close",
+	"PARKING":"Parking",
+	"OPALPROBLEMSUBJECT":"Found a Bug/Problem using OPAL",
+	"REPORTISSUES":"Report Issues",
+	"SETTINGS":"Settings",
+	"BACK":"Back",
+	"ABOUT":"About",
+	"SENDFEEDBACK":"Send Feedback",
+	"RATETHISAPP":"Rate This App",
+	"OPENDEVICESETTINGS":"Open Device Settings",
+	"TERMSOFUSE":"Terms of Use",
+	"PRIVACYPOLICY":"Privacy Policy",
+	"APPVERSION":"App Version",
+	"LANGUAGE":"Language",
+	"SECUREYOURDEVICE":"Secure Your Device"
+	
+	
 
 
 

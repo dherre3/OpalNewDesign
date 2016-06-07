@@ -18,20 +18,7 @@ var myApp=angular.module('MUHCApp');
     *takes credentials and places them in the UserAuthorizationInfo service, it also sends the login request to Firebase,
     *and finally it redirects the app to the loading screen.
 */
-myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','$translatePartialLoader','$translate','tmhDynamicLocale','DeviceIdentifiers','UserPreferences',function LoginController($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,$translatePartialLoader,$translate,tmhDynamicLocale,DeviceIdentifiers,UserPreferences) {
-  console.log(FirebaseService);
-  $translatePartialLoader.addPart('login');
-  $scope.languageSwitch  = (UserPreferences.initializeLanguage()=='EN')?1:0;
-  
-  $scope.changeLanguage = function(value)
-  {
-    if(value === 0)
-    {
-      UserPreferences.setLanguage('FR');
-    }else{
-      UserPreferences.setLanguage('EN');
-    }
-  };
+myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope','$timeout', '$rootScope', '$state', 'UserAuthorizationInfo', 'RequestToServer', 'FirebaseService','LocalStorage','tmhDynamicLocale','DeviceIdentifiers','UserPreferences',function LoginController($cordovaNetwork,ResetPassword,$scope,$timeout, $rootScope, $state, UserAuthorizationInfo,RequestToServer,FirebaseService,LocalStorage,tmhDynamicLocale,DeviceIdentifiers,UserPreferences) {
   var myDataRef = new Firebase(FirebaseService.getFirebaseUrl());
   //demoSignIn();
   /*checkForSessionEnd=function()
@@ -51,6 +38,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
     }
   };
   checkForSessionEnd();*/
+
   myDataRef.onAuth(function(authData){
     var  authInfoLocalStorage=window.localStorage.getItem('UserAuthorizationInfo');
     var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
@@ -181,7 +169,7 @@ myApp.controller('LoginController', ['$cordovaNetwork','ResetPassword','$scope',
             ResetPassword.setToken(authData.token);
             ResetPassword.setEmail($scope.email);
             ResetPassword.setTemporaryPassword($scope.password);
-            navigatorForms.pushPage('views/login/verify-ssn.html');
+            initNavigator.pushPage('views/login/verify-ssn.html');
         }else{
           UserAuthorizationInfo.setUserAuthData(authData.auth.uid, CryptoJS.SHA256($scope.password).toString(), authData.expires,authData.token);
           userId = authData.uid;

@@ -41,7 +41,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
 
             console.log(response);
             ResetPassword.setSSN(ssn);
-            navigatorForms.pushPage('./views/login/security-question.html',{param:{Question:response.Question}},{ animation : 'slide' } );
+            initNavigator.pushPage('./views/login/security-question.html',{param:{Question:response.Question}},{ animation : 'slide' } );
             $timeout(function(){
               $scope.loading=false;
             });
@@ -61,7 +61,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
 
   }]);
   myApp.controller('SecurityQuestionController',['$scope','$timeout','ResetPassword','RequestToServer','FirebaseService','EncryptionService',function($scope,$timeout,ResetPassword,RequestToServer,FirebaseService,EncryptionService){
-    var page=navigatorForms.getCurrentPage();
+    var page=initNavigator.getCurrentPage();
     var params=page.options.param;
     console.log(params);
     $scope.Question=params.Question;
@@ -112,7 +112,7 @@ myApp.controller('SetNewPasswordController',['$scope','$timeout','ResetPassword'
               ResetPassword.setAnswer(hash);
               ref.child(path).set({});
               ref.child(path).off();
-              navigatorForms.pushPage('./views/login/new-password.html',{ animation : 'slide' } );
+              initNavigator.pushPage('./views/login/new-password.html',{ animation : 'slide' } );
 
             }
           }

@@ -35,14 +35,14 @@ myApp.controller('NotificationsController', ['RequestToServer','Notifications', 
         var post = (notification.hasOwnProperty('Post')) ? notification.Post : Notifications.getPost(notification);
         if(notification.hasOwnProperty('PageUrl'))
         {
-          NavigatorParameters.setParameters({'Navigator':'generalNavigator', 'Post':post});
-          generalNavigator.pushPage(notification.PageUrl);
+          NavigatorParameters.setParameters({'Navigator':'personalNavigator', 'Post':post});
+          personalNavigator.pushPage(notification.PageUrl);
         }else{
             var result = Notifications.goToPost(notification.NotificationType, post);
           if(result !== -1  )
           {
-            NavigatorParameters.setParameters({'Navigator':'generalNavigator', 'Post':post});
-            generalNavigator.pushPage(result.Url);
+            NavigatorParameters.setParameters({'Navigator':'personalNavigator', 'Post':post});
+            personalNavigator.pushPage(result.Url);
           }
         }
     }

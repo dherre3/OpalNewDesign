@@ -152,7 +152,7 @@ myApp.controller('CalendarController', ['Appointments', '$scope','$timeout', '$f
     $scope.goToCalendarOptions = function()
     {
       personalNavigator.pushPage('./views/personal/appointments/calendar-options.html');
-    }
+    };
     function lookForCalendarDate(date,mode){
         if(mode==='day'){
             var year=date.getFullYear();
@@ -616,9 +616,10 @@ function ($scope,$timeout, Appointments,$location,$anchorScroll) {
       }
     }
 }]);
-myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$scope','$timeout', '$rootScope','Appointments', 'CheckinService','$q',
-    function (NavigatorParameters,$scope, $timeout, $rootScope, Appointments,CheckinService, $q) {
+myApp.controller('IndividualAppointmentController', ['NavigatorParameters','$scope','$timeout', '$rootScope','Appointments', 'CheckinService','$q','NewsBanner',
+    function (NavigatorParameters,$scope, $timeout, $rootScope, Appointments,CheckinService, $q, NewsBanner) {
         //Information of current appointment
+        NewsBanner.setAlert();
         var parameters = NavigatorParameters.getParameters();
         console.log(parameters);
         var navigatorName = parameters.Navigator;

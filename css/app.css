@@ -2238,3 +2238,13 @@ transform: translate(0px,50px);
 -webkit-transform:translate(0px,-50px);
 transform: translate(0px,-50px);
 }
+
+/*
+* GPU efficiency
+*/
+
+.gpu_efficiency{
+  -ms-transform: translate(0px,0px);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
