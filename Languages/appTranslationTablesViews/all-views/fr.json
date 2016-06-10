@@ -155,9 +155,23 @@
 	"ONCOLOGYPARKING":"Stationnement Radiothérapie",
 	"PARKINGINFORMATION":"Informations Sur Le Stationnement",
 	"CLOSE":"Fermer",
-	
 	"THANKYOUFORFEEDBACK":"Merci Pour Votre Avis!",
 	"RATETHISMATERIAL":"Noter ce matériel pédagogique!",
-	"SUBMIT":"Soumettre"
+	"SUBMIT":"Soumettre",
+	"PATIENTCHARTER":"Charte du patient en radiothérapie",
+	"_COMMENT5":"Settings",
+	"OPALPROBLEMSUBJECT":"Found a Bug/Problem using OPAL",
+	"REPORTISSUES":"Report Issues",
+	"GENERALSETTINGS":"Réglages Généraux",
+	"ACCOUNT":"Compte",
+	"ABOUT":"Sur",
+	"SENDFEEDBACK":"Envoyer Des Commentaires",
+	"RATETHISAPP":"Évaluer l'application",
+	"OPENDEVICESETTINGS":"Paramètres de l'appareil Ouvert",
+	"TERMSOFUSE":"Conditions d'utilisation",
+	"PRIVACYPOLICY":"Politique De Confidentialité",
+	"APPVERSION":"App Version",
+	"SECUREYOURDEVICE":"Sécuriser Votre Appareil",
+
 
 }

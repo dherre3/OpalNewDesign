@@ -4,8 +4,6 @@
     <ons-toolbar>
       <div class="center">{{"SETTINGS"|translate}}</div>
     </ons-toolbar>
-       <news-banner type="alertBanner" ></news-banner>
-
   <ons-pull-hook ng-action="load2($done)" var="loader">
           <span ng-switch="loader.getCurrentState()">
             <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon> {{"PULLDOWNTOREFRESH"|translate}}</span>

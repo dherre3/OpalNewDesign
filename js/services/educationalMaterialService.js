@@ -170,13 +170,16 @@ myApp.service('EducationalMaterial',['$filter','LocalStorage','FileManagerServic
         }
       }
     },
+    getTypeEducationaMaterial:function(edumaterial)
+    {
+      return getTypeMaterial(edumaterial);
+    },  
     openEducationalMaterial:function(edumaterial)
     {
-      var type = edumaterial.EducationalMaterialType_EN;
       var type = getTypeMaterial(edumaterial);
       if (edumaterial.hasOwnProperty('TableContents'))
       {
-        return {Url:'./views/education/education-table-contents.html'};
+        return {Url:'./views/education/education-booklet.html'};
       }else{
         if(type == 'url')
         {
@@ -187,8 +190,10 @@ myApp.service('EducationalMaterial',['$filter','LocalStorage','FileManagerServic
         {
           FileManagerService.openPDF(edumaterial.Url);
           return -1;
-        }else{
-          return {Url:'./views/education/education-table-contents.html'};
+        }
+        else if(type == 'php')
+        {
+           return {Url:'./views/education/education-individual-page.html'};
         }
       }
     },

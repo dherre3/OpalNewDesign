@@ -47,6 +47,8 @@
 	"PRIVACYPOLICY":"Politique De Confidentialité",
 	"APPVERSION":"App Version",
 	"LANGUAGE":"Langage",
-	"SECUREYOURDEVICE":"Sécuriser Votre Appareil"
+	"SECUREYOURDEVICE":"Sécuriser Votre Appareil",
+    "PATIENTCHARTER":"Charte du patient en radiothérapie"
+
 
 }

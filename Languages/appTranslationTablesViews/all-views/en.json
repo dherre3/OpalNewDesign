@@ -4,7 +4,7 @@
 	"MYCHART":"My Chart",
 	"TREATMENTPLANNING":"Treatment Planning",
 	"MYDOCUMENTS":"My Documents",
-	"TREATINGTEAMNOTIFICATIONS":"Treating Team Notifications",
+	"TREATINGTEAMNOTIFICATIONS":"Treating Team Messages",
 	"QUESTIONNAIRES":"Questionnaires",
 	"UPCOMINGAPPOINTMENT":"Upcoming Appointment",
 	"NOAPPOINTMENTS":"No appointments",
@@ -123,7 +123,22 @@
 	"NOCONTACTSAVAILABLE":"No contacts available",
 	"THANKYOUFORFEEDBACK":"Thank you for your feedback!",
 	"RATETHISMATERIAL":"Rate this educational material!",
-	"SUBMIT":"Submit"
+	"SUBMIT":"Submit",
+	"PATIENTCHARTER":"Patient Charter",
+	"_COMMENT5":"Settings",
+	"OPALPROBLEMSUBJECT":"Found a Bug/Problem using OPAL",
+	"REPORTISSUES":"Report Issues",
+	"ABOUT":"About",
+	"SENDFEEDBACK":"Send Feedback",
+	"RATETHISAPP":"Rate This App",
+	"OPENDEVICESETTINGS":"Open Device Settings",
+	"TERMSOFUSE":"Terms of Use",
+	"PRIVACYPOLICY":"Privacy Policy",
+	"APPVERSION":"App Version",
+	"SECUREYOURDEVICE":"Secure Your Device",
+	"GENERALSETTINGS":"General Settings",
+	"ACCOUNT":"Account"
+	
 	
 
 	

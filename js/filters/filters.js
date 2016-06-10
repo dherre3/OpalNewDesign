@@ -14,7 +14,27 @@ var myApp=angular.module('MUHCApp.filters',[]);
 
 
 	});
-
+	myApp.filter('removeTitleEducationalMaterial',function()
+	{
+		return function(string)
+		{
+			var length = string.indexOf("titleMaterialId");
+			if(length>-1)
+			{
+				var preceding = string.substring(0,length+1);
+				//Index for first instance of < for heading tag
+				var lastIndex = preceding.lastIndexOf('<');
+				var preceding = preceding.substring(0,preceding.lastIndexOf('<'));
+				//index of next closing tag
+				var proceeding = string.substring(string.indexOf('>',length+1)+2);
+				proceeding = proceeding.substring(proceeding.indexOf('>')+1);
+				return preceding.concat(proceeding);
+			}else{
+				return string;
+			}
+			
+		};
+	});
 	myApp.filter('formatDateAppointmentTask',function($filter){
 		return function(dateApp)
 		{

@@ -54,14 +54,17 @@
               <div id = "statusBarCheckin"></div>
             </div>
               <div style="margin-top:-170px;height:160px;overflow-y:hidden;width:200px;padding:0">
-              <p class="item-title" ng-class="fontSizeTitle"></p><br>
+              <div ng-show="checkinEstimate"><p class="item-title" ng-class="fontSizeTitle"></p><br>
               <p class="item-title"   ng-class="fontSizeTitle">{{"ESTIMATEDWAIT"|translate}}</p>
               <p class="item-title" style="font-size:30px">{{checkinEstimate}}</p>
-              <p class="item-title"   ng-class="fontSizeTitle">{{"MINUTES"|translate}}</p>
+              <p class="item-title"   ng-class="fontSizeTitle">{{"MINUTES"|translate}}</p></div>
+              <div ng-show="!checkinEstimate"><ons-icon icon="ion-load-d" spin="yes"></ons-icon>{{"FETCHINGTIMEESTIMATE"|translate}}</div>
             </div>
             <div align="center" style="margin-top:10px">
+             <div ng-show="checkinEstimate">
               <p class="item-title"  ng-class="fontSizeTitle">{{precedingPatientsLabel}}</p>
               <p class="item-title"   ng-class="fontSizeTitle"> {{scheduleAhead}}</p>
+              </div>
             </div>
             </div>
 

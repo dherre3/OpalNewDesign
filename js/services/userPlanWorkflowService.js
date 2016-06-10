@@ -73,12 +73,40 @@ myApp.service('UserPlanWorkflow',['$filter',function($filter){
         planSoFar[i]=objectStage;
       }
     }
+    function stageDate(array)
+    {
+      
+    }
+    function cleanDuplicates(array)
+    {
+      
+    }
+    function setCorrectOrder(array)
+    {
+      
+    }
+    function determineLastCompletedTask(array)
+    {
+      
+    }
 
 
 
 
 
     return{
+        setTreatmentPlanNew:function(tasks,appointments)
+        {
+          var steps = [];
+          //Get interested appointments, tasks, appointments.
+          steps = tasks.concat(appointments);
+          //Clean duplicates
+          
+          //Set correct order
+          
+          //Determine the last completed task.
+          
+        },
         /**
         *@ngdoc method
         *@name setUserPlanWorkflow

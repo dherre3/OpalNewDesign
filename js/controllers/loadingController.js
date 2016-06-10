@@ -37,14 +37,17 @@ angular.module('MUHCApp').controller('LoadingController', ['$rootScope','$state'
 				modal.hide();
 				if(storage){
 
-				    ons.notification.confirm({
+				    ons.notification.alert({
 				      message: 'Problems with server, could not fetch data, try again later',
 				      modifier: mod,
 				      callback: function(idx) {
-								console.log('I am in there?')
 				        switch (idx) {
 				          case 0:
-									$state.go('logOut');
+									if(typeof Patient.getFirstName()=='undefined')
+									{
+										$state.go('logOut');
+									}
+									
 				            /*ons.notification.alert({
 				              message: 'You pressed "Cancel".',
 				              modifier: mod

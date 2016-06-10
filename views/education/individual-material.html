@@ -1,18 +1,62 @@
-<ons-page ng-controller="IndividualEduMaterialController" ng-device-backbutton="educationDeviceBackButton()">
-  <ons-toolbar>
-      <div class="left">
-        <ons-back-button>{{"BACK"|translate}}</ons-back-button>
+  <ons-page ng-controller="IndividualEducationalMaterialController">
+    <ons-toolbar >
+      <div class="left"><ons-back-button>{{"BACK"|translate}}</ons-back-button></div>
+      <div class="center">{{edumaterial.Type}}</div>
+    </ons-toolbar>
+    <div style="margin-top:5vh">
+    <ons-list>
+      <ons-list-item class="item">
+        <div style="line-height:1" align="center">
+        <header>
+            <span class="item-title" ng-class="fontSizeTitle" style="font-size:20px">{{edumaterial.Name}}</span>
+        </header>
+        <div style="text-align: center;margin-top:10px">
+           <rate-material ser-num="edumaterial.EducationalMaterialControlSerNum"></rate-material>
+        </div>
       </div>
+      </ons-list-item>
+    </ons-list>
+    <ons-list class="settings-list" ng-hide="tableOfContents">
+      <ons-list-item class="item" ng-click="goToEducationalMaterial()">
+        <div align="center">
+          <div style="height:180px;width:180px;border-radius:50%;padding-top:25px"  ng-style="{'background-color':edumaterial.Color}">
+            <i ng-class="edumaterial.Icon" style="color:white;font-size:130px" ></i>
+          </div>
+        </div>
+      </ons-list-item>
+    </ons-list>
+    <ons-list style="margin: 10px 0 0 0" ng-hide="!tableOfContents">
+    <ons-list-header class="person-list-header" ng-class="fontSizeTitle"  >{{"TABLEOFCONTENTS"|translate}}</ons-list-header>
+    <ons-list-item modifier="chevron" ng-repeat= "edumaterial in tableOfContents" class="item" ng-click="goToEducationalMaterial($index)">
+        <ons-row align="center">
+            <ons-col width="60px" align="center">
+                <div style="margin-left:20px">
+                    <strong>{{$index+1}}</strong>
+                </div>
+            </ons-col>
+            <ons-col>
+                <header>
+                    <span class="item-title" ng-class="fontSizeTitle">{{edumaterial.Name}}</span>
+                </header>
+            </ons-col>
+        </ons-row>
+    </ons-list-item >
+  </ons-list>
 
-    <div class="center">{{"EDUCATION"|translate}}</div>
-  </ons-toolbar>
-  <div style="margin-top:25vh" ng-show="loading" align="center">
-    <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+    <ons-list class="settings-list">
+       <ons-list-item >
+         <div class="text-center">
+           <a ng-click="shareViaEmail()" style="font-size:18px"><i class="ion-share"></i> {{"SHAREVIAEMAIL"|translate}}</a>
+         </div>
+        </ons-list-item>
+    </ons-list>
+    <ons-list class="settings-list">
+       <ons-list-item >
+         <div class="text-center">
+           <a ng-click="printDocument()" style="font-size:18px"><i class="ion-printer"></i> {{"PRINTDOCUMENT"|translate}}</a>
+         </div>
+        </ons-list-item>
+    </ons-list>
+      
   </div>
-  <div ng-hide="loading" class="container" style="background-color:white;padding-top:10px;margin:1px solid black">
-    <div ng-bind-html="htmlBind"></div>
-  </div>
-  <!--<div id="frameEducational">
-    <iframe  ng-src="{{url}}" style="width:100vw;height:100%"></iframe>
-  </div>-->
-</ons-page>
+  </ons-page>

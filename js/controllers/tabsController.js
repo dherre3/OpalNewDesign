@@ -72,7 +72,7 @@ myApp.controller('personalTabController',['$scope','$timeout','Appointments','$t
 
 
 }]);
-myApp.controller('generalTabController',['$scope','$timeout','Announcements','Notifications','NavigatorParameters',function($scope,$timeout,Announcements,Notifications,NavigatorParameters){
+myApp.controller('generalTabController',['$scope','$timeout','Announcements','Notifications','NavigatorParameters','$filter',function($scope,$timeout,Announcements,Notifications,NavigatorParameters,$filter){
 var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 
 setNewsNumbers();
